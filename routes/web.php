@@ -25,6 +25,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/students', fn() => Inertia::render('Students'));
     Route::get('/teachers', fn() => Inertia::render('Teachers'));
+    Route::get('create-student', fn()=> Inertia::render('features/students/CreateStudentForm'));
+    Route::get('create-teacher', fn()=> Inertia::render('features/teachers/CreateTeacherForm'));
 });
 
 

@@ -1,5 +1,14 @@
 import { Link } from "@inertiajs/react";
-import { HiAcademicCap, HiDivide, HiOutlineHome } from "react-icons/hi2";
+import {
+    HiAcademicCap,
+    HiBookOpen,
+    HiChevronDoubleUp,
+    HiCircleStack,
+    HiDivide,
+    HiNewspaper,
+    HiOutlineHome,
+    HiPlus,
+} from "react-icons/hi2";
 import styled from "styled-components";
 
 const NavList = styled.ul`
@@ -59,6 +68,11 @@ function MainNav() {
                 </li>
 
                 <li>
+                    <StyledNavLink href="/create-student">
+                        <HiPlus /> <span>Create Student</span>
+                    </StyledNavLink>
+                </li>
+                <li>
                     <StyledNavLink href="/students">
                         <HiAcademicCap /> <span>Students</span>
                     </StyledNavLink>
@@ -66,6 +80,21 @@ function MainNav() {
                 <li>
                     <StyledNavLink href="/teachers">
                         <HiDivide /> <span>Teachers</span>
+                    </StyledNavLink>
+                </li>
+                <li>
+                    <StyledNavLink href="/teachers">
+                        <HiBookOpen /> <span>Subject</span>
+                    </StyledNavLink>
+                </li>
+                <li>
+                    <StyledNavLink href="/teachers">
+                        <HiCircleStack /> <span>Time</span>
+                    </StyledNavLink>
+                </li>
+                <li>
+                    <StyledNavLink href="/create-teacher">
+                        <HiChevronDoubleUp /> <span>Create Teacher</span>
                     </StyledNavLink>
                 </li>
             </NavList>

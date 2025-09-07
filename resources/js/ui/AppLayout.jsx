@@ -9,11 +9,13 @@ const StyledApplayout = styled.div`
     grid-template-columns: 26rem 1fr;
     grid-template-rows: auto 1fr;
     height: 100vh;
+    max-width: 130rem;
+    margin: 0 auto;
 `;
 
 const Main = styled.div`
     background-color: var(--color-grey-100);
-    padding: 4rem 4.8rem 6.4rem;
+    padding: 4rem 2.8rem 3.4rem;
 `;
 
 function AppLayout({ children }) {
@@ -22,10 +24,7 @@ function AppLayout({ children }) {
             <StyledApplayout>
                 <Header />
                 <Sidebar />
-                <Main>
-                    <div>App layout</div>
-                    {children}
-                </Main>
+                <Main>{children}</Main>
             </StyledApplayout>
         </AuthenticatedLayout>
     );
