@@ -29,3 +29,12 @@ Route::middleware('auth')->group(function () {
 
 
 require __DIR__.'/auth.php';
+
+
+Route::resource('students', App\Http\Controllers\StudentController::class);
+
+Route::resource('teachers', App\Http\Controllers\TeacherController::class);
+
+Route::resource('courses', App\Http\Controllers\CourseController::class);
+
+Route::resource('enrollments', App\Http\Controllers\EnrollmentController::class);
