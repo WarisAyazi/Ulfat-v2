@@ -26,13 +26,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/students', fn() => Inertia::render('Students'));
     Route::get('/teachers', fn() => Inertia::render('Teachers'));
-<<<<<<< HEAD
-    Route::get('create-student', fn()=> Inertia::render('NewStudent'));
-    Route::get('create-teacher', fn()=> Inertia::render('Features/teachers/CreateTeacherForm'));
-=======
     // Route::get('create-student', fn()=> Inertia::render('features/students/CreateStudentForm'));
     Route::get('create-teacher', fn()=> Inertia::render('features/teachers/CreateTeacherForm'));
->>>>>>> 982d161 (adding ...)
     // Route::get('/students', fn() => Inertia::render('Students'));
     // Route::get('/teachers', fn() => Inertia::render('Teachers'));
 });
