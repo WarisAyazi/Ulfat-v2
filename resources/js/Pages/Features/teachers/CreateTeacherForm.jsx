@@ -67,7 +67,7 @@ function CreateTeacherForm() {
                         </FormRow>
                         <FormRow type="teacher">
                             {/* type is an HTML attribute! */}
-                            <Button variation="secondary" type="reset">
+                            <Button variations="secondary" type="reset">
                                 Cancel
                             </Button>
                             <Button>Add Teacher</Button>
@@ -77,42 +77,12 @@ function CreateTeacherForm() {
 
                 <div>
                     <Heading as="h2">
-                        <span>Create Time</span>
+                        <span>Create Subject</span>
                         <span>
                             <HiPlus />
                         </span>
                     </Heading>
-                    <Form onSubmit={handleSubmit(onCreateTime)}>
-                        <FormRow type="student">
-                            <Label htmlFor="time">Time</Label>
-                            <Input
-                                type="text"
-                                id="time"
-                                {...register("time")}
-                                placeholder="Time"
-                            />
-                        </FormRow>
-
-                        <FormRow type="teacher">
-                            {/* type is an HTML attribute! */}
-                            <Button variation="secondary" type="reset">
-                                Cancel
-                            </Button>
-                            <Button>Add Time</Button>
-                        </FormRow>
-                    </Form>
-                </div>
-            </StyledCreateTeacher>
-
-            <div>
-                <Heading as="h2">
-                    <span>Create Subject</span>
-                    <span>
-                        <HiPlus />
-                    </span>
-                </Heading>
-                <Form onSubmit={handleSubmit(onCreateSubject)} type="create">
-                    <div>
+                    <Form onSubmit={handleSubmit(onCreateSubject)}>
                         <FormRow type="student">
                             <Label htmlFor="subject">Subject Name</Label>
                             <Input
@@ -133,40 +103,45 @@ function CreateTeacherForm() {
                                 <option>Pashto</option>
                             </Select>
                         </FormRow>
-                    </div>
-                    <div>
-                        <FormRow type="student">
-                            <Label htmlFor="teacher">Teacher</Label>
-                            <Select
-                                id="teacher"
-                                aria-label="Default select example"
-                                {...register("teacher")}
-                            >
-                                <option>Shafiq</option>
-                                <option>lodin</option>
-                            </Select>
+
+                        <FormRow type="teacher">
+                            {/* type is an HTML attribute! */}
+                            <Button variations="secondary" type="reset">
+                                Cancel
+                            </Button>
+                            <Button>Create Subject</Button>
                         </FormRow>
+                    </Form>
+                </div>
+
+                <FormLayout>
+                    <Heading as="h2">
+                        <span>Create Time</span>
+                        <span>
+                            <HiPlus />
+                        </span>
+                    </Heading>
+                    <Form onSubmit={handleSubmit(onCreateTime)}>
                         <FormRow type="student">
-                            <Label htmlFor="lastName">Last Name</Label>
-                            <Select
+                            <Label htmlFor="time">Time</Label>
+                            <Input
+                                type="text"
                                 id="time"
-                                aria-label="Default select example"
                                 {...register("time")}
-                            >
-                                <option>08-10</option>
-                                <option>10-12</option>
-                            </Select>
+                                placeholder="Time"
+                            />
                         </FormRow>
-                    </div>
-                    <FormRow type="teacher">
-                        {/* type is an HTML attribute! */}
-                        <Button variation="secondary" type="reset">
-                            Cancel
-                        </Button>
-                        <Button>Create Subject</Button>
-                    </FormRow>
-                </Form>
-            </div>
+
+                        <FormRow type="teacher">
+                            {/* type is an HTML attribute! */}
+                            <Button variations="secondary" type="reset">
+                                Cancel
+                            </Button>
+                            <Button>Add Time</Button>
+                        </FormRow>
+                    </Form>
+                </FormLayout>
+            </StyledCreateTeacher>
         </>
     );
 }

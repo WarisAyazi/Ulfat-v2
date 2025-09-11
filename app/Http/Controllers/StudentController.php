@@ -16,7 +16,7 @@ class StudentController extends Controller
     {
         $students = Student::all();
 
-        return Inertia::render('Students', [
+        return Inertia::render('Features/students/AllStudents', [
             'students' => $students,
         ]);
     }
@@ -37,15 +37,15 @@ class StudentController extends Controller
 
     public function show(Request $request, Student $student): Response
     {
-        return Inertia::render('student.show', [
-            'student' => $student,
+        return Inertia::render('Features/students/Student', [
+            'student' => 'dd',
         ]);
     }
 
     public function edit(Request $request, Student $student): Response
     {
-        return Inertia::render('student.edit', [
-            'student' => $student,
+        return Inertia::render('Features/students/Student', [
+            'student' => 'hello student',
         ]);
     }
 

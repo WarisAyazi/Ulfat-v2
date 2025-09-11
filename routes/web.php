@@ -25,12 +25,12 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/students', fn() => Inertia::render('Students'));
     Route::get('/teachers', fn() => Inertia::render('Teachers'));
-    Route::get('create-student', fn()=> Inertia::render('features/students/CreateStudentForm'));
-    Route::get('create-teacher', fn()=> Inertia::render('features/teachers/CreateTeacherForm'));
+    Route::get('create-student', fn()=> Inertia::render('NewStudent'));
+    Route::get('create-teacher', fn()=> Inertia::render('Features/teachers/CreateTeacherForm'));
     // Route::get('/students', fn() => Inertia::render('Students'));
     // Route::get('/teachers', fn() => Inertia::render('Teachers'));
 });
-
+ 
 
 require __DIR__.'/auth.php';
 

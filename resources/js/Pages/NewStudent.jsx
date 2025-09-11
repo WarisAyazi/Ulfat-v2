@@ -1,4 +1,4 @@
-import AllStudents from "@/Pages/Features/students/AllStudents";
+import CreateStudentForm from "@/Pages/Features/students/CreateStudentForm";
 import AppLayout from "@/ui/AppLayout";
 import Heading from "@/ui/Heading";
 import Row from "@/ui/Row";
@@ -7,10 +7,11 @@ function Students() {
     return (
         <>
             <Row type="horizontal">
-                <Heading as="h1">All Students</Heading>
+                <Heading as="h1"> + Add Student</Heading>
             </Row>
+
             <Row type="horizontal">
-                <AllStudents />
+                <CreateStudentForm />
             </Row>
         </>
     );

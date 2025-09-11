@@ -11,10 +11,17 @@ import FormRow from "@/ui/FormRow";
 import { HiPlus } from "react-icons/hi2";
 import Heading from "@/ui/Heading";
 import Label from "@/ui/Label";
+import Row from "@/ui/Row";
 
 const Error = styled.span`
     font-size: 1.4rem;
     color: var(--color-red-700);
+`;
+
+const StyledCreateStudent = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 100%;
 `;
 
 function CreateStudentForm() {
@@ -25,13 +32,7 @@ function CreateStudentForm() {
     }
 
     return (
-        <>
-            <Heading as="h2">
-                <span>Add Student</span>
-                <span>
-                    <HiPlus />
-                </span>
-            </Heading>
+        <StyledCreateStudent>
             <Form type="create" onSubmit={handleSubmit(onSubmit)}>
                 <div>
                     <FormRow type="student">
@@ -141,9 +142,9 @@ function CreateStudentForm() {
                     <Button>Add Student</Button>
                 </FormRow>
             </Form>
-        </>
+        </StyledCreateStudent>
     );
 }
-CreateStudentForm.layout = (page) => <AppLayout>{page}</AppLayout>;
+// CreateStudentForm.layout = (page) => <AppLayout>{page}</AppLayout>;
 
 export default CreateStudentForm;
