@@ -18,6 +18,7 @@ const Error = styled.span`
     color: var(--color-red-700);
 `;
 
+<<<<<<< HEAD:resources/js/Pages/Features/students/CreateStudentForm.jsx
 const StyledCreateStudent = styled.div`
     display: flex;
     flex-direction: column;
@@ -25,8 +26,12 @@ const StyledCreateStudent = styled.div`
 `;
 
 function CreateStudentForm() {
+=======
+function CreateStudentForm({ students, teachers, courses, times}) {
+>>>>>>> 982d161 (adding ...):resources/js/Pages/features/students/CreateStudentForm.jsx
     const { register, handleSubmit } = useForm();
 
+    console.log([students, teachers, courses, times]);
     function onSubmit(data) {
         console.log(data);
     }
@@ -35,6 +40,21 @@ function CreateStudentForm() {
         <StyledCreateStudent>
             <Form type="create" onSubmit={handleSubmit(onSubmit)}>
                 <div>
+                    <FormRow type="student">
+                        <Label htmlFor="student">Student</Label>
+                        <Select
+                            id="student"
+                            aria-label="Default select example"
+                            {...register("student")}
+                        >
+                            {students.map((student) => (
+                                <option value={student.id} key={student.id}>{student.first_name + ' ' + student.last_name}</option>
+                            ))}
+                            
+                        </Select>
+                    </FormRow>
+
+
                     <FormRow type="student">
                         <Label htmlFor="name">Student name</Label>
                         <Input
@@ -61,8 +81,9 @@ function CreateStudentForm() {
                             aria-label="Default select example"
                             {...register("subject")}
                         >
-                            <option>English</option>
-                            <option>Math</option>
+                            {courses.map((course) => (
+                                <option value={course.title} key={course.id}>{course.title}</option>
+                            ))}
                         </Select>
                     </FormRow>
                     <FormRow type="student">
@@ -108,8 +129,11 @@ function CreateStudentForm() {
                             aria-label="Default select example"
                             {...register("time")}
                         >
-                            <option>08-10</option>
-                            <option>10-12</option>
+                            {times.map((time) => (
+                                <option value={time.time} key={time.id}>{time.time}</option>
+                            ))}
+                            {/* <option>08-10</option> */}
+                            {/* <option>10-12</option> */}
                         </Select>
                     </FormRow>
 
@@ -120,8 +144,11 @@ function CreateStudentForm() {
                             aria-label="Default select example"
                             {...register("teacher")}
                         >
-                            <option>Shafiq</option>
-                            <option>lodin</option>
+                            {teachers.map((teacher) => (
+                                <option value={teacher.id} key={teacher.id}>{teacher.first_name}</option>
+                            ))}
+                            {/* <option>Shafiq</option> */}
+                            {/* <option>lodin</option> */}
                         </Select>
                     </FormRow>
                     <FormRow type="student">
