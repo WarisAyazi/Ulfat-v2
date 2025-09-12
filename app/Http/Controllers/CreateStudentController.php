@@ -26,12 +26,12 @@ class CreateStudentController extends Controller
      */
     public function create()
     {
-        $students = Student::all();
+        // $students = Student::all();
         $teachers = Teacher::all();
         $courses = Course::all();
         $times = CourseTime::all();
-        return Inertia::render('features/students/CreateStudentForm', [
-            'students' => $students,
+        return Inertia::render('Features/students/CreateStudentForm', [
+            // 'students' => $students,
             'teachers' => $teachers,
             'courses' => $courses,
             'times' => $times
@@ -44,6 +44,7 @@ class CreateStudentController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
+            'month' => 'required', 'string',
             'student_id' => 'required', 'integer',
             'subject_id' => 'required', 'integer',
             'month' => 'required', 'string',
@@ -54,8 +55,8 @@ class CreateStudentController extends Controller
             
         $student = CreateStudent::create($request->validated());
         // $request->session()->flash('student.id', $student->id);
+        return redirect()->route('students.index');
 
-        return redirect()->route('student.index');
     }
 
     /**

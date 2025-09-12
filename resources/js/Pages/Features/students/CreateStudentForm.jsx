@@ -5,42 +5,48 @@ import Form from "../../../ui/Form";
 import Button from "../../../ui/Button";
 
 import AppLayout from "@/ui/AppLayout";
-import { useForm } from "react-hook-form";
 import Select from "@/ui/Select";
 import FormRow from "@/ui/FormRow";
 import { HiPlus } from "react-icons/hi2";
 import Heading from "@/ui/Heading";
 import Label from "@/ui/Label";
 import Row from "@/ui/Row";
+import { useForm } from "@inertiajs/react";
 
 const Error = styled.span`
     font-size: 1.4rem;
     color: var(--color-red-700);
 `;
 
-<<<<<<< HEAD:resources/js/Pages/Features/students/CreateStudentForm.jsx
 const StyledCreateStudent = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
 `;
 
-function CreateStudentForm() {
-=======
-function CreateStudentForm({ students, teachers, courses, times}) {
->>>>>>> 982d161 (adding ...):resources/js/Pages/features/students/CreateStudentForm.jsx
-    const { register, handleSubmit } = useForm();
+function CreateStudentForm({ students, teachers, courses, times }) {
+    const { data, setData, post, reset, processing, errors } = useForm({
+        name: "",
+        fname: "",
+        subject: "",
+        gender: "",
+        month: "",
+        time: "",
+        teacher: "",
+        fee: "",
+    });
 
-    console.log([students, teachers, courses, times]);
-    function onSubmit(data) {
+    function onSubmit(e) {
+        e.preventDefault();
         console.log(data);
+        post("/new-student");
     }
 
     return (
         <StyledCreateStudent>
-            <Form type="create" onSubmit={handleSubmit(onSubmit)}>
+            <Form type="create" method="POST" onSubmit={onSubmit}>
                 <div>
-                    <FormRow type="student">
+                    {/* <FormRow type="student">
                         <Label htmlFor="student">Student</Label>
                         <Select
                             id="student"
@@ -48,21 +54,25 @@ function CreateStudentForm({ students, teachers, courses, times}) {
                             {...register("student")}
                         >
                             {students.map((student) => (
-                                <option value={student.id} key={student.id}>{student.first_name + ' ' + student.last_name}</option>
+                                <option value={student.id} key={student.id}>
+                                    {student.first_name +
+                                        " " +
+                                        student.last_name}
+                                </option>
                             ))}
-                            
                         </Select>
-                    </FormRow>
-
+                    </FormRow> */}
 
                     <FormRow type="student">
                         <Label htmlFor="name">Student name</Label>
                         <Input
                             type="text"
                             id="name"
-                            {...register("name")}
+                            value={data.name}
+                            onChange={(e) => setData("name", e.target.value)}
                             placeholder="Student Name"
                         />
+                        {errors.name && <p>errors.name</p>}
                     </FormRow>
 
                     <FormRow type="student">
@@ -70,7 +80,8 @@ function CreateStudentForm({ students, teachers, courses, times}) {
                         <Input
                             type="text"
                             id="fname"
-                            {...register("fname")}
+                            value={data.fname}
+                            onChange={(e) => setData("fname", e.target.value)}
                             placeholder="Father Name"
                         />
                     </FormRow>
@@ -79,10 +90,15 @@ function CreateStudentForm({ students, teachers, courses, times}) {
                         <Select
                             id="subject"
                             aria-label="Default select example"
-                            {...register("subject")}
+                            value={data.subject}
+                            onChange={(e) => setData("subject", e.target.value)}
                         >
+                            <option defaultChecked>Subject</option>
+
                             {courses.map((course) => (
-                                <option value={course.title} key={course.id}>{course.title}</option>
+                                <option value={course.title} key={course.id}>
+                                    {course.title}
+                                </option>
                             ))}
                         </Select>
                     </FormRow>
@@ -91,9 +107,10 @@ function CreateStudentForm({ students, teachers, courses, times}) {
                         <Select
                             id="gender"
                             aria-label="Default select example"
-                            {...register("gender")}
+                            value={data.gender}
+                            onChange={(e) => setData("gender", e.target.value)}
                         >
-                            <option disabled>Gender</option>
+                            <option defaultChecked>Gender</option>
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
                         </Select>
@@ -105,9 +122,10 @@ function CreateStudentForm({ students, teachers, courses, times}) {
                         <Select
                             id="month"
                             aria-label="Default select example"
-                            {...register("month")}
+                            value={data.month}
+                            onChange={(e) => setData("month", e.target.value)}
                         >
-                            <option disabled>Month</option>
+                            <option defaultChecked>Month</option>
                             <option value="Hamal">1- Hamal</option>
                             <option value="Saur">2- Saur</option>
                             <option value="Jawza">3- Jawza</option>
@@ -127,13 +145,16 @@ function CreateStudentForm({ students, teachers, courses, times}) {
                         <Select
                             id="time"
                             aria-label="Default select example"
-                            {...register("time")}
+                            value={data.time}
+                            onChange={(e) => setData("time", e.target.value)}
                         >
+                            <option defaultChecked>Time</option>
+
                             {times.map((time) => (
-                                <option value={time.time} key={time.id}>{time.time}</option>
+                                <option value={time.time} key={time.id}>
+                                    {time.time}
+                                </option>
                             ))}
-                            {/* <option>08-10</option> */}
-                            {/* <option>10-12</option> */}
                         </Select>
                     </FormRow>
 
@@ -142,13 +163,16 @@ function CreateStudentForm({ students, teachers, courses, times}) {
                         <Select
                             id="teacher"
                             aria-label="Default select example"
-                            {...register("teacher")}
+                            value={data.teacher}
+                            onChange={(e) => setData("teacher", e.target.value)}
                         >
+                            <option defaultChecked>Teacher</option>
+
                             {teachers.map((teacher) => (
-                                <option value={teacher.id} key={teacher.id}>{teacher.first_name}</option>
+                                <option value={teacher.id} key={teacher.id}>
+                                    {teacher.first_name}
+                                </option>
                             ))}
-                            {/* <option>Shafiq</option> */}
-                            {/* <option>lodin</option> */}
                         </Select>
                     </FormRow>
                     <FormRow type="student">
@@ -156,22 +180,29 @@ function CreateStudentForm({ students, teachers, courses, times}) {
                         <Input
                             type="text"
                             id="fee"
-                            {...register("fee")}
+                            value={data.fee}
+                            onChange={(e) => setData("fee", e.target.value)}
                             placeholder="Fee"
                         />
                     </FormRow>
                 </div>
                 <FormRow>
                     {/* type is an HTML attribute! */}
-                    <Button variation="secondary" type="reset">
+                    <Button
+                        variation="secondary"
+                        type="reset"
+                        onClick={() => reset()}
+                    >
                         Cancel
                     </Button>
-                    <Button>Add Student</Button>
+                    <Button type="submit" disabled={processing}>
+                        {processing ? "Saving...." : " Add Student"}
+                    </Button>
                 </FormRow>
             </Form>
         </StyledCreateStudent>
     );
 }
-// CreateStudentForm.layout = (page) => <AppLayout>{page}</AppLayout>;
+CreateStudentForm.layout = (page) => <AppLayout>{page}</AppLayout>;
 
 export default CreateStudentForm;

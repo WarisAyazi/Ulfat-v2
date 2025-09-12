@@ -61,14 +61,14 @@ function MainNav() {
         <nav>
             <NavList>
                 <li>
-                    <StyledNavLink href="dashboard">
+                    <StyledNavLink href="/dashboard">
                         <HiOutlineHome />
                         <span>Dashboard</span>
                     </StyledNavLink>
                 </li>
 
                 <li>
-                    <StyledNavLink href="/create-student">
+                    <StyledNavLink href={route("new-student.create")}>
                         <HiPlus /> <span>Create Student</span>
                     </StyledNavLink>
                 </li>
