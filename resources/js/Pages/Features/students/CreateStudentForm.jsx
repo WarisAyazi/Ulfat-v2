@@ -7,10 +7,8 @@ import Button from "../../../ui/Button";
 import AppLayout from "@/ui/AppLayout";
 import Select from "@/ui/Select";
 import FormRow from "@/ui/FormRow";
-import { HiPlus } from "react-icons/hi2";
-import Heading from "@/ui/Heading";
+
 import Label from "@/ui/Label";
-import Row from "@/ui/Row";
 import { useForm } from "@inertiajs/react";
 
 const Error = styled.span`
@@ -34,6 +32,7 @@ function CreateStudentForm({ students, teachers, courses, times }) {
         time: "",
         teacher: "",
         fee: "",
+        phone_number: 0,
     });
 
     function onSubmit(e) {
@@ -46,23 +45,6 @@ function CreateStudentForm({ students, teachers, courses, times }) {
         <StyledCreateStudent>
             <Form type="create" method="POST" onSubmit={onSubmit}>
                 <div>
-                    {/* <FormRow type="student">
-                        <Label htmlFor="student">Student</Label>
-                        <Select
-                            id="student"
-                            aria-label="Default select example"
-                            {...register("student")}
-                        >
-                            {students.map((student) => (
-                                <option value={student.id} key={student.id}>
-                                    {student.first_name +
-                                        " " +
-                                        student.last_name}
-                                </option>
-                            ))}
-                        </Select>
-                    </FormRow> */}
-
                     <FormRow type="student">
                         <Label htmlFor="name">Student name</Label>
                         <Input
@@ -85,6 +67,7 @@ function CreateStudentForm({ students, teachers, courses, times }) {
                             placeholder="Father Name"
                         />
                     </FormRow>
+
                     <FormRow type="student">
                         <Label htmlFor="subject">Subject</Label>
                         <Select
@@ -102,6 +85,7 @@ function CreateStudentForm({ students, teachers, courses, times }) {
                             ))}
                         </Select>
                     </FormRow>
+
                     <FormRow type="student">
                         <Label htmlFor="gender">Gender</Label>
                         <Select
@@ -114,6 +98,18 @@ function CreateStudentForm({ students, teachers, courses, times }) {
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
                         </Select>
+                    </FormRow>
+                    <FormRow type="student">
+                        <Label htmlFor="phone_number">Phone Number</Label>
+                        <Input
+                            type="number"
+                            id="phone_number"
+                            value={data.phone_number}
+                            onChange={(e) =>
+                                setData("phone_number", e.target.value)
+                            }
+                            placeholder="Phone number"
+                        />
                     </FormRow>
                 </div>
                 <div>
@@ -187,7 +183,6 @@ function CreateStudentForm({ students, teachers, courses, times }) {
                     </FormRow>
                 </div>
                 <FormRow>
-                    {/* type is an HTML attribute! */}
                     <Button
                         variation="secondary"
                         type="reset"

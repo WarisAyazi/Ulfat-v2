@@ -27,7 +27,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/students', fn() => Inertia::render('Students'));
     Route::get('/teachers', fn() => Inertia::render('Teachers'));
     // Route::get('create-student', fn()=> Inertia::render('Features/students/CreateStudentForm'));
-    Route::get('create-teacher', fn()=> Inertia::render('Features/teachers/CreateTeacherForm'));
+    Route::get('create-teacher', fn()=> Inertia::render('Features/teachers/CreateTeacherTimeSubjectForm'));
     // Route::get('/students', fn() => Inertia::render('Students'));
     // Route::get('/teachers', fn() => Inertia::render('Teachers'));
 });
@@ -40,6 +40,6 @@ Route::resource('/students', App\Http\Controllers\StudentController::class);
 
 Route::resource('/teachers', App\Http\Controllers\TeacherController::class);
 
-Route::resource('courses', App\Http\Controllers\CourseController::class);
+Route::resource('/courses', App\Http\Controllers\CourseController::class);
 
-Route::resource('enrollments', App\Http\Controllers\EnrollmentController::class);
+Route::resource('/enrollments', App\Http\Controllers\EnrollmentController::class);
