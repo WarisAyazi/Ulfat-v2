@@ -52,6 +52,7 @@ class CreateStudentController extends Controller
             'teacher_id' => 'required', 'integer',
             'fee' => 'required', 'integer',
         ]);
+        
             
         $student = CreateStudent::create($request->validated());
         // $request->session()->flash('student.id', $student->id);

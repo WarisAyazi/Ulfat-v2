@@ -15,10 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('amount');
             $table->date('month');
-            $table->year('year');
-            $table->integer('time');
-            $table->foreignId('student_id')->references('id')->on('students');
-            $table->foreignId('course_id')->references('id')->on('courses');
+            $table->foreignId('session_id')->references('id')->on('section');
             $table->timestamps();
         });
     }

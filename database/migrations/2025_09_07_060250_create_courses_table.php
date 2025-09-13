@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('title', 50);
             $table->string('language', 40);
-            $table->foreignId('teacher_id')->references('id')->on('teachers');
             $table->timestamps();
         });
     }
