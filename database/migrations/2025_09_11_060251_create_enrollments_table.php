@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->integer('amount');
             $table->date('month');
-            $table->foreignId('session_id')->references('id')->on('section');
             $table->timestamps();
         });
     }
