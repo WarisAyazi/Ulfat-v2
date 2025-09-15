@@ -6,7 +6,7 @@ import { Outlet } from "react-router-dom";
 
 const StyledApplayout = styled.div`
     display: grid;
-    grid-template-columns: 26rem 1fr;
+    grid-template-columns: 26rem 104rem;
     grid-template-rows: auto 1fr;
     height: 100vh;
     max-width: 130rem;
@@ -15,7 +15,10 @@ const StyledApplayout = styled.div`
 
 const Main = styled.div`
     background-color: var(--color-grey-100);
-    padding: 4rem 2.8rem 3.4rem;
+    padding: 4rem 6.8rem 13.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
 `;
 
 function AppLayout({ children }) {

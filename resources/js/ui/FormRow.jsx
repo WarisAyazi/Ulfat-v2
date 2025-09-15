@@ -12,6 +12,29 @@ const FormRow = styled.div`
             align-items: start;
         `}
 
+    ${(props) =>
+        props.type === "teacher" &&
+        css`
+            &:has(button) {
+                display: flex;
+                justify-content: end;
+                gap: 1.2rem;
+                padding-right: 4rem;
+            }
+        `}
+
+    ${(props) =>
+        props.type === "submit" &&
+        css`
+            &:has(button) {
+                display: flex;
+                justify-content: end;
+                align-items: end;
+                gap: 1.2rem;
+                padding-right: 4rem;
+                margin-top: 2rem;
+            }
+        `}
     padding: 1.2rem 0;
 
     &:first-child {
@@ -31,16 +54,5 @@ const FormRow = styled.div`
         justify-content: flex-end;
         gap: 1.2rem;
     }
-
-    ${(props) =>
-        props.type === "teacher" &&
-        css`
-            &:has(button) {
-                display: flex;
-                justify-content: end;
-                gap: 1.2rem;
-                padding-right: 4rem;
-            }
-        `}
 `;
 export default FormRow;

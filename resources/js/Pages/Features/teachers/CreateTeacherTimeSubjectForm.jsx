@@ -1,17 +1,12 @@
 import AppLayout from "@/ui/AppLayout";
-import Form from "@/ui/Form";
-import FormRow from "@/ui/FormRow";
-import Label from "@/ui/Label";
-import Input from "@/ui/Input";
-import { useForm } from "react-hook-form";
+
 import Heading from "@/ui/Heading";
-import { HiPlus } from "react-icons/hi2";
-import Button from "@/ui/Button";
+
 import styled from "styled-components";
-import Select from "@/ui/Select";
 import CreateTeacher from "./CreateTeacher";
 import CreateSubject from "../subject/CreateSubject";
 import CreateTime from "../time/CreateTime";
+import Row from "@/ui/Row";
 
 const StyledCreateTeacher = styled.div`
     display: grid;
@@ -27,10 +22,11 @@ const FormLayout = styled.div`
 `;
 
 function CreateTeacherForm() {
-    const { register, handleSubmit } = useForm();
-
     return (
         <>
+            <Row type="horizontal">
+                <Heading as="h1">Add teacher</Heading>
+            </Row>
             <StyledCreateTeacher>
                 <FormLayout>
                     <CreateTeacher />

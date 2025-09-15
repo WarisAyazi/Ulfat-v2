@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
-use App\Models\CourseTime;
+use App\Models\Time;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Models\CreateStudent;
@@ -28,7 +28,7 @@ class CreateStudentController extends Controller
     {
         $teachers = Teacher::all();
         $courses = Course::all();
-        $times = CourseTime::all();
+        $times = Time::all();
         return Inertia::render('Features/students/CreateStudentForm', [
             'teachers' => $teachers,
             'courses' => $courses,

@@ -1,15 +1,14 @@
 import { Link } from "@inertiajs/react";
 import {
-    HiAcademicCap,
     HiBookOpen,
     HiChevronDoubleUp,
     HiCircleStack,
-    HiDivide,
-    HiNewspaper,
     HiOutlineHome,
-    HiPlus,
 } from "react-icons/hi2";
 import styled from "styled-components";
+import { PiStudentBold } from "react-icons/pi";
+import { GiTeacher } from "react-icons/gi";
+import { FaUserPlus } from "react-icons/fa6";
 
 const NavList = styled.ul`
     display: flex;
@@ -69,17 +68,17 @@ function MainNav() {
 
                 <li>
                     <StyledNavLink href={route("new-student.create")}>
-                        <HiPlus /> <span>Create Student</span>
+                        <FaUserPlus /> <span>Create Student</span>
                     </StyledNavLink>
                 </li>
                 <li>
                     <StyledNavLink href="/students">
-                        <HiAcademicCap /> <span>Students</span>
+                        <PiStudentBold /> <span>Students</span>
                     </StyledNavLink>
                 </li>
                 <li>
                     <StyledNavLink href="/teachers">
-                        <HiDivide /> <span>Teachers</span>
+                        <GiTeacher /> <span>Teachers</span>
                     </StyledNavLink>
                 </li>
                 <li>

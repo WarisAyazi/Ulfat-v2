@@ -5,9 +5,9 @@ import Heading from "@/ui/Heading";
 import Input from "@/ui/Input";
 import Label from "@/ui/Label";
 import { useForm } from "@inertiajs/react";
-import { HiPlus } from "react-icons/hi2";
+import { HiPlus, HiSwatch } from "react-icons/hi2";
 import styled from "styled-components";
-
+import { MdOutlineMoreTime } from "react-icons/md";
 const Add = styled.div`
     display: flex;
     align-items: center;
@@ -28,7 +28,7 @@ function CreateTime() {
             <Heading as="h2">
                 <Add>
                     <span>
-                        <HiPlus />
+                        <MdOutlineMoreTime />
                     </span>
                     <span>Create Time</span>
                 </Add>
@@ -54,7 +54,7 @@ function CreateTime() {
                         Cancel
                     </Button>
                     <Button type="submit" disabled={processing}>
-                        {processing ? "Saving...." : " Add Course"}
+                        {processing ? "Saving...." : " Add Time"}
                     </Button>
                 </FormRow>
             </Form>
