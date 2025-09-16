@@ -7,4 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class CourseTime extends Model
 {
     //
+
+    protected $table = 'times';
 }
