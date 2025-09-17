@@ -26,17 +26,18 @@ const StyledCreateStudent = styled.div`
 
 function CreateStudentForm({ teachers, courses, times }) {
     const { data, setData, post, reset, processing, errors } = useForm({
-        name: "",
-        fname: "",
-        subject: "",
-        gender: "",
-        month: "",
-        time: "",
-        teacher: "",
-        fee: "",
-        phone_number: 0,
+        name: "Hello",
+        fname: "Hi",
+        subject: 1,
+        gender: "male",
+        month: "Hamal",
+        time: 1,
+        teacher: 1,
+        amount: "400",
+        phone_number: 33,
     });
 
+    console.log(errors);
     function onSubmit(e) {
         e.preventDefault();
         console.log(data);
@@ -73,7 +74,9 @@ function CreateStudentForm({ teachers, courses, times }) {
                                 }
                                 placeholder="Student Name"
                             />
-                            {errors.name && <p>errors.name</p>}
+                            {errors.name && (
+                                <p className="text-red-600">{errors.name}</p>
+                            )}
                         </FormRow>
 
                         <FormRow type="student">
@@ -87,6 +90,9 @@ function CreateStudentForm({ teachers, courses, times }) {
                                 }
                                 placeholder="Father Name"
                             />
+                            {errors.fname && (
+                                <p className="text-red-600">{errors.fname}</p>
+                            )}
                         </FormRow>
 
                         <FormRow type="student">
@@ -107,6 +113,9 @@ function CreateStudentForm({ teachers, courses, times }) {
                                     </option>
                                 ))}
                             </Select>
+                            {errors.subject && (
+                                <p className="text-red-600">{errors.subject}</p>
+                            )}
                         </FormRow>
 
                         <FormRow type="student">
@@ -123,6 +132,9 @@ function CreateStudentForm({ teachers, courses, times }) {
                                 <option value="Male">Male</option>
                                 <option value="Female">Female</option>
                             </Select>
+                            {errors.gender && (
+                                <p className="text-red-600">{errors.gender}</p>
+                            )}
                         </FormRow>
                         <FormRow type="student">
                             <Label htmlFor="phone_number">Phone Number</Label>
@@ -135,6 +147,11 @@ function CreateStudentForm({ teachers, courses, times }) {
                                 }
                                 placeholder="Phone number"
                             />
+                            {errors.phone_number && (
+                                <p className="text-red-600">
+                                    {errors.phone_number}
+                                </p>
+                            )}
                         </FormRow>
                     </div>
                     <div>
@@ -162,6 +179,9 @@ function CreateStudentForm({ teachers, courses, times }) {
                                 <option value="Dalwa">11- Dalwa</option>
                                 <option value="Hoot">12- Hoot</option>
                             </Select>
+                            {errors.month && (
+                                <p className="text-red-600">{errors.month}</p>
+                            )}
                         </FormRow>
                         <FormRow type="student">
                             <Label htmlFor="time">Time</Label>
@@ -181,6 +201,9 @@ function CreateStudentForm({ teachers, courses, times }) {
                                     </option>
                                 ))}
                             </Select>
+                            {errors.time && (
+                                <p className="text-red-600">{errors.time}</p>
+                            )}
                         </FormRow>
 
                         <FormRow type="student">
@@ -201,17 +224,26 @@ function CreateStudentForm({ teachers, courses, times }) {
                                     </option>
                                 ))}
                             </Select>
+                            {errors.teacher && (
+                                <p className="text-red-600">{errors.teacher}</p>
+                            )}
                         </FormRow>
                         <FormRow type="student">
-                            <Label htmlFor="fee">Fee</Label>
+                            <Label htmlFor="amount">Fee</Label>
                             <Input
                                 type="text"
-                                id="fee"
-                                value={data.fee}
-                                onChange={(e) => setData("fee", e.target.value)}
+                                id="amount"
+                                value={data.amount}
+                                onChange={(e) =>
+                                    setData("amount", e.target.value)
+                                }
                                 placeholder="Fee"
                             />
+                            {errors.amount && (
+                                <p className="text-red-600">{errors.amount}</p>
+                            )}
                         </FormRow>
+
                         <FormRow type="submit">
                             <Button
                                 variation="secondary"

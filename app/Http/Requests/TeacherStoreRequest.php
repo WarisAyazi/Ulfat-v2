@@ -20,11 +20,9 @@ class TeacherStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'first_name' => ['required', 'string', 'max:50'],
-            'last_name' => ['required', 'string', 'max:50'],
+            'name' => ['required', 'string', 'max:50'],
+            'fname' => ['required', 'string', 'max:50'],
             'phone_number' => ['required', 'integer'],
-            'date_of_birth' => ['required', 'integer'],
-            'salary' => ['required', 'numeric'],
             'education' => ['required', 'string', 'max:50'],
         ];
     }

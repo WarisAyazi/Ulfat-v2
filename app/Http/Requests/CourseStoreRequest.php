@@ -22,11 +22,7 @@ class CourseStoreRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'max:50'],
             'language' => ['required', 'string', 'max:40'],
-            'year' => ['required'],
-            'start_date' => ['required'],
-            'end_date' => ['required', ],
-            'room_number' => ['required', 'integer'],
-            'teacher_id' => ['required', 'integer', 'exists:teachers,id'],
+            'classroom' => ['required', 'integer'],
         ];
     }
 }

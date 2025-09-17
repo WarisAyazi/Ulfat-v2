@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('section', function (Blueprint $table) {
+        Schema::create('sections', function (Blueprint $table) {
             $table->id();
                         $table->foreignId('time_id')->references('id')->on('times');
                         $table->foreignId('student_id')->references('id')->on('students');
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sessions');
+        Schema::dropIfExists('sections');
     }
 };

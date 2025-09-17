@@ -31,7 +31,7 @@ class CourseController extends Controller
 
         $request->session()->flash('course.id', $course->id);
 
-        return redirect()->route('courses.index');
+        return redirect()->route('courses.show' ,1);
     }
 
     public function show(Request $request, Course $course): View

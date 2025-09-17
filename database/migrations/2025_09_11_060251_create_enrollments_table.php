@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('enrollments', function (Blueprint $table) {
             $table->id();
             $table->integer('amount');
-            $table->date('month');
+            $table->string('month');
             $table->timestamps();
         });
     }

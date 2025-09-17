@@ -25,6 +25,7 @@ function CreateSubject() {
     function onCreateSubject(e) {
         console.log(data);
         e.preventDefault();
+        console.log(data);
         post("/courses");
     }
     return (
@@ -47,6 +48,9 @@ function CreateSubject() {
                         onChange={(e) => setData("title", e.target.value)}
                         placeholder="Subject Name"
                     />
+                    {errors.title && (
+                        <p className="text-red-600">{errors.title}</p>
+                    )}
                 </FormRow>
 
                 <FormRow type="student">
@@ -61,6 +65,9 @@ function CreateSubject() {
                         <option>Dari</option>
                         <option>Pashto</option>
                     </Select>
+                    {errors.language && (
+                        <p className="text-red-600">{errors.language}</p>
+                    )}
                 </FormRow>
 
                 <FormRow type="student">
@@ -72,6 +79,9 @@ function CreateSubject() {
                         onChange={(e) => setData("classroom", e.target.value)}
                         placeholder="Class Number"
                     />
+                    {errors.classroom && (
+                        <p className="text-red-600">{errors.classroom}</p>
+                    )}
                 </FormRow>
 
                 <FormRow type="teacher">

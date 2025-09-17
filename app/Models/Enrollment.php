@@ -18,10 +18,8 @@ class Enrollment extends Model
     protected $fillable = [
         'amount',
         'month',
-        'year',
-        'time',
-        'student_id',
-        'course_id',
+        
+        
     ];
 
     /**

@@ -18,11 +18,7 @@ class Course extends Model
     protected $fillable = [
         'title',
         'language',
-        'year',
-        'start_date',
-        'end_date',
-        'room_number',
-        'teacher_id',
+        'classroom',
     ];
 
     /**
@@ -32,6 +28,7 @@ class Course extends Model
      */
     protected function casts(): array
     {
+
         return [
             'id' => 'integer',
             'year' => 'decimal:0',

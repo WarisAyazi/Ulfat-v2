@@ -28,6 +28,9 @@ class TeacherController extends Controller
 
     public function store(TeacherStoreRequest $request): RedirectResponse
     {
+
+        
+
         $teacher = Teacher::create($request->validated());
 
         $request->session()->flash('teacher.id', $teacher->id);

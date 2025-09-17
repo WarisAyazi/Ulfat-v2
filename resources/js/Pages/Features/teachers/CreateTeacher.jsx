@@ -20,10 +20,12 @@ function CreateTeacher() {
         name: "",
         fname: "",
         education: "",
-        phone_number: "07",
+        phone_number: 7,
     });
+    console.log(errors);
     function onCreateTeacher(e) {
         e.preventDefault();
+        console.log(data);
         post("/teachers");
     }
     return (
@@ -36,7 +38,7 @@ function CreateTeacher() {
                     <span>Add Teacher</span>
                 </Add>
             </Heading>
-            <Form onSubmit={onCreateTeacher}>
+            <Form method="POST" onSubmit={onCreateTeacher}>
                 <FormRow type="student">
                     <Label htmlFor="name">Teacher name</Label>
                     <Input
@@ -46,7 +48,9 @@ function CreateTeacher() {
                         onChange={(e) => setData("name", e.target.value)}
                         placeholder="Teacher Name"
                     />
-                    {errors.name && <p>errors.name</p>}
+                    {errors.name && (
+                        <p className="text-red-600">{errors.name}</p>
+                    )}
                 </FormRow>
                 <FormRow type="student">
                     <Label htmlFor="fname">Father name</Label>
@@ -57,6 +61,9 @@ function CreateTeacher() {
                         onChange={(e) => setData("fname", e.target.value)}
                         placeholder="Father Name"
                     />
+                    {errors.fname && (
+                        <p className="text-red-600">{errors.fname}</p>
+                    )}
                 </FormRow>
                 <FormRow type="student">
                     <Label htmlFor="phone_number">Phone Number</Label>
@@ -69,7 +76,11 @@ function CreateTeacher() {
                         }
                         placeholder="Phone number"
                     />
+                    {errors.phone_number && (
+                        <p className="text-red-600">{errors.phone_number}</p>
+                    )}
                 </FormRow>
+
                 <FormRow type="student">
                     <Label htmlFor="education">Education</Label>
                     <Select
@@ -82,6 +93,9 @@ function CreateTeacher() {
                         <option value="bachelor">Bachelor</option>
                         <option value="Master">Master</option>
                     </Select>
+                    {errors.education && (
+                        <p className="text-red-600">{errors.education}</p>
+                    )}
                 </FormRow>
                 <FormRow type="teacher">
                     <Button
@@ -92,7 +106,7 @@ function CreateTeacher() {
                         Cancel
                     </Button>
                     <Button type="submit" disabled={processing}>
-                        {processing ? "Saving...." : " Add Student"}
+                        {processing ? "Saving...." : " Add Teacher"}
                     </Button>
                 </FormRow>
             </Form>
