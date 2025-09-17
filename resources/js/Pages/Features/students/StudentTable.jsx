@@ -1,5 +1,6 @@
-function StudentTable() {
-    return <div>student detail</div>;
+function StudentTable({ student }) {
+    console.log(student);
+    return <div>dd</div>;
 }
 
 export default StudentTable;

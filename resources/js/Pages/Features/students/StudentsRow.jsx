@@ -19,7 +19,7 @@ function Student({ student }) {
             <Items>{fname}</Items>
             <Items>{gender}</Items>
             <Items>
-                <LinkBtn size="small" href={route("students.show", { id })}>
+                <LinkBtn size="small" href={route("students.show", id)}>
                     Detail
                 </LinkBtn>
             </Items>

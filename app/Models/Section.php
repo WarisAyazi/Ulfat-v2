@@ -8,5 +8,12 @@ class Section extends Model
 {
     //
 
-    protected $table = 'section';
+    protected $fullable=[
+        'student_id',
+        'time_id',
+        'teacher_id',
+        'course_id',
+        'enrollment_id'
+    ];
+    // protected $table = 'section';
 }

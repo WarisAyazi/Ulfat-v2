@@ -16,6 +16,8 @@ class StudentController extends Controller
     {
         $students = Student::all();
 
+
+
         return Inertia::render('Features/students/AllStudents', [
             'students' => $students,
         ]);
@@ -35,10 +37,11 @@ class StudentController extends Controller
         return redirect()->route('students.index');
     }
 
-    public function show(Request $request, Student $student): Response
+    public function show($id): Response
     {
+        $mainStu = Student::findOrFail($id);
         return Inertia::render('Features/students/Student', [
-            'student' => $student,
+            'student' => $mainStu,
         ]);
     }
 

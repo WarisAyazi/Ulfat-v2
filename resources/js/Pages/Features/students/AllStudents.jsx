@@ -6,6 +6,7 @@ import Table from "@/ui/Table";
 import FindStudentForm from "./FindStudentForm";
 
 function AllStudents({ students }) {
+    console.log(students);
     return (
         <>
             <Row type="horizontal">

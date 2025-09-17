@@ -29,7 +29,8 @@ const Items = styled.div`
 `;
 
 function Student({ student }) {
-    const { id, first_name, last_name, gender, phone_number } = student;
+    const { id, name, fname, gender, phone_number } = student;
+    console.log(student);
 
     return (
         <div>
@@ -38,7 +39,7 @@ function Student({ student }) {
                 <p>Filter/sort</p>
             </Row>
             <Row type="horizontal">
-                <StudentTable />
+                <StudentTable student={student} />
             </Row>
             <Row type="horizontal">
                 <StudentTeacherTable />

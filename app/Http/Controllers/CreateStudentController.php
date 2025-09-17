@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Models\Enrollment;
 use App\Models\Section;
 use App\Models\Time;
 use Inertia\Inertia;
@@ -43,31 +44,39 @@ class CreateStudentController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required', 'string',
+            'fname' => 'required', 'string',
+            'gender' => 'required', 'string',
+            'subject' => 'required', 'integer',
+            'month' => 'required', 'string',
+            'time' => 'required', 'integer',
+            'teacher' => 'required', 'integer',
+            'amount' => 'required', 'integer',
+            'phone_number' => 'required', 'integer',
+        ]);
+        
         try {
-            $request->validate([
-                'name' => 'required', 'string',
-                'fname' => 'required', 'string',
-                'gender' => 'required', 'string',
-                'subject' => 'required', 'integer',
-                'month' => 'required', 'string',
-                'time' => 'required', 'integer',
-                'teacher' => 'required', 'integer',
-                'amount' => 'required', 'integer',
-            ]);
-            
 
             $student = new Student();
             $student->name = $request->name;
             $student->fname = $request->fname;
             $student->gender = $request->gender;
+            $student->phone_number = $request->phone_number;
             $student->save();
+
+            $enrollment = new Enrollment();
+            $enrollment->month = $request->month;
+            $enrollment->amount = $request->amount;
+            $enrollment->save();
+
 
             $section = new Section();
             $section->time_id = $request->time;
             $section->student_id =$student->id;
             $section->teacher_id =$request->teacher;
             $section->course_id =$request->subject;
-            $section->enrollment =$request->amount;
+            $section->enrollment_id =$enrollment->id;
             $section->save();
             
             
