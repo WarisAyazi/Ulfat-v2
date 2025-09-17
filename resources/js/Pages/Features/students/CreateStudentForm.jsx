@@ -102,10 +102,7 @@ function CreateStudentForm({ teachers, courses, times }) {
                                 <option defaultChecked>Subject</option>
 
                                 {courses.map((course) => (
-                                    <option
-                                        value={course.title}
-                                        key={course.id}
-                                    >
+                                    <option value={course.id} key={course.id}>
                                         {course.title}
                                     </option>
                                 ))}
@@ -179,7 +176,7 @@ function CreateStudentForm({ teachers, courses, times }) {
                                 <option defaultChecked>Time</option>
 
                                 {times.map((time) => (
-                                    <option value={time.time} key={time.id}>
+                                    <option value={time.id} key={time.id}>
                                         {time.time}
                                     </option>
                                 ))}
@@ -200,7 +197,7 @@ function CreateStudentForm({ teachers, courses, times }) {
 
                                 {teachers.map((teacher) => (
                                     <option value={teacher.id} key={teacher.id}>
-                                        {teacher.first_name}
+                                        {teacher.name}
                                     </option>
                                 ))}
                             </Select>

@@ -59,22 +59,23 @@ class CreateStudentController extends Controller
                 // 'time' => 'required', 'string',
                 // 'teacher' => 'required', 'integer',
                 // 'fee' => 'required', 'integer',
-                // 'phone_number' => 'required', 'integer'
+                'phone_number' => 'required', 'integer'
             ]);
             
             error_log($request->name);
             error_log($request->fname);
             error_log($request->gender);
-
+            
             $student = new Student();
             $student->name = $request->name;
             $student->fname = $request->fname;
             $student->gender = $request->gender;
+            $student->phone_number = $request->phone_number;
             $student->save();
             
+            return redirect()->route('students.show', 1);
             
             
-            return redirect()->route('new-students/', ['id' => $student->id]);
         } catch (Exception $e) {
             error_log($e);
         }
