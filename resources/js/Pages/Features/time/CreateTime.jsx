@@ -21,7 +21,7 @@ function CreateTime() {
     function onCreateTime(e) {
         e.preventDefault();
         console.log(data);
-        // post("/");
+        post("/time");
     }
     return (
         <>

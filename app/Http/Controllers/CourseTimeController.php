@@ -3,17 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\CourseTime;
+use App\Models\Time;
 use Illuminate\Http\Request;
 
 class CourseTimeController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -28,29 +23,20 @@ class CourseTimeController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        $request->validate(
+            ['time' => 'required', 'string']
+        );
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(CourseTime $courseTime)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(CourseTime $courseTime)
-    {
-        //
+        $time = new Time();
+        $time->time = $request->time;
+        $time->save();
+        return redirect()->back();
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, CourseTime $courseTime)
+    public function update(Request $request)
     {
         //
     }
@@ -58,7 +44,7 @@ class CourseTimeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(CourseTime $courseTime)
+    public function destroy()
     {
         //
     }

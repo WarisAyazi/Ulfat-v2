@@ -29,8 +29,6 @@ class EnrollmentController extends Controller
     {
         $enrollment = Enrollment::create($request->validated());
 
-        $request->session()->flash('enrollment.id', $enrollment->id);
-
         return redirect()->route('enrollments.index');
     }
 
@@ -51,8 +49,6 @@ class EnrollmentController extends Controller
     public function update(EnrollmentUpdateRequest $request, Enrollment $enrollment): RedirectResponse
     {
         $enrollment->update($request->validated());
-
-        $request->session()->flash('enrollment.id', $enrollment->id);
 
         return redirect()->route('enrollments.index');
     }

@@ -3,15 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
-use App\Models\CourseTime;
+use App\Models\Section;
+use App\Models\Time;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Models\CreateStudent;
 use App\Models\Student;
 use App\Models\Teacher;
 use Exception;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Log;
+
 
 class CreateStudentController extends Controller
 {
@@ -44,33 +44,35 @@ class CreateStudentController extends Controller
     public function store(Request $request)
     {
         try {
-            Log::info('Message');
-            log::info("Meaage");
             $request->validate([
                 'name' => 'required', 'string',
                 'fname' => 'required', 'string',
                 'gender' => 'required', 'string',
-                // 'subject' => 'required', 'integer',
-                // 'month' => 'required', 'string',
-                // 'time' => 'required', 'string',
-                // 'teacher' => 'required', 'integer',
-                // 'fee' => 'required', 'integer',
-                // 'phone_number' => 'required', 'integer'
+                'subject' => 'required', 'integer',
+                'month' => 'required', 'string',
+                'time' => 'required', 'integer',
+                'teacher' => 'required', 'integer',
+                'amount' => 'required', 'integer',
             ]);
             
-            error_log($request->name);
-            error_log($request->fname);
-            error_log($request->gender);
 
             $student = new Student();
             $student->name = $request->name;
             $student->fname = $request->fname;
             $student->gender = $request->gender;
             $student->save();
+
+            $section = new Section();
+            $section->time_id = $request->time;
+            $section->student_id =$student->id;
+            $section->teacher_id =$request->teacher;
+            $section->course_id =$request->subject;
+            $section->enrollment =$request->amount;
+            $section->save();
             
             
             
-            return redirect()->route('new-students/', ['id' => $student->id]);
+            return redirect()->route('students.show', ['student' => $student]);
         } catch (Exception $e) {
             error_log($e);
         }

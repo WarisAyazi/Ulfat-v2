@@ -20,25 +20,17 @@ class CourseController extends Controller
         ]);
     }
 
-    public function create(Request $request): View
-    {
-        return view('course.create');
-    }
 
     public function store(CourseStoreRequest $request): RedirectResponse
     {
         $course = Course::create($request->validated());
 
-        $request->session()->flash('course.id', $course->id);
-
-        return redirect()->route('courses.show' ,1);
+        return redirect()->back();
     }
 
-    public function show(Request $request, Course $course): View
+    public function show(Request $request, Course $course)
     {
-        return view('course.show', [
-            'course' => $course,
-        ]);
+        return response();
     }
 
     public function edit(Request $request, Course $course): View
@@ -51,8 +43,6 @@ class CourseController extends Controller
     public function update(CourseUpdateRequest $request, Course $course): RedirectResponse
     {
         $course->update($request->validated());
-
-        $request->session()->flash('course.id', $course->id);
 
         return redirect()->route('courses.index');
     }
