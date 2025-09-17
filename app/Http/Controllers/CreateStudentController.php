@@ -9,7 +9,13 @@ use Illuminate\Http\Request;
 use App\Models\CreateStudent;
 use App\Models\Student;
 use App\Models\Teacher;
+use Exception;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Log;
+use PgSql\Lob;
+use PhpParser\Node\Stmt\TryCatch;
+
+use function Illuminate\Log\log;
 
 class CreateStudentController extends Controller
 {
@@ -39,23 +45,39 @@ class CreateStudentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
-        $request->validate([
-            '' => 'required', 'string',
-            'student_id' => 'required', 'integer',
-            'subject_id' => 'required', 'integer',
-            'month' => 'required', 'string',
-            'time_id' => 'required', 'integer',
-            'teacher_id' => 'required', 'integer',
-            'fee' => 'required', 'integer',
-        ]);
-
+        try {
+            Log::info('Message');
+            log::info("Meaage");
+            $request->validate([
+                'name' => 'required', 'string',
+                'fname' => 'required', 'string',
+                'gender' => 'required', 'string',
+                // 'subject' => 'required', 'integer',
+                // 'month' => 'required', 'string',
+                // 'time' => 'required', 'string',
+                // 'teacher' => 'required', 'integer',
+                // 'fee' => 'required', 'integer',
+                // 'phone_number' => 'required', 'integer'
+            ]);
             
-        $student = CreateStudent::create($request->validated());
-        // $request->session()->flash('student.id', $student->id);
-        return redirect()->route('students.index');
+            error_log($request->name);
+            error_log($request->fname);
+            error_log($request->gender);
 
+            $student = new Student();
+            $student->name = $request->name;
+            $student->fname = $request->fname;
+            $student->gender = $request->gender;
+            $student->save();
+            
+            
+            
+            return redirect()->route('new-students/', ['id' => $student->id]);
+        } catch (Exception $e) {
+            error_log($e);
+        }
     }
 
     /**
