@@ -30,7 +30,7 @@ class StudentController extends Controller
     {
         $student = Student::create($request->validated());
 
-        $request->session()->flash('student.id', $student->id);
+        // $request->session()->flash('student.id', $student->id);
 
         return redirect()->route('students.index');
     }
@@ -38,7 +38,7 @@ class StudentController extends Controller
     public function show(Request $request, Student $student): Response
     {
         return Inertia::render('Features/students/Student', [
-            'student' => 'dd',
+            'student' => $student,
         ]);
     }
 
@@ -53,7 +53,7 @@ class StudentController extends Controller
     {
         $student->update($request->validated());
 
-        $request->session()->flash('student.id', $student->id);
+        // $request->session()->flash('student.id', $student->id);
 
         return redirect()->route('students.index');
     }

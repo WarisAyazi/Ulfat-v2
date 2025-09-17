@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
-use App\Models\Enrollment;
-use App\Models\Section;
-use App\Models\Time;
+use App\Models\CourseTime;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Models\CreateStudent;
@@ -14,10 +12,6 @@ use App\Models\Teacher;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
-use PgSql\Lob;
-use PhpParser\Node\Stmt\TryCatch;
-
-use function Illuminate\Log\log;
 
 class CreateStudentController extends Controller
 {
@@ -49,41 +43,37 @@ class CreateStudentController extends Controller
      */
     public function store(Request $request)
     {
-         
-        $studentVal =  $request->validate([
-                'name'=> ['required', 'string'],
-                'fname'  => ['required', 'string'],
-                'gender'  => ['required', 'string'],
-                'phone_number' => ['required', 'integer'],
+        try {
+            Log::info('Message');
+            log::info("Meaage");
+            $request->validate([
+                'name' => 'required', 'string',
+                'fname' => 'required', 'string',
+                'gender' => 'required', 'string',
+                // 'subject' => 'required', 'integer',
+                // 'month' => 'required', 'string',
+                // 'time' => 'required', 'string',
+                // 'teacher' => 'required', 'integer',
+                // 'fee' => 'required', 'integer',
+                // 'phone_number' => 'required', 'integer'
             ]);
-        $enrollmentVal = $request->validate([
-            'amount' => ['required', 'integer'],
-                'month' =>  ['required', 'string'],
-            ]);
-        $sectionVal = $request->validate([
-                'time' => ['required', 'integer'],
-                'subject' =>['required', 'integer'],
-                'teacher' => ['required', 'integer'],
-                
-            ]);
-
-        $student =  Student::create($studentVal);
-
-        $enrollment = Enrollment::create($enrollmentVal);
-
-        $section = ['student_id'=>  $student->id,
-        "enrollment_id"=>$enrollment->id ,
-        "time_id"=>$sectionVal['time']
-        ,"course_id"=>$sectionVal['subject'],
-        "teacher_id"=>$sectionVal['teacher']];
-
-        Section::create($section);
-
-        return redirect()->route('students.show', 1);
             
-        // } catch (Exception $e) {
-        //     error_log($e);
-        // }
+            error_log($request->name);
+            error_log($request->fname);
+            error_log($request->gender);
+
+            $student = new Student();
+            $student->name = $request->name;
+            $student->fname = $request->fname;
+            $student->gender = $request->gender;
+            $student->save();
+            
+            
+            
+            return redirect()->route('new-students/', ['id' => $student->id]);
+        } catch (Exception $e) {
+            error_log($e);
+        }
     }
 
     /**
