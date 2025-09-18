@@ -81,7 +81,7 @@ class CreateStudentController extends Controller
             
             
             
-            return redirect()->route('students.show', ['student' => $student]);
+            return redirect()->route('students.show', ['id' => $student->id]);
         } catch (Exception $e) {
             error_log($e);
         }

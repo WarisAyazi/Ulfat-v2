@@ -37,8 +37,8 @@ require __DIR__.'/auth.php';
 Route::resource('/new-student', CreateStudentController::class)
     ->only(['create', 'store']);
 
-Route::resource('/students', App\Http\Controllers\StudentController::class);
-    // ->only(['show']);
+Route::resource('/students', App\Http\Controllers\StudentController::class)
+    ->only(['show', 'index']);
 
 Route::resource('/teachers', App\Http\Controllers\TeacherController::class)
     ->only(['store']);

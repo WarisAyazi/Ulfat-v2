@@ -15,5 +15,5 @@ class Section extends Model
         'course_id',
         'enrollment_id'
     ];
-    // protected $table = 'section';
+    protected $table = 'sections';
 }

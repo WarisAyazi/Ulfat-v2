@@ -29,13 +29,9 @@ class TeacherController extends Controller
     public function store(TeacherStoreRequest $request): RedirectResponse
     {
 
-        
-
         $teacher = Teacher::create($request->validated());
 
-        $request->session()->flash('teacher.id', $teacher->id);
-
-        return redirect()->route('teachers.index');
+        return redirect()->back();
     }
 
     public function show(Request $request, Teacher $teacher): Response
@@ -55,8 +51,6 @@ class TeacherController extends Controller
     public function update(TeacherUpdateRequest $request, Teacher $teacher): RedirectResponse
     {
         $teacher->update($request->validated());
-
-        $request->session()->flash('teacher.id', $teacher->id);
 
         return redirect()->route('teachers.index');
     }

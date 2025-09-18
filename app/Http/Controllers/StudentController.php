@@ -32,8 +32,6 @@ class StudentController extends Controller
     {
         $student = Student::create($request->validated());
 
-        // $request->session()->flash('student.id', $student->id);
-
         return redirect()->route('students.index');
     }
 
