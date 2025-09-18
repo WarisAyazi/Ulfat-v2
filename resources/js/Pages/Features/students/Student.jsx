@@ -35,7 +35,7 @@ function Student({ student }) {
     return (
         <div>
             <Row type="horizontal">
-                <Heading as="h1">All Teacher</Heading>
+                <Heading as="h1">All Student</Heading>
                 <p>Filter/sort</p>
             </Row>
             <Row type="horizontal">

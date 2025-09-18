@@ -73,15 +73,15 @@ class CreateStudentController extends Controller
 
             $section = new Section();
             $section->time_id = $request->time;
-            $section->student_id =$student->id;
-            $section->teacher_id =$request->teacher;
-            $section->course_id =$request->subject;
-            $section->enrollment_id =$enrollment->id;
+            $section->student_id = $student->id;
+            $section->teacher_id = $request->teacher;
+            $section->course_id = $request->subject;
+            $section->enrollment_id = $enrollment->id;
             $section->save();
             
             
             
-            return redirect()->route('students.show', ['id' => $student->id]);
+            return redirect()->route('students.show', ['student' => $student->id]);
         } catch (Exception $e) {
             error_log($e);
         }
