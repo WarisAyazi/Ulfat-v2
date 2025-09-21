@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CourseTimeController;
 use App\Http\Controllers\CreateStudentController;
+use App\Http\Controllers\newController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -45,5 +46,10 @@ Route::resource('/teachers', App\Http\Controllers\TeacherController::class)
 
 Route::resource('/courses', App\Http\Controllers\CourseController::class)
     ->only(['store']);
+Route::resource('/enrollment', App\Http\Controllers\EnrollmentController::class);
+
+
 
 Route::post('/time', [CourseTimeController::class,'store']);
+Route::get('/newEnrollment/{id}' , [newController::class,'newEnrollment'])->name('newEnrollment');
+Route::get('/newCourse/{id}' , [newController::class,'newCourse'])->name('newCourse');

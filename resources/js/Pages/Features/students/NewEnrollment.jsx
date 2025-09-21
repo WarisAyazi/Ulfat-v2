@@ -1,17 +1,14 @@
-import styled from "styled-components";
-
-import Input from "../../../ui/Input";
-import Form from "../../../ui/Form";
-import Button from "../../../ui/Button";
-
 import AppLayout from "@/ui/AppLayout";
-import Select from "@/ui/Select";
+import Button from "@/ui/Button";
+import Form from "@/ui/Form";
 import FormRow from "@/ui/FormRow";
-
-import Label from "@/ui/Label";
-import { useForm } from "@inertiajs/react";
-import Row from "@/ui/Row";
 import Heading from "@/ui/Heading";
+import Input from "@/ui/Input";
+import Label from "@/ui/Label";
+import Row from "@/ui/Row";
+import Select from "@/ui/Select";
+import { useForm } from "@inertiajs/react";
+import styled from "styled-components";
 
 const StyledCreateStudent = styled.div`
     display: flex;
@@ -19,35 +16,32 @@ const StyledCreateStudent = styled.div`
     width: 100%;
 `;
 
-function CreateStudentForm({ teachers, courses, times }) {
+function NewEnrollment({ student, ctt, teachers, courses, times }) {
+    const uniTea = teachers.filter(
+        (obj, index, self) => index === self.findIndex((o) => o.id === obj.id)
+    );
+    const uniTim = times.filter(
+        (obj, index, self) => index === self.findIndex((o) => o.id === obj.id)
+    );
+    const uniCou = courses.filter(
+        (obj, index, self) => index === self.findIndex((o) => o.id === obj.id)
+    );
+
     const { data, setData, post, reset, processing, errors } = useForm({
-        name: "Hello",
-        fname: "Hi",
+        name: student.name,
+        id: student.id,
         subject: 1,
-        gender: "male",
-        month: "Hamal",
+
+        month: "",
         time: 1,
         teacher: 1,
         amount: "400",
-        phone_number: 33,
     });
 
     function onSubmit(e) {
         e.preventDefault();
-        post("/new-student");
+        post("/enrollment");
     }
-
-    if (!teachers && courses && times)
-        return (
-            <>
-                <Row type="horizontal">
-                    <Heading as="h1">
-                        To add Student you have to first Add Teacher, Course and
-                        Tiem.
-                    </Heading>
-                </Row>
-            </>
-        );
     return (
         <>
             <Row type="horizontal">
@@ -65,26 +59,11 @@ function CreateStudentForm({ teachers, courses, times }) {
                                 onChange={(e) =>
                                     setData("name", e.target.value)
                                 }
+                                disabled
                                 placeholder="Student Name"
                             />
                             {errors.name && (
                                 <p className="text-red-600">{errors.name}</p>
-                            )}
-                        </FormRow>
-
-                        <FormRow type="student">
-                            <Label htmlFor="fname">Father name</Label>
-                            <Input
-                                type="text"
-                                id="fname"
-                                value={data.fname}
-                                onChange={(e) =>
-                                    setData("fname", e.target.value)
-                                }
-                                placeholder="Father Name"
-                            />
-                            {errors.fname && (
-                                <p className="text-red-600">{errors.fname}</p>
                             )}
                         </FormRow>
 
@@ -99,8 +78,8 @@ function CreateStudentForm({ teachers, courses, times }) {
                                 }
                             >
                                 <option defaultChecked>Subject</option>
-
-                                {courses.map((course) => (
+                                {/* <option value={title}>{title}</option> */}
+                                {uniCou.map((course) => (
                                     <option value={course.id} key={course.id}>
                                         {course.title}
                                     </option>
@@ -110,44 +89,6 @@ function CreateStudentForm({ teachers, courses, times }) {
                                 <p className="text-red-600">{errors.subject}</p>
                             )}
                         </FormRow>
-
-                        <FormRow type="student">
-                            <Label htmlFor="gender">Gender</Label>
-                            <Select
-                                id="gender"
-                                aria-label="Default select example"
-                                value={data.gender}
-                                onChange={(e) =>
-                                    setData("gender", e.target.value)
-                                }
-                            >
-                                <option defaultChecked>Gender</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                            </Select>
-                            {errors.gender && (
-                                <p className="text-red-600">{errors.gender}</p>
-                            )}
-                        </FormRow>
-                        <FormRow type="student">
-                            <Label htmlFor="phone_number">Phone Number</Label>
-                            <Input
-                                type="number"
-                                id="phone_number"
-                                value={data.phone_number}
-                                onChange={(e) =>
-                                    setData("phone_number", e.target.value)
-                                }
-                                placeholder="Phone number"
-                            />
-                            {errors.phone_number && (
-                                <p className="text-red-600">
-                                    {errors.phone_number}
-                                </p>
-                            )}
-                        </FormRow>
-                    </div>
-                    <div>
                         <FormRow type="student">
                             <Label htmlFor="month">Month</Label>
                             <Select
@@ -176,7 +117,8 @@ function CreateStudentForm({ teachers, courses, times }) {
                                 <p className="text-red-600">{errors.month}</p>
                             )}
                         </FormRow>
-
+                    </div>
+                    <div>
                         <FormRow type="student">
                             <Label htmlFor="time">Time</Label>
                             <Select
@@ -189,7 +131,7 @@ function CreateStudentForm({ teachers, courses, times }) {
                             >
                                 <option defaultChecked>Time</option>
 
-                                {times.map((time) => (
+                                {uniTim.map((time) => (
                                     <option value={time.id} key={time.id}>
                                         {time.time}
                                     </option>
@@ -212,7 +154,7 @@ function CreateStudentForm({ teachers, courses, times }) {
                             >
                                 <option defaultChecked>Teacher</option>
 
-                                {teachers.map((teacher) => (
+                                {uniTea.map((teacher) => (
                                     <option value={teacher.id} key={teacher.id}>
                                         {teacher.name}
                                     </option>
@@ -247,7 +189,7 @@ function CreateStudentForm({ teachers, courses, times }) {
                                 Cancel
                             </Button>
                             <Button type="submit" disabled={processing}>
-                                {processing ? "Saving...." : " Add Student"}
+                                {processing ? "Saving...." : "Enroll"}
                             </Button>
                         </FormRow>
                     </div>
@@ -256,6 +198,7 @@ function CreateStudentForm({ teachers, courses, times }) {
         </>
     );
 }
-CreateStudentForm.layout = (page) => <AppLayout>{page}</AppLayout>;
 
-export default CreateStudentForm;
+NewEnrollment.layout = (page) => <AppLayout>{page}</AppLayout>;
+
+export default NewEnrollment;

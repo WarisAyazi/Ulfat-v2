@@ -1,27 +1,30 @@
+import Table from "@/ui/Table";
+
 function StudentTable({ student }) {
-    console.log(student);
+    const { id, name, fname, gender, phone_number, created_at } = student;
     return (
         <div>
-            {/* map gives error */}
-            {student.map((std) => (
-                <table className="px-10 py-6 border-2">
-                    <thead>
-                        <tr>
-                            <td>Name</td>
-                            <td>Father Name</td>
-                            <td>Gender</td>
-                        </tr>
-                    </thead>
+            <Table columns="1fr 2fr 2fr 2fr 2fr 2fr 2fr ">
+                <Table.Header>
+                    <div>ID</div>
+                    <div>Name</div>
+                    <div>Father Name</div>
+                    <div>Gender</div>
+                    <div>Phone Number</div>
+                    <div>Registration</div>
+                    <div>Action</div>
+                </Table.Header>
 
-                    <tbody className="px-10 py-6 border-2">
-                        <tr>
-                            <td>{std.name}</td>
-                            <td>{std.fname}</td>
-                            <td>{std.gender}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            ))}
+                <Table.Row>
+                    <div>{id}</div>
+                    <div>{name}</div>
+                    <div>{fname}</div>
+                    <div>{gender}</div>
+                    <div>{phone_number}</div>
+                    <div>2025/02/12</div>
+                    <div>Action</div>
+                </Table.Row>
+            </Table>
         </div>
     );
 }

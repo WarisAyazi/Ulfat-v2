@@ -28,24 +28,35 @@ const Items = styled.div`
     font-family: "Sono";
 `;
 
-function Student({ student }) {
-    const { id, name, fname, gender, phone_number } = student;
-    console.log(student);
-
+function Student({ student, section, ctt }) {
     return (
         <div>
             <Row type="horizontal">
                 <Heading as="h1">All Student</Heading>
-                <p>Filter/sort</p>
+                <div>
+                    <LinkBtn
+                        size="medium"
+                        href={route("newEnrollment", student.id)}
+                    >
+                        New Enrollment
+                    </LinkBtn>
+                    <LinkBtn
+                        size="medium"
+                        variations="secondary"
+                        href={route("newCourse", student.id)}
+                    >
+                        New Course
+                    </LinkBtn>
+                </div>
             </Row>
             <Row type="horizontal">
                 <StudentTable student={student} />
             </Row>
             <Row type="horizontal">
-                <StudentTeacherTable />
+                <StudentTeacherTable ctt={ctt} />
             </Row>
             <Row type="horizontal">
-                <StudentFeeTable />
+                <StudentFeeTable section={section} />
             </Row>
         </div>
     );

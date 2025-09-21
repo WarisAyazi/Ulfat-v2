@@ -5,9 +5,19 @@ namespace App\Http\Controllers;
 use App\Http\Requests\EnrollmentStoreRequest;
 use App\Http\Requests\EnrollmentUpdateRequest;
 use App\Models\Enrollment;
+use App\Models\Section;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+
+
+
+use Inertia\Inertia;
+use Inertia\Response;
+use App\Models\Student;
+use Exception;
+use Illuminate\Support\Facades\DB;
+
 
 class EnrollmentController extends Controller
 {
@@ -25,11 +35,37 @@ class EnrollmentController extends Controller
         return view('enrollment.create');
     }
 
-    public function store(EnrollmentStoreRequest $request): RedirectResponse
+    public function store(Request $request)
     {
-        $enrollment = Enrollment::create($request->validated());
+        $request->validate([
+            'name' => 'required', 'string',
+            'subject' => 'required', 'integer',
+            'month' => 'required', 'string',
+            'time' => 'required', 'integer',
+            'teacher' => 'required', 'integer',
+            'amount' => 'required', 'integer',
+        ]);
+        try {
+            $enrollment = new Enrollment();
+            $enrollment->month = $request->month;
+            $enrollment->amount = $request->amount;
+            $enrollment->save();
 
-        return redirect()->route('enrollments.index');
+
+            $section = new Section();
+            $section->time_id = $request->time;
+            $section->student_id = $request->id;
+            $section->teacher_id = $request->teacher;
+            $section->course_id = $request->subject;
+            $section->enrollment_id = $enrollment->id;
+            $section->save();
+            
+            
+            
+            return redirect()->route('students.show', ['student' => $request->id]);
+        } catch (Exception $e) {
+            error_log($e);
+        }
     }
 
     public function show(Request $request, Enrollment $enrollment): View

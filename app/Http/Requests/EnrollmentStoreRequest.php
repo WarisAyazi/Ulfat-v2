@@ -22,10 +22,8 @@ class EnrollmentStoreRequest extends FormRequest
         return [
             'amount' => ['required', 'integer'],
             'month' => ['required', 'string', 'max:30'],
-            'year' => ['required'],
             'time' => ['required'],
-            'student_id' => ['required', 'integer', 'exists:students,id'],
-            'course_id' => ['required', 'integer', 'exists:courses,id'],
+           
         ];
     }
 }

@@ -36,15 +36,29 @@ class StudentController extends Controller
 
     public function show($id): Response
     {
-        $students = DB::table('students')
+        $section = DB::table('students')
             ->join('sections', 'students.id', '=', 'sections.student_id')
-            ->select('students.*', 'sections.teacher_id')
-            ->get();
+            ->join('teachers', 'teachers.id', '=', 'sections.teacher_id')
+            ->join('courses', 'courses.id', '=', 'sections.course_id')
+            ->join('times', 'times.id', '=', 'sections.time_id')
+            ->join('enrollments', 'enrollments.id', '=', 'sections.enrollment_id')
+            ->select('students.*',  'teachers.name as tname' , 'courses.title', 'times.time', 'enrollments.*', 'enrollments.created_at as date' )
+            ->where('students.id','=' ,$id)->get();
 
-        // error_log($students);
+        $ctt = DB::table('students')
+            ->join('sections', 'students.id', '=', 'sections.student_id')
+            ->join('teachers', 'teachers.id', '=', 'sections.teacher_id')
+            ->join('courses', 'courses.id', '=', 'sections.course_id')
+            ->join('times', 'times.id', '=', 'sections.time_id')
+            ->select('students.*',  'teachers.name as tname' , 'courses.title', 'times.time' , 'sections.id as seid','sections.*' )
+            ->where('students.id','=' ,$id)->get();
+            // ->groupBy('sections.student_id')->get();
+
         $mainStu = Student::findOrFail($id);
         return Inertia::render('Features/students/Student', [
             'student' => $mainStu,
+            'section' => $section,
+            'ctt' => $ctt,
         ]);
     }
 
