@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Filters\StudentFilter;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\Student;
@@ -13,13 +14,24 @@ use App\Http\Requests\StudentUpdateRequest;
 
 class StudentController extends Controller
 {
-    public function index(Request $request): Response
+    /**
+     * index route of students controller
+     * needs the type of $filters
+     * any filter you apply it return data based o your filter
+     * @param \App\Http\Filters\StudentFilter $filters
+     * @return \Inertia\Response
+     */
+    public function index(StudentFilter $filters)
     {
-        $students = Student::all();
+        $students = Student::filter($filters)->paginate(50);
 
         return Inertia::render('Features/students/AllStudents', [
             'students' => $students,
         ]);
+        /**
+         * for testing the filter parameter in the api
+         */
+        // return response()->json($students);
     }
 
     public function create(Request $request): Response
