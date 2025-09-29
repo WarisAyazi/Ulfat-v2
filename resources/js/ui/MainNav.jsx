@@ -82,12 +82,12 @@ function MainNav() {
                     </StyledNavLink>
                 </li>
                 <li>
-                    <StyledNavLink href="/teachers">
+                    <StyledNavLink href="/courses">
                         <HiBookOpen /> <span>Subject</span>
                     </StyledNavLink>
                 </li>
                 <li>
-                    <StyledNavLink href="/teachers">
+                    <StyledNavLink href="/times">
                         <HiCircleStack /> <span>Time</span>
                     </StyledNavLink>
                 </li>

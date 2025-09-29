@@ -41,11 +41,12 @@ Route::resource('/new-student', CreateStudentController::class)
 Route::resource('/students', App\Http\Controllers\StudentController::class)
     ->only(['show', 'index']);
 
-Route::resource('/teachers', App\Http\Controllers\TeacherController::class)
-    ->only(['store']);
+Route::resource('/teachers', App\Http\Controllers\TeacherController::class);
+Route::resource('/times', App\Http\Controllers\TimesController::class);
+    // ->only(['show','store']);
 
-Route::resource('/courses', App\Http\Controllers\CourseController::class)
-    ->only(['store']);
+Route::resource('/courses', App\Http\Controllers\CourseController::class);
+
 Route::resource('/enrollment', App\Http\Controllers\EnrollmentController::class);
 
 

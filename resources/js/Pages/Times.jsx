@@ -1,17 +1,17 @@
 import AppLayout from "@/ui/AppLayout";
 import Heading from "@/ui/Heading";
 import Row from "@/ui/Row";
-import AllTeachers from "./Features/teachers/AllTeachers";
+import AllTimes from "./Features/times/AllTimes";
 
-function Teachers() {
+function Times() {
     return (
         <>
             <Row type="horizontal">
-                <AllTeachers />
+                <AllTimes />
             </Row>
         </>
     );
 }
 
-Teachers.layout = (page) => <AppLayout>{page}</AppLayout>;
-export default Teachers;
+Times.layout = (page) => <AppLayout>{page}</AppLayout>;
+export default Times;

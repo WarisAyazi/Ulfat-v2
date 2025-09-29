@@ -14,7 +14,7 @@ const Form = styled.form`
     width: 40rem;
 `;
 
-function FindStudentForm() {
+function FindById({ group }) {
     const { data, setData, post } = useForm({
         search: "",
         type: "ID",
@@ -23,6 +23,7 @@ function FindStudentForm() {
     function handelSubmit() {
         if (data.search === "") return;
         console.log(data);
+        console.log(group);
     }
 
     return (
@@ -31,9 +32,7 @@ function FindStudentForm() {
                 <Input
                     type="text"
                     placeholder={
-                        data.type !== "All"
-                            ? ` Search by ${data.type}`
-                            : "All Students"
+                        data.type !== "All" ? ` Search by ${data.type}` : "All "
                     }
                     onChange={(e) => {
                         setData("search", e.target.value);
@@ -54,4 +53,4 @@ function FindStudentForm() {
     );
 }
 
-export default FindStudentForm;
+export default FindById;

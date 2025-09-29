@@ -7,15 +7,17 @@ use App\Http\Requests\CourseUpdateRequest;
 use App\Models\Course;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
+// use Illuminate\View\View;
+use Inertia\Inertia;
+
 
 class CourseController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request)
     {
         $courses = Course::all();
 
-        return view('course.index', [
+       return Inertia::render('Features/subject/AllSubjects', [
             'courses' => $courses,
         ]);
     }

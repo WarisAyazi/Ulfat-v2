@@ -40,7 +40,7 @@ class StudentController extends Controller
             ->join('sections', 'students.id', '=', 'sections.student_id')
             ->join('teachers', 'teachers.id', '=', 'sections.teacher_id')
             ->join('courses', 'courses.id', '=', 'sections.course_id')
-            ->join('times', 'times.id', '=', 'sections.time_id')
+            ->join('times', 'times.id', '=',  'sections.time_id')
             ->join('enrollments', 'enrollments.id', '=', 'sections.enrollment_id')
             ->select('students.*',  'teachers.name as tname' , 'courses.title', 'times.time', 'enrollments.*', 'enrollments.created_at as date' )
             ->where('students.id','=' ,$id)->get();

@@ -3,15 +3,14 @@ import AppLayout from "@/ui/AppLayout";
 import Heading from "@/ui/Heading";
 import Row from "@/ui/Row";
 import Table from "@/ui/Table";
-import FindStudentForm from "./FindStudentForm";
+import FindById from "../../../ui/FindById";
 
 function AllStudents({ students }) {
-    console.log(students);
     return (
         <>
             <Row type="horizontal">
                 <Heading as="h1">All Students</Heading>
-                <FindStudentForm />
+                <FindById group="student" />
             </Row>
             <Table columns="1fr 2fr 2fr 1fr 1fr ">
                 <Table.Header>

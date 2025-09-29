@@ -16,7 +16,7 @@ class TeacherController extends Controller
     {
         $teachers = Teacher::all();
 
-        return Inertia::render('Teachers', [
+        return Inertia::render('Features/teachers/AllTeachers', [
             'teachers' => $teachers,
         ]);
     }
@@ -34,8 +34,9 @@ class TeacherController extends Controller
         return redirect()->back();
     }
 
-    public function show(Request $request, Teacher $teacher): Response
+    public function show($id): Response
     {
+        $teacher = Teacher::findOrFail($id);
         return Inertia::render('teacher.show', [
             'teacher' => $teacher,
         ]);
