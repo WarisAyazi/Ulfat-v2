@@ -39,11 +39,10 @@ class newController extends Controller
 
         return Inertia::render('Features/students/NewEnrollment', [
             'student' => $student,
-            
             'teachers'=>$teachers,
             'times'=>$times,
             'courses'=>$courses,
-        ]);
+        ]); 
     }
 
     public function newCourse($id)  {

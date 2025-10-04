@@ -5,6 +5,14 @@ import Row from "@/ui/Row";
 import Table from "@/ui/Table";
 import Time from "./TimesRow";
 
+import styled from "styled-components";
+
+const Center = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1rem;
+`;
 function AllTimes({ times }) {
     return (
         <>
@@ -19,10 +27,16 @@ function AllTimes({ times }) {
 
                     <div>Details</div>
                 </Table.Header>
-                <Table.Body
-                    data={times}
-                    render={(time) => <Time time={time} key={time.id} />}
-                />
+                {times[0] === undefined ? (
+                    <Center>
+                        <p>No time could be found</p>
+                    </Center>
+                ) : (
+                    <Table.Body
+                        data={times}
+                        render={(time) => <Time time={time} key={time.id} />}
+                    />
+                )}
             </Table>
         </>
     );

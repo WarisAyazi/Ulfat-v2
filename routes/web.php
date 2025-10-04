@@ -27,7 +27,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/students', fn() => Inertia::render('Students'));
-    Route::get('/teachers', fn() => Inertia::render('Teachers'));
+    // Route::get('/teachers', fn() => Inertia::render('Teachers'));
     // Route::get('create-student', fn()=> Inertia::render('Features/students/CreateStudentForm'));
     Route::get('create-teacher', fn()=> Inertia::render('Features/teachers/CreateTeacherTimeSubjectForm'));
 });
@@ -38,8 +38,8 @@ require __DIR__.'/auth.php';
 Route::resource('/new-student', CreateStudentController::class)
     ->only(['create', 'store']);
 
-Route::resource('/students', App\Http\Controllers\StudentController::class)
-    ->only(['show', 'index']);
+Route::resource('/students', App\Http\Controllers\StudentController::class);
+    // ->only(['show', 'index']);
 
 Route::resource('/teachers', App\Http\Controllers\TeacherController::class);
 Route::resource('/times', App\Http\Controllers\TimesController::class);
@@ -51,6 +51,5 @@ Route::resource('/enrollment', App\Http\Controllers\EnrollmentController::class)
 
 
 
-Route::post('/time', [CourseTimeController::class,'store']);
 Route::get('/newEnrollment/{id}' , [newController::class,'newEnrollment'])->name('newEnrollment');
 Route::get('/newCourse/{id}' , [newController::class,'newCourse'])->name('newCourse');

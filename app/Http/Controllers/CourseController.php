@@ -15,11 +15,18 @@ class CourseController extends Controller
 {
     public function index(Request $request)
     {
-        $courses = Course::all();
+       $search = $request->input('search');
+            $courses = Course::query()->when($search , function($query, $search){
+                $query->where('title' ,'like', "%{$search}%")
+                ->orWhere('id' , 'like',  "%{$search}%");},
+                function ($query){
+                    $query->latest()->limit(50);
 
-       return Inertia::render('Features/subject/AllSubjects', [
+                })->get();
+            return Inertia::render('Features/subject/AllSubjects', [
             'courses' => $courses,
-        ]);
+            'filters'=> $request->only('search')
+            ]);
     }
 
 
@@ -35,11 +42,11 @@ class CourseController extends Controller
         return response();
     }
 
-    public function edit(Request $request, Course $course): View
+    public function edit(Request $request, Course $course)
     {
-        return view('course.edit', [
-            'course' => $course,
-        ]);
+        // return view('course.edit', [
+        //     'course' => $course,
+        // ]);
     }
 
     public function update(CourseUpdateRequest $request, Course $course): RedirectResponse

@@ -1,6 +1,8 @@
 import Table from "@/ui/Table";
+import LinkBtn from "@/ui/LinkBtn";
 
 function StudentFeeTable({ section }) {
+    console.log("section", section);
     return (
         <Table columns="2fr 2fr 2fr 2fr 2fr 2fr 2fr 2fr">
             <Table.Header>
@@ -25,7 +27,14 @@ function StudentFeeTable({ section }) {
                         <div>{c.month}</div>
                         <div>{c.amount}</div>
                         <div>{c.date}</div>
-                        <div>Action</div>
+                        <div>
+                            <LinkBtn
+                                size="small"
+                                href={route("enrollment.edit", c.secid)}
+                            >
+                                Edit
+                            </LinkBtn>
+                        </div>
                     </Table.Row>
                 )}
             ></Table.Body>

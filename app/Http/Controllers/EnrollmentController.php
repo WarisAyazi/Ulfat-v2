@@ -75,10 +75,43 @@ class EnrollmentController extends Controller
         ]);
     }
 
-    public function edit(Request $request, Enrollment $enrollment): View
+    public function edit($id)
     {
-        return view('enrollment.edit', [
-            'enrollment' => $enrollment,
+        //  $secid = Section::findOrFail($id);
+
+         $stuid = DB::table('sections')
+            ->join('students', 'students.id', '=', 'sections.student_id')
+            ->select('students.id')
+            ->where('sections.id', '=',$id)->get();
+
+        $courses= DB::table('students')
+            ->join('sections', 'students.id', '=', 'sections.student_id')
+            ->join('courses', 'courses.id', '=', 'sections.course_id')
+            ->select('courses.title', 'courses.id')
+            ->where('students.id', '=',$stuid[0]->id)->get();
+
+            $times= DB::table('students')
+            ->join('sections', 'students.id', '=', 'sections.student_id')
+            ->join('times', 'times.id', '=', 'sections.time_id')
+            ->select('times.time', 'times.id')
+            ->where('students.id', '=',$stuid[0]->id)->get();
+
+            $teachers= DB::table('students')
+            ->join('sections', 'students.id', '=', 'sections.student_id')
+            ->join('teachers', 'teachers.id', '=', 'sections.teacher_id')
+            ->select('teachers.name', 'teachers.id')
+            ->where('students.id', '=',$stuid[0]->id)->get();
+
+            $student = Student::findOrFail($stuid[0]->id);
+          
+
+        return Inertia::render('Features/students/NewEnrollment', [
+            'student' => $student,
+            'section'=>'section',
+            'teachers'=>$teachers,
+            'times'=>$times,
+            'courses'=>$courses,
+            'id'=>$id
         ]);
     }
 

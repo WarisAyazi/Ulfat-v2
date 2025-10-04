@@ -1,7 +1,9 @@
+import Student from "@/Pages/Features/students/Student";
 import Input from "@/ui/Input";
 import Row from "@/ui/Row";
 import Select from "@/ui/Select";
 import { useForm } from "@inertiajs/react";
+import { useEffect } from "react";
 import styled from "styled-components";
 
 const StyledFind = styled.div`
@@ -15,16 +17,39 @@ const Form = styled.form`
 `;
 
 function FindById({ group }) {
-    const { data, setData, post } = useForm({
+    const { data, setData, get } = useForm({
         search: "",
-        type: "ID",
     });
 
-    function handelSubmit() {
-        if (data.search === "") return;
-        console.log(data);
-        console.log(group);
-    }
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            if (group === "student") {
+                get(route("students.index"), {
+                    preserveState: true,
+                    replace: true,
+                });
+            }
+            if (group === "teacher") {
+                get(route("teachers.index"), {
+                    preserveState: true,
+                    replace: true,
+                });
+            }
+            if (group === "course") {
+                get(route("courses.index"), {
+                    preserveState: true,
+                    replace: true,
+                });
+            }
+            if (group === "time") {
+                get(route("times.index"), {
+                    preserveState: true,
+                    replace: true,
+                });
+            }
+        }, 200);
+        return () => clearTimeout(timeout);
+    }, [data.search]);
 
     return (
         <StyledFind>
@@ -32,22 +57,14 @@ function FindById({ group }) {
                 <Input
                     type="text"
                     placeholder={
-                        data.type !== "All" ? ` Search by ${data.type}` : "All "
+                        group === "time"
+                            ? "Search by Time"
+                            : "Search by ID or Name"
                     }
                     onChange={(e) => {
                         setData("search", e.target.value);
                     }}
-                    onAbort={handelSubmit()}
-                    disabled={data.type === "All"}
                 />
-                <Select
-                    // value={data.type}
-                    onChange={(e) => setData("type", e.target.value)}
-                >
-                    <option value="ID">ID</option>
-                    <option value="Name">Name</option>
-                    <option value="All">All</option>
-                </Select>
             </Form>
         </StyledFind>
     );

@@ -1,4 +1,5 @@
 import Table from "@/ui/Table";
+import LinkBtn from "@/ui/LinkBtn";
 
 function StudentTeacherTable({ ctt }) {
     const uniCtt = ctt.filter(
@@ -24,7 +25,14 @@ function StudentTeacherTable({ ctt }) {
                         <div>{c.tname}</div>
                         <div>{c.title}</div>
                         <div>{c.time}</div>
-                        <div>Action</div>
+                        <div>
+                            <LinkBtn
+                                size="small"
+                                href={route("new-student.edit")}
+                            >
+                                Edit
+                            </LinkBtn>
+                        </div>
                     </Table.Row>
                 )}
             ></Table.Body>

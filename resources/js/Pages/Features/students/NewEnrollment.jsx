@@ -16,7 +16,9 @@ const StyledCreateStudent = styled.div`
     width: 100%;
 `;
 
-function NewEnrollment({ student, ctt, teachers, courses, times }) {
+function NewEnrollment({ student, teachers, id, courses, times, section }) {
+    if (section) console.log(section);
+
     const uniTea = teachers.filter(
         (obj, index, self) => index === self.findIndex((o) => o.id === obj.id)
     );
@@ -27,11 +29,11 @@ function NewEnrollment({ student, ctt, teachers, courses, times }) {
         (obj, index, self) => index === self.findIndex((o) => o.id === obj.id)
     );
 
-    const { data, setData, post, reset, processing, errors } = useForm({
+    const { data, setData, post, put, reset, processing, errors } = useForm({
         name: student.name,
         id: student.id,
         subject: 1,
-
+        secid: id,
         month: "",
         time: 1,
         teacher: 1,
@@ -40,12 +42,17 @@ function NewEnrollment({ student, ctt, teachers, courses, times }) {
 
     function onSubmit(e) {
         e.preventDefault();
-        post("/enrollment");
+        if (section !== "section") post("/enrollment");
+        if (section === "section") put("/enrollment");
     }
     return (
         <>
             <Row type="horizontal">
-                <Heading as="h1">Create Student</Heading>
+                <Heading as="h1">
+                    {section !== "section"
+                        ? "Create Student"
+                        : "Update Student"}
+                </Heading>
             </Row>
             <StyledCreateStudent>
                 <Form type="create" method="POST" onSubmit={onSubmit}>
@@ -189,7 +196,11 @@ function NewEnrollment({ student, ctt, teachers, courses, times }) {
                                 Cancel
                             </Button>
                             <Button type="submit" disabled={processing}>
-                                {processing ? "Saving...." : "Enroll"}
+                                {processing
+                                    ? "Saving...."
+                                    : section !== "section"
+                                    ? "Enroll"
+                                    : "Update Enrollment"}
                             </Button>
                         </FormRow>
                     </div>

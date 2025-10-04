@@ -1,3 +1,4 @@
+import AppLayout from "@/ui/AppLayout";
 import Button from "@/ui/Button";
 import Form from "@/ui/Form";
 import FormRow from "@/ui/FormRow";
@@ -15,18 +16,24 @@ const Add = styled.div`
     gap: 1rem;
 `;
 
-function CreateTeacher() {
-    const { data, setData, post, reset, processing, errors } = useForm({
+const StyledCreateStudent = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+`;
+
+function CreateTeacher({ teacher }) {
+    const { data, setData, post, put, reset, processing, errors } = useForm({
         name: "",
         fname: "",
         education: "",
         phone_number: 7,
     });
-    console.log(errors);
+    if (teacher) console.log(teacher);
     function onCreateTeacher(e) {
         e.preventDefault();
-        console.log(data);
-        post("/teachers");
+        if (!teacher) post("/teachers");
+        if (teacher) put("/teachers");
     }
     return (
         <>
@@ -35,16 +42,17 @@ function CreateTeacher() {
                     <span>
                         <HiUserPlus />
                     </span>
-                    <span>Add Teacher</span>
+                    <span>{!teacher ? "Add Teacher" : "Update Teacher"}</span>
                 </Add>
             </Heading>
+
             <Form method="POST" onSubmit={onCreateTeacher}>
-                <FormRow type="student">
+                <FormRow type={!teacher ? "student" : "teacher"}>
                     <Label htmlFor="name">Teacher name</Label>
                     <Input
                         type="text"
                         id="name"
-                        value={data.name}
+                        value={teacher ? teacher.name : data.name}
                         onChange={(e) => setData("name", e.target.value)}
                         placeholder="Teacher Name"
                     />
@@ -52,12 +60,12 @@ function CreateTeacher() {
                         <p className="text-red-600">{errors.name}</p>
                     )}
                 </FormRow>
-                <FormRow type="student">
+                <FormRow type={!teacher ? "student" : "teacher"}>
                     <Label htmlFor="fname">Father name</Label>
                     <Input
                         type="text"
                         id="fname"
-                        value={data.fname}
+                        value={teacher ? teacher.fname : data.fname}
                         onChange={(e) => setData("fname", e.target.value)}
                         placeholder="Father Name"
                     />
@@ -65,12 +73,15 @@ function CreateTeacher() {
                         <p className="text-red-600">{errors.fname}</p>
                     )}
                 </FormRow>
-                <FormRow type="student">
+
+                <FormRow type={!teacher ? "student" : "teacher"}>
                     <Label htmlFor="phone_number">Phone Number</Label>
                     <Input
                         type="number"
                         id="phone_number"
-                        value={data.phone_number}
+                        value={
+                            teacher ? teacher.phone_number : data.phone_number
+                        }
                         onChange={(e) =>
                             setData("phone_number", e.target.value)
                         }
@@ -81,11 +92,11 @@ function CreateTeacher() {
                     )}
                 </FormRow>
 
-                <FormRow type="student">
+                <FormRow type={!teacher ? "student" : "teacher"}>
                     <Label htmlFor="education">Education</Label>
                     <Select
                         id="education"
-                        value={data.education}
+                        value={teacher ? teacher.education : data.education}
                         onChange={(e) => setData("education", e.target.value)}
                     >
                         <option defaultChecked>Education</option>
@@ -106,12 +117,18 @@ function CreateTeacher() {
                         Cancel
                     </Button>
                     <Button type="submit" disabled={processing}>
-                        {processing ? "Saving...." : " Add Teacher"}
+                        {processing
+                            ? teacher
+                                ? "Updating"
+                                : "Saving...."
+                            : teacher
+                            ? "Update Teacher"
+                            : " Add Teacher"}
                     </Button>
                 </FormRow>
             </Form>
         </>
     );
 }
-
+CreateTeacher.layout = (page) => <AppLayout>{page}</AppLayout>;
 export default CreateTeacher;

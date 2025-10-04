@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\StudentStoreRequest;
 use App\Http\Requests\StudentUpdateRequest;
+use PHPUnit\Framework\MockObject\Builder\Stub;
 
 class StudentController extends Controller
 {
@@ -21,17 +22,22 @@ class StudentController extends Controller
      * @param \App\Http\Filters\StudentFilter $filters
      * @return \Inertia\Response
      */
-    public function index(StudentFilter $filters)
+    // public function index(StudentFilter $filters)
+    public function index(Request $request)
     {
-        $students = Student::filter($filters)->paginate(50);
+            $search = $request->input('search');
+            $students = Student::query()->when($search , function($query, $search){
+                $query->where('name' ,'like', "%{$search}%")
+                ->orWhere('id' , 'like',  "%{$search}%");},
+                function ($query){
+                    $query->latest()->limit(100);
 
-        return Inertia::render('Features/students/AllStudents', [
+                })->get();
+            return Inertia::render('Features/students/AllStudents', [
             'students' => $students,
-        ]);
-        /**
-         * for testing the filter parameter in the api
-         */
-        // return response()->json($students);
+            'filters'=> $request->only('search')
+            ]);
+       
     }
 
     public function create(Request $request): Response
@@ -54,7 +60,7 @@ class StudentController extends Controller
             ->join('courses', 'courses.id', '=', 'sections.course_id')
             ->join('times', 'times.id', '=',  'sections.time_id')
             ->join('enrollments', 'enrollments.id', '=', 'sections.enrollment_id')
-            ->select('students.*',  'teachers.name as tname' , 'courses.title', 'times.time', 'enrollments.*', 'enrollments.created_at as date' )
+            ->select('students.*', 'students.id as stuid',  'teachers.name as tname' , 'courses.title', 'times.time', 'enrollments.*', 'enrollments.created_at as date', 'sections.id as secid' )
             ->where('students.id','=' ,$id)->get();
 
         $ctt = DB::table('students')
@@ -72,20 +78,29 @@ class StudentController extends Controller
             'section' => $section,
             'ctt' => $ctt,
         ]);
-    }
+    } 
 
-    public function edit(Request $request, Student $student): Response
+    public function edit($id)
     {
-        return Inertia::render('Features/students/Student', [
-            'student' => 'hello student',
+        
+        
+        $student = Student::findOrFail($id);
+        return Inertia::render('Features/students/Edit', [
+            'student' => $student,
         ]);
     }
 
-    public function update(StudentUpdateRequest $request, Student $student): RedirectResponse
+    public function update(Request $request, Student $student): RedirectResponse
     {
-        $student->update($request->validated());
+        $request->validate([
+            'name' => 'required', 'string',
+            'fname' => 'required', 'string',
+            'gender' => 'required', 'string',
+            'phone_number' => 'required', 'integer',
+        ]);
+        $student->update($request->all());
 
-        return redirect()->route('students.index');
+        return redirect()->route('students.show' , $request->id);
     }
 
     public function destroy(Request $request, Student $student): RedirectResponse

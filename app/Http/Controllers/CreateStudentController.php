@@ -100,7 +100,7 @@ class CreateStudentController extends Controller
      */
     public function edit(CreateStudent $createStudent)
     {
-        //
+        
     }
 
     /**

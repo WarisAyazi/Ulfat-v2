@@ -15,13 +15,19 @@ class TimesController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-         $times = Time::all();
+        $search = $request->input('search');
+            $times = Time::query()->when($search , function($query, $search){
+                $query->where('time' ,'like', "%{$search}%");},
+                function ($query){
+                    $query->latest()->limit(50);
 
-        return Inertia::render('Features/times/AllTimes', [
+                })->get();
+            return Inertia::render('Features/times/AllTimes', [
             'times' => $times,
-        ]);
+            'filters'=> $request->only('search')
+            ]);
     }
 
     /**
@@ -37,7 +43,14 @@ class TimesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+         $request->validate(
+            ['time' => 'required', 'string']
+        );
+
+        $time = new Time();
+        $time->time = $request->time;
+        $time->save();
+        return redirect()->back();
     }
 
     /**

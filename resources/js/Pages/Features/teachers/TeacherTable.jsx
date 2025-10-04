@@ -1,8 +1,8 @@
-import Table from "@/ui/Table";
 import LinkBtn from "@/ui/LinkBtn";
+import Table from "@/ui/Table";
 
-function StudentTable({ student }) {
-    const { id, name, fname, gender, phone_number, created_at } = student;
+function TeacherTable({ teacher }) {
+    const { id, name, fname, education, phone_number, created_at } = teacher;
     return (
         <div>
             <Table columns="1fr 2fr 2fr 2fr 2fr 2fr 2fr ">
@@ -10,7 +10,7 @@ function StudentTable({ student }) {
                     <div>ID</div>
                     <div>Name</div>
                     <div>Father Name</div>
-                    <div>Gender</div>
+                    <div>Education</div>
                     <div>Phone Number</div>
                     <div>Registration</div>
                     <div>Action</div>
@@ -20,11 +20,11 @@ function StudentTable({ student }) {
                     <div>{id}</div>
                     <div>{name}</div>
                     <div>{fname}</div>
-                    <div>{gender}</div>
+                    <div>{education}</div>
                     <div>{phone_number}</div>
                     <div>2025/02/12</div>
                     <div>
-                        <LinkBtn size="small" href={route("students.edit", id)}>
+                        <LinkBtn size="small" href={route("teachers.edit", id)}>
                             Edit
                         </LinkBtn>
                     </div>
@@ -34,4 +34,4 @@ function StudentTable({ student }) {
     );
 }
 
-export default StudentTable;
+export default TeacherTable;
