@@ -23,9 +23,7 @@ function CreateSubject() {
     });
 
     function onCreateSubject(e) {
-        console.log(data);
         e.preventDefault();
-        console.log(data);
         post("/courses");
     }
     return (

@@ -15,7 +15,7 @@ function Budget({ section, data }) {
         <StyledBudget>
             <>
                 <Heading as="h2">
-                    <span>Teacher Relationship with others</span>
+                    <span>Time Relationship with others</span>
                 </Heading>
                 <BudgetForm section={section} />
                 {data && <BudgetTable data={data} />}

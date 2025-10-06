@@ -16,9 +16,15 @@ const StyledCreateStudent = styled.div`
     width: 100%;
 `;
 
-function NewEnrollment({ student, teachers, id, courses, times, section }) {
-    if (section) console.log(section);
-
+function NewEnrollment({
+    student,
+    enrid,
+    teachers,
+    id,
+    courses,
+    times,
+    section,
+}) {
     const uniTea = teachers.filter(
         (obj, index, self) => index === self.findIndex((o) => o.id === obj.id)
     );
@@ -32,18 +38,18 @@ function NewEnrollment({ student, teachers, id, courses, times, section }) {
     const { data, setData, post, put, reset, processing, errors } = useForm({
         name: student.name,
         id: student.id,
-        subject: 1,
-        secid: id,
+        enrid,
+        subject: "",
         month: "",
-        time: 1,
-        teacher: 1,
+        time: "",
+        teacher: "",
         amount: "400",
     });
 
     function onSubmit(e) {
         e.preventDefault();
         if (section !== "section") post("/enrollment");
-        if (section === "section") put("/enrollment");
+        if (section === "section") put(route("enrollment.update", id));
     }
     return (
         <>
@@ -85,7 +91,6 @@ function NewEnrollment({ student, teachers, id, courses, times, section }) {
                                 }
                             >
                                 <option defaultChecked>Subject</option>
-                                {/* <option value={title}>{title}</option> */}
                                 {uniCou.map((course) => (
                                     <option value={course.id} key={course.id}>
                                         {course.title}

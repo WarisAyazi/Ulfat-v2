@@ -11,7 +11,6 @@ const Items = styled.div`
 
 function Time({ time }) {
     const { id, time: timeName } = time;
-    // console.log(time.id);
     return (
         <Table.Row>
             <Items>{id}</Items>

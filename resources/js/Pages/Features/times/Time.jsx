@@ -1,19 +1,20 @@
-import TeacherTable from "./TeacherTable";
+import TimeTable from "./TimeTable";
 import Row from "@/ui/Row";
 
 import AppLayout from "@/ui/AppLayout";
 import Heading from "@/ui/Heading";
 import Budget from "./Budget";
 
-function Teacher({ teacher, section, data }) {
+function Time({ time, section, data }) {
     console.log(section);
+
     return (
         <div>
             <Row type="horizontal">
-                <Heading as="h1">{teacher.name}</Heading>
+                <Heading as="h1">{time.time}</Heading>
             </Row>
             <Row type="horizontal">
-                <TeacherTable teacher={teacher} />
+                <TimeTable time={time} />
             </Row>
 
             {section[0] && (
@@ -25,5 +26,5 @@ function Teacher({ teacher, section, data }) {
     );
 }
 
-Teacher.layout = (page) => <AppLayout>{page}</AppLayout>;
-export default Teacher;
+Time.layout = (page) => <AppLayout> {page}</AppLayout>;
+export default Time;

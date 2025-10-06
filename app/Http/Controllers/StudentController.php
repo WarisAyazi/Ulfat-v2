@@ -11,7 +11,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\StudentStoreRequest;
 use App\Http\Requests\StudentUpdateRequest;
-use PHPUnit\Framework\MockObject\Builder\Stub;
+use Carbon\Carbon;
+use Morilog\Jalali\Jalalian;
 
 class StudentController extends Controller
 {
@@ -54,14 +55,31 @@ class StudentController extends Controller
 
     public function show($id): Response
     {
-        $section = DB::table('students')
-            ->join('sections', 'students.id', '=', 'sections.student_id')
-            ->join('teachers', 'teachers.id', '=', 'sections.teacher_id')
-            ->join('courses', 'courses.id', '=', 'sections.course_id')
-            ->join('times', 'times.id', '=',  'sections.time_id')
-            ->join('enrollments', 'enrollments.id', '=', 'sections.enrollment_id')
-            ->select('students.*', 'students.id as stuid',  'teachers.name as tname' , 'courses.title', 'times.time', 'enrollments.*', 'enrollments.created_at as date', 'sections.id as secid' )
-            ->where('students.id','=' ,$id)->get();
+       $section = DB::table('students')
+    ->join('sections', 'students.id', '=', 'sections.student_id')
+    ->join('teachers', 'teachers.id', '=', 'sections.teacher_id')
+    ->join('courses', 'courses.id', '=', 'sections.course_id')
+    ->join('times', 'times.id', '=', 'sections.time_id')
+    ->join('enrollments', 'enrollments.id', '=', 'sections.enrollment_id')
+    ->select(
+        'students.*',
+        'students.id as stuid',
+        'teachers.name as tname',
+        'courses.title',
+        'times.time',
+        'enrollments.*',
+        'enrollments.created_at as date',
+        'sections.id as secid'
+    )
+    ->where('students.id', '=', $id)
+    ->orderBy('enrollments.created_at', 'desc')
+    ->get() ->map(function ($item) {
+        if (isset($item->date)) {
+            $item->date = Jalalian::fromCarbon(Carbon::parse($item->created_at))->format('Y-m-d h:i');
+        }
+        
+        return $item;
+    });;
 
         $ctt = DB::table('students')
             ->join('sections', 'students.id', '=', 'sections.student_id')
@@ -69,8 +87,9 @@ class StudentController extends Controller
             ->join('courses', 'courses.id', '=', 'sections.course_id')
             ->join('times', 'times.id', '=', 'sections.time_id')
             ->select('students.*',  'teachers.name as tname' , 'courses.title', 'times.time' , 'sections.id as seid','sections.*' )
-            ->where('students.id','=' ,$id)->get();
-            // ->groupBy('sections.student_id')->get();
+            ->where('students.id','=' ,$id)
+            
+            ->get();
 
         $mainStu = Student::findOrFail($id);
         return Inertia::render('Features/students/Student', [

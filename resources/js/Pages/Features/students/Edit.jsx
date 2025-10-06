@@ -29,7 +29,7 @@ function Edit({ student }) {
 
     function onSubmit(e) {
         e.preventDefault();
-        put("/students", student.id);
+        put(route("students.update", student.id));
     }
     return (
         <>

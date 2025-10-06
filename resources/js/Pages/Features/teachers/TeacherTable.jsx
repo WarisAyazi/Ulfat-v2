@@ -22,7 +22,7 @@ function TeacherTable({ teacher }) {
                     <div>{fname}</div>
                     <div>{education}</div>
                     <div>{phone_number}</div>
-                    <div>2025/02/12</div>
+                    <div>{created_at}</div>
                     <div>
                         <LinkBtn size="small" href={route("teachers.edit", id)}>
                             Edit

@@ -84,7 +84,7 @@ class EnrollmentController extends Controller
             ->select('students.id')
             ->where('sections.id', '=',$id)->get();
 
-        $courses= DB::table('students')
+            $courses= DB::table('students')
             ->join('sections', 'students.id', '=', 'sections.student_id')
             ->join('courses', 'courses.id', '=', 'sections.course_id')
             ->select('courses.title', 'courses.id')
@@ -102,6 +102,11 @@ class EnrollmentController extends Controller
             ->select('teachers.name', 'teachers.id')
             ->where('students.id', '=',$stuid[0]->id)->get();
 
+            $enrid= DB::table('sections')
+            ->join('enrollments', 'enrollments.id', '=', 'sections.enrollment_id')
+            ->select('enrollments.id')
+            ->where('sections.id', '=',$id)->get();
+
             $student = Student::findOrFail($stuid[0]->id);
           
 
@@ -111,15 +116,26 @@ class EnrollmentController extends Controller
             'teachers'=>$teachers,
             'times'=>$times,
             'courses'=>$courses,
-            'id'=>$id
+            'id'=>$id,
+            'enrid'=>$enrid[0]->id,
         ]);
     }
 
-    public function update(EnrollmentUpdateRequest $request, Enrollment $enrollment): RedirectResponse
+    public function update(Request $request,$id)
     {
-        $enrollment->update($request->validated());
+         $request->validate([
+            'subject' => 'required', 'integer',
+            'month' => 'required', 'string',
+            'time' => 'required', 'integer',
+            'teacher' => 'required', 'integer',
+            'amount' => 'required', 'integer',
+        ]);
 
-        return redirect()->route('enrollments.index');
+       Enrollment::where('id', $request->enrid)->update(['month' =>$request->month, 'amount'=>$request->amount]);
+       section::where('id', $id)->update(['time_id' =>$request->time, 'teacher_id'=>$request->teacher,'course_id'=>$request->subject]);
+        
+        return redirect()->route('students.show', ['student' => $request->id]);
+
     }
 
     public function destroy(Request $request, Enrollment $enrollment): RedirectResponse

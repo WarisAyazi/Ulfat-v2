@@ -53,3 +53,6 @@ Route::resource('/enrollment', App\Http\Controllers\EnrollmentController::class)
 
 Route::get('/newEnrollment/{id}' , [newController::class,'newEnrollment'])->name('newEnrollment');
 Route::get('/newCourse/{id}' , [newController::class,'newCourse'])->name('newCourse');
+Route::post('/Course-Budget' , [newController::class,'CourseBudget'])->name('CourseBudget');
+Route::post('/Time-Budget' , [newController::class,'TimeBudget'])->name('TimeBudget');
+Route::post('/Teacher-Budget' , [newController::class,'TeacherBudget'])->name('TeacherBudget');

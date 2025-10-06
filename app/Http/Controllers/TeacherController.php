@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TeacherStoreRequest;
-use App\Http\Requests\TeacherUpdateRequest;
 use App\Models\Teacher;
 use Inertia\Response;
 use Illuminate\Http\RedirectResponse;
@@ -51,38 +50,34 @@ class TeacherController extends Controller
             ->join('courses', 'courses.id', '=', 'sections.course_id')
             ->join('times', 'times.id', '=',  'sections.time_id')
             ->join('enrollments', 'enrollments.id', '=', 'sections.enrollment_id')
-            ->select('teachers.*',  'students.name as sname' , 'courses.title', 'times.time', 'enrollments.*', 'enrollments.created_at as date' )
-            ->where('teachers.id','=' ,$id)->get();
+            ->select('teachers.*',  'enrollments.year', 'students.name as sname' , 'courses.title', 'times.time' , 'sections.id as seid' )
+            ->where('teachers.id','=' ,$id)
+             ->get() ;
 
-        $ctt = DB::table('teachers')
-            ->join('sections', 'teachers.id', '=', 'sections.teacher_id')
-            ->join('students', 'students.id', '=', 'sections.student_id')
-            ->join('courses', 'courses.id', '=', 'sections.course_id')
-            ->join('times', 'times.id', '=', 'sections.time_id')
-            ->select('teachers.*',  'students.name as sname' , 'courses.title', 'times.time' , 'sections.id as seid','sections.*' )
-            ->where('teachers.id','=' ,$id)->get();
-
+        
         $teacher = Teacher::findOrFail($id);
         return Inertia::render('Features/teachers/Teacher', [
             'teacher' => $teacher,
             'section' => $section,
-            'ctt' => $ctt,
+            
         ]);
+    
     }
 
     public function edit($id): Response
     {
         $teacher = Teacher::findOrFail($id);
-        return Inertia::render('Features/teachers/CreateTeacher', [
+        return Inertia::render('Features/teachers/Edit', [
             'teacher' => $teacher,
         ]);
     }
 
-    public function update(TeacherUpdateRequest $request, Teacher $teacher): RedirectResponse
+    public function update(TeacherStoreRequest $request, Teacher $teacher): RedirectResponse
     {
-        $teacher->update($request->validated());
+        
+        $teacher->update($request->all());
 
-        return redirect()->route('teachers.index');
+        return redirect()->route('teachers.show' , $request->id);
     }
 
     public function destroy(Request $request, Teacher $teacher): RedirectResponse

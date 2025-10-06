@@ -16,16 +16,17 @@ const Add = styled.div`
     gap: 1rem;
 `;
 
-function CreateTeacher() {
-    const { data, setData, post, reset, processing, errors } = useForm({
-        name: "",
-        fname: "",
-        education: "",
-        phone_number: 7,
+function CreateTeacher({ teacher }) {
+    const { data, setData, put, reset, processing, errors } = useForm({
+        id: teacher.id,
+        name: teacher.name,
+        fname: teacher.fname,
+        education: teacher.education,
+        phone_number: teacher.phone_number,
     });
     function onCreateTeacher(e) {
         e.preventDefault();
-        post("/teachers");
+        put(route("teachers.update", teacher.id));
     }
     return (
         <>
@@ -34,12 +35,12 @@ function CreateTeacher() {
                     <span>
                         <HiUserPlus />
                     </span>
-                    <span>{"Add Teacher"}</span>
+                    <span>Update Teacher</span>
                 </Add>
             </Heading>
 
             <Form method="POST" onSubmit={onCreateTeacher}>
-                <FormRow type={"teacher"}>
+                <FormRow type="teacher">
                     <Label htmlFor="name">Teacher name</Label>
                     <Input
                         type="text"
@@ -107,7 +108,7 @@ function CreateTeacher() {
                         Cancel
                     </Button>
                     <Button type="submit" disabled={processing}>
-                        {processing ? "Saving...." : " Add Teacher"}
+                        {processing ? "Updating" : "Update Teacher"}
                     </Button>
                 </FormRow>
             </Form>

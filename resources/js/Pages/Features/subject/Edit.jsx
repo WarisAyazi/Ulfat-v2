@@ -17,21 +17,18 @@ const StyledCreateStudent = styled.div`
     width: 100%;
 `;
 
-function Edit({ student }) {
+function Edit({ course }) {
     const { data, setData, put, reset, processing, errors } = useForm({
-        id: student.id,
-        name: student.name,
-        fname: student.fname,
-
-        gender: student.gender,
-        phone_number: student.phone_number,
+        id: course.id,
+        title: course.title,
+        language: course.language,
+        classroom: course.classroom,
     });
 
     function onSubmit(e) {
         e.preventDefault();
-        put("/students", student.id);
+        put(route("courses.update", course.id));
     }
-    console.log(student);
     return (
         <>
             <Row type="horizontal">
@@ -41,7 +38,7 @@ function Edit({ student }) {
                 <Form type="create" method="POST" onSubmit={onSubmit}>
                     <div>
                         <FormRow type="student">
-                            <Label htmlFor="id">Student ID</Label>
+                            <Label htmlFor="id">Course ID</Label>
                             <Input
                                 type="text"
                                 id="id"
@@ -54,70 +51,54 @@ function Edit({ student }) {
                             )}
                         </FormRow>
                         <FormRow type="student">
-                            <Label htmlFor="name">Student name</Label>
+                            <Label htmlFor="title">Course Name</Label>
                             <Input
                                 type="text"
-                                id="name"
-                                value={data.name}
+                                id="title"
+                                value={data.title}
                                 onChange={(e) =>
-                                    setData("name", e.target.value)
+                                    setData("title", e.target.value)
                                 }
-                                placeholder="Student Name"
                             />
-                            {errors.name && (
-                                <p className="text-red-600">{errors.name}</p>
-                            )}
-                        </FormRow>
-
-                        <FormRow type="student">
-                            <Label htmlFor="fname">Father name</Label>
-                            <Input
-                                type="text"
-                                id="fname"
-                                value={data.fname}
-                                onChange={(e) =>
-                                    setData("fname", e.target.value)
-                                }
-                                placeholder="Father Name"
-                            />
-                            {errors.fname && (
-                                <p className="text-red-600">{errors.fname}</p>
+                            {errors.title && (
+                                <p className="text-red-600">{errors.title}</p>
                             )}
                         </FormRow>
                     </div>
                     <div>
                         <FormRow type="student">
-                            <Label htmlFor="gender">Gender</Label>
+                            <Label htmlFor="language">Subject language</Label>
                             <Select
-                                id="gender"
-                                aria-label="Default select example"
-                                value={data.gender}
+                                id="language"
+                                value={data.language}
                                 onChange={(e) =>
-                                    setData("gender", e.target.value)
+                                    setData("language", e.target.value)
                                 }
                             >
-                                <option defaultChecked>Gender</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
+                                <option defaultChecked>Language</option>
+
+                                <option>Dari</option>
+                                <option>Pashto</option>
                             </Select>
-                            {errors.gender && (
-                                <p className="text-red-600">{errors.gender}</p>
+                            {errors.language && (
+                                <p className="text-red-600">
+                                    {errors.language}
+                                </p>
                             )}
                         </FormRow>
                         <FormRow type="student">
-                            <Label htmlFor="phone_number">Phone Number</Label>
+                            <Label htmlFor="classroom">Class Number</Label>
                             <Input
                                 type="number"
-                                id="phone_number"
-                                value={data.phone_number}
+                                id="classroom"
+                                value={data.classroom}
                                 onChange={(e) =>
-                                    setData("phone_number", e.target.value)
+                                    setData("classroom", e.target.value)
                                 }
-                                placeholder="Phone number"
                             />
-                            {errors.phone_number && (
+                            {errors.classroom && (
                                 <p className="text-red-600">
-                                    {errors.phone_number}
+                                    {errors.classroom}
                                 </p>
                             )}
                         </FormRow>
@@ -130,9 +111,7 @@ function Edit({ student }) {
                                 Cancel
                             </Button>
                             <Button type="submit" disabled={processing}>
-                                {processing
-                                    ? "Updating...."
-                                    : " Update Student"}
+                                {processing ? "Updating...." : " Update Course"}
                             </Button>
                         </FormRow>
                     </div>

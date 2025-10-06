@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Time extends Model
+class Time extends BaseModel
 {
     //
 

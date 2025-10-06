@@ -1,5 +1,11 @@
+import Heading from "@/ui/Heading";
+import Row from "@/ui/Row";
 import Table from "@/ui/Table";
-import LinkBtn from "@/ui/LinkBtn";
+import styled from "styled-components";
+
+const StyledFull = styled.div`
+    width: 100%;
+`;
 
 function StudentTeacherTable({ ctt }) {
     const uniCtt = ctt.filter(
@@ -7,36 +13,33 @@ function StudentTeacherTable({ ctt }) {
             index === self.findIndex((o) => o.course_id === obj.course_id)
     );
     return (
-        <Table columns="2fr 2fr 2fr 2fr 2fr">
-            <Table.Header>
-                <div>S/Name</div>
-                <div>Teacher Name</div>
-                <div>Course Name</div>
-                <div>Time</div>
+        <StyledFull>
+            <Row type="horizontal">
+                <Heading as="h2">Teacher, Course and Time</Heading>
+            </Row>
+            <Row type="horizontal">
+                <Table columns="1fr 1fr 1fr 1fr ">
+                    <Table.Header>
+                        <div>S/Name</div>
+                        <div>Teacher Name</div>
+                        <div>Course Name</div>
+                        <div>Time</div>
+                    </Table.Header>
 
-                <div>Action</div>
-            </Table.Header>
-
-            <Table.Body
-                data={uniCtt}
-                render={(c) => (
-                    <Table.Row key={c.created_at}>
-                        <div>{c.name}</div>
-                        <div>{c.tname}</div>
-                        <div>{c.title}</div>
-                        <div>{c.time}</div>
-                        <div>
-                            <LinkBtn
-                                size="small"
-                                href={route("new-student.edit")}
-                            >
-                                Edit
-                            </LinkBtn>
-                        </div>
-                    </Table.Row>
-                )}
-            ></Table.Body>
-        </Table>
+                    <Table.Body
+                        data={uniCtt}
+                        render={(c) => (
+                            <Table.Row key={c.created_at}>
+                                <div>{c.name}</div>
+                                <div>{c.tname}</div>
+                                <div>{c.title}</div>
+                                <div>{c.time}</div>
+                            </Table.Row>
+                        )}
+                    ></Table.Body>
+                </Table>
+            </Row>
+        </StyledFull>
     );
 }
 
