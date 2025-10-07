@@ -36,7 +36,7 @@ Route::middleware('auth')->group(function () {
 require __DIR__.'/auth.php';
 
 Route::resource('/new-student', CreateStudentController::class)
-    ->only(['create', 'store']);
+    ->only(['create', 'store', 'edit', 'update']);
 
 Route::resource('/students', App\Http\Controllers\StudentController::class)
     ->only(['show', 'index']);
