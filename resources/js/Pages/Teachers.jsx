@@ -1,13 +1,15 @@
 import AppLayout from "@/ui/AppLayout";
 import Heading from "@/ui/Heading";
 import Row from "@/ui/Row";
+import AllTeachers from "./Features/teachers/AllTeachers";
 
 function Teachers() {
     return (
-        <Row type="horizontal">
-            <Heading as="h1">All Teacher</Heading>
-            <p>TEST</p>
-        </Row>
+        <>
+            <Row type="horizontal">
+                <AllTeachers />
+            </Row>
+        </>
     );
 }
 

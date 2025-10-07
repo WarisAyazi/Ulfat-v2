@@ -1,9 +1,15 @@
 import Table from "@/ui/Table";
+import LinkBtn from "@/ui/LinkBtn";
 
+import styled from "styled-components";
+
+const StyledFull = styled.div`
+    width: 100%;
+`;
 function StudentTable({ student }) {
     const { id, name, fname, gender, phone_number, created_at } = student;
     return (
-        <div>
+        <StyledFull>
             <Table columns="1fr 2fr 2fr 2fr 2fr 2fr 2fr ">
                 <Table.Header>
                     <div>ID</div>
@@ -21,11 +27,15 @@ function StudentTable({ student }) {
                     <div>{fname}</div>
                     <div>{gender}</div>
                     <div>{phone_number}</div>
-                    <div>2025/02/12</div>
-                    <div>Action</div>
+                    <div>{created_at}</div>
+                    <div>
+                        <LinkBtn size="small" href={route("students.edit", id)}>
+                            Edit
+                        </LinkBtn>
+                    </div>
                 </Table.Row>
             </Table>
-        </div>
+        </StyledFull>
     );
 }
 

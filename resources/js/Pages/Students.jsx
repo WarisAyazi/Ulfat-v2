@@ -7,9 +7,6 @@ function Students() {
     return (
         <>
             <Row type="horizontal">
-                <Heading as="h1">All Students</Heading>
-            </Row>
-            <Row type="horizontal">
                 <AllStudents />
             </Row>
         </>

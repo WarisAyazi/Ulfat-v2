@@ -37,7 +37,7 @@ function CreateStudentForm({ teachers, courses, times }) {
         post("/new-student");
     }
 
-    if (!teachers && courses && times)
+    if (!teachers && !courses && !times)
         return (
             <>
                 <Row type="horizontal">

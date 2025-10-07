@@ -5,7 +5,7 @@ import Heading from "@/ui/Heading";
 import styled from "styled-components";
 import CreateTeacher from "./CreateTeacher";
 import CreateSubject from "../subject/CreateSubject";
-import CreateTime from "../time/CreateTime";
+import CreateTime from "../times/CreateTime";
 import Row from "@/ui/Row";
 
 const StyledCreateTeacher = styled.div`

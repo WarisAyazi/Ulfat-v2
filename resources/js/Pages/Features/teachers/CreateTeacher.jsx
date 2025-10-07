@@ -1,3 +1,4 @@
+import AppLayout from "@/ui/AppLayout";
 import Button from "@/ui/Button";
 import Form from "@/ui/Form";
 import FormRow from "@/ui/FormRow";
@@ -22,10 +23,8 @@ function CreateTeacher() {
         education: "",
         phone_number: 7,
     });
-    console.log(errors);
     function onCreateTeacher(e) {
         e.preventDefault();
-        console.log(data);
         post("/teachers");
     }
     return (
@@ -35,11 +34,12 @@ function CreateTeacher() {
                     <span>
                         <HiUserPlus />
                     </span>
-                    <span>Add Teacher</span>
+                    <span>{"Add Teacher"}</span>
                 </Add>
             </Heading>
+
             <Form method="POST" onSubmit={onCreateTeacher}>
-                <FormRow type="student">
+                <FormRow type={"teacher"}>
                     <Label htmlFor="name">Teacher name</Label>
                     <Input
                         type="text"
@@ -52,7 +52,7 @@ function CreateTeacher() {
                         <p className="text-red-600">{errors.name}</p>
                     )}
                 </FormRow>
-                <FormRow type="student">
+                <FormRow type={"teacher"}>
                     <Label htmlFor="fname">Father name</Label>
                     <Input
                         type="text"
@@ -65,7 +65,8 @@ function CreateTeacher() {
                         <p className="text-red-600">{errors.fname}</p>
                     )}
                 </FormRow>
-                <FormRow type="student">
+
+                <FormRow type={"teacher"}>
                     <Label htmlFor="phone_number">Phone Number</Label>
                     <Input
                         type="number"
@@ -81,7 +82,7 @@ function CreateTeacher() {
                     )}
                 </FormRow>
 
-                <FormRow type="student">
+                <FormRow type={"teacher"}>
                     <Label htmlFor="education">Education</Label>
                     <Select
                         id="education"
@@ -113,5 +114,5 @@ function CreateTeacher() {
         </>
     );
 }
-
+CreateTeacher.layout = (page) => <AppLayout>{page}</AppLayout>;
 export default CreateTeacher;

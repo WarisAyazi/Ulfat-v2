@@ -7,33 +7,17 @@ import StudentFeeTable from "./StudentFeeTable";
 import AppLayout from "@/ui/AppLayout";
 import Heading from "@/ui/Heading";
 
-const TableRow = styled.div`
+const StyledBtn = styled.div`
     display: flex;
-    align-items: center;
-    justify-content: space-around;
-    padding: 1.4rem 2.4rem;
-
-    &:not(:last-child) {
-        border-bottom: 1px solid var(--color-grey-100);
-    }
-    &:hover {
-        background-color: var(--color-grey-100);
-    }
+    gap: 2rem;
 `;
-
-const Items = styled.div`
-    font-size: 1.6rem;
-    font-weight: 600;
-    color: var(--color-grey-600);
-    font-family: "Sono";
-`;
-
 function Student({ student, section, ctt }) {
+    console.log(section);
     return (
         <div>
             <Row type="horizontal">
-                <Heading as="h1">All Student</Heading>
-                <div>
+                <Heading as="h1">{student.name} </Heading>
+                <StyledBtn>
                     <LinkBtn
                         size="medium"
                         href={route("newEnrollment", student.id)}
@@ -47,7 +31,7 @@ function Student({ student, section, ctt }) {
                     >
                         New Course
                     </LinkBtn>
-                </div>
+                </StyledBtn>
             </Row>
             <Row type="horizontal">
                 <StudentTable student={student} />

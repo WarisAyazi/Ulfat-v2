@@ -75,18 +75,67 @@ class EnrollmentController extends Controller
         ]);
     }
 
-    public function edit(Request $request, Enrollment $enrollment): View
+    public function edit($id)
     {
-        return view('enrollment.edit', [
-            'enrollment' => $enrollment,
+        //  $secid = Section::findOrFail($id);
+
+         $stuid = DB::table('sections')
+            ->join('students', 'students.id', '=', 'sections.student_id')
+            ->select('students.id')
+            ->where('sections.id', '=',$id)->get();
+
+            $courses= DB::table('students')
+            ->join('sections', 'students.id', '=', 'sections.student_id')
+            ->join('courses', 'courses.id', '=', 'sections.course_id')
+            ->select('courses.title', 'courses.id')
+            ->where('students.id', '=',$stuid[0]->id)->get();
+
+            $times= DB::table('students')
+            ->join('sections', 'students.id', '=', 'sections.student_id')
+            ->join('times', 'times.id', '=', 'sections.time_id')
+            ->select('times.time', 'times.id')
+            ->where('students.id', '=',$stuid[0]->id)->get();
+
+            $teachers= DB::table('students')
+            ->join('sections', 'students.id', '=', 'sections.student_id')
+            ->join('teachers', 'teachers.id', '=', 'sections.teacher_id')
+            ->select('teachers.name', 'teachers.id')
+            ->where('students.id', '=',$stuid[0]->id)->get();
+
+            $enrid= DB::table('sections')
+            ->join('enrollments', 'enrollments.id', '=', 'sections.enrollment_id')
+            ->select('enrollments.id')
+            ->where('sections.id', '=',$id)->get();
+
+            $student = Student::findOrFail($stuid[0]->id);
+          
+
+        return Inertia::render('Features/students/NewEnrollment', [
+            'student' => $student,
+            'section'=>'section',
+            'teachers'=>$teachers,
+            'times'=>$times,
+            'courses'=>$courses,
+            'id'=>$id,
+            'enrid'=>$enrid[0]->id,
         ]);
     }
 
-    public function update(EnrollmentUpdateRequest $request, Enrollment $enrollment): RedirectResponse
+    public function update(Request $request,$id)
     {
-        $enrollment->update($request->validated());
+         $request->validate([
+            'subject' => 'required', 'integer',
+            'month' => 'required', 'string',
+            'time' => 'required', 'integer',
+            'teacher' => 'required', 'integer',
+            'amount' => 'required', 'integer',
+        ]);
 
-        return redirect()->route('enrollments.index');
+       Enrollment::where('id', $request->enrid)->update(['month' =>$request->month, 'amount'=>$request->amount]);
+       section::where('id', $id)->update(['time_id' =>$request->time, 'teacher_id'=>$request->teacher,'course_id'=>$request->subject]);
+        
+        return redirect()->route('students.show', ['student' => $request->id]);
+
     }
 
     public function destroy(Request $request, Enrollment $enrollment): RedirectResponse

@@ -5,8 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Morilog\Jalali\Jalalian;
 
-class Enrollment extends Model
+class Enrollment extends BaseModel
 {
     use HasFactory;
 
@@ -18,9 +19,15 @@ class Enrollment extends Model
     protected $fillable = [
         'amount',
         'month',
-        
-        
     ];
+
+    protected static function boot()  {
+        parent::boot();
+        static::creating(function ($model)
+        {
+            $model->year = Jalalian::fromCarbon(now())->format('Y');
+        });
+    }
 
     /**
      * Get the attributes that should be cast.

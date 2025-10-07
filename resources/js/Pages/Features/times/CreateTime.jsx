@@ -5,7 +5,6 @@ import Heading from "@/ui/Heading";
 import Input from "@/ui/Input";
 import Label from "@/ui/Label";
 import { useForm } from "@inertiajs/react";
-import { HiPlus, HiSwatch } from "react-icons/hi2";
 import styled from "styled-components";
 import { MdOutlineMoreTime } from "react-icons/md";
 const Add = styled.div`
@@ -21,7 +20,7 @@ function CreateTime() {
     function onCreateTime(e) {
         e.preventDefault();
         console.log(data);
-        post("/time");
+        post("/times");
     }
     return (
         <>

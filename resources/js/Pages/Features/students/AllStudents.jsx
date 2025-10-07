@@ -3,15 +3,21 @@ import AppLayout from "@/ui/AppLayout";
 import Heading from "@/ui/Heading";
 import Row from "@/ui/Row";
 import Table from "@/ui/Table";
-import FindStudentForm from "./FindStudentForm";
+import FindById from "../../../ui/FindById";
+import styled from "styled-components";
+const Center = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1rem;
+`;
 
-function AllStudents({ students }) {
-    console.log(students);
+function AllStudents({ students, filters }) {
     return (
         <>
             <Row type="horizontal">
                 <Heading as="h1">All Students</Heading>
-                <FindStudentForm />
+                <FindById group="student" filters={filters} />
             </Row>
             <Table columns="1fr 2fr 2fr 1fr 1fr ">
                 <Table.Header>
@@ -21,12 +27,18 @@ function AllStudents({ students }) {
                     <div>Gander</div>
                     <div>Action</div>
                 </Table.Header>
-                <Table.Body
-                    data={students}
-                    render={(student) => (
-                        <StudentsRow student={student} key={student.id} />
-                    )}
-                />
+                {students[0] === undefined ? (
+                    <Center>
+                        <p>No Student could be found</p>
+                    </Center>
+                ) : (
+                    <Table.Body
+                        data={students}
+                        render={(student) => (
+                            <StudentsRow student={student} key={student.id} />
+                        )}
+                    />
+                )}
             </Table>
         </>
     );
