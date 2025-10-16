@@ -28,6 +28,12 @@ function Header() {
                             >
                                 Dashboard
                             </NavLink>
+                            <NavLink
+                                href={route("new-student.create")}
+                                active={route().current("new-student.create")}
+                            >
+                                New Student
+                            </NavLink>
                         </div>
                     </div>
 

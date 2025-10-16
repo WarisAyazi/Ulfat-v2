@@ -77,47 +77,48 @@ class EnrollmentController extends Controller
 
     public function edit($id)
     {
-        //  $secid = Section::findOrFail($id);
+         $ctt = DB::table('sections')
+            ->join('students', 'students.id', '=', 'sections.student_id')
+            ->join('teachers', 'teachers.id', '=', 'sections.teacher_id')
+            ->join('courses', 'courses.id', '=', 'sections.course_id')
+            ->join('times', 'times.id', '=', 'sections.time_id')
+            ->join('enrollments', 'enrollments.id', '=', 'sections.enrollment_id')
+            ->select('students.*',  'teachers.id as tid' ,'enrollments.id as enrid', 'enrollments.amount','courses.id as couid', 'times.id as tiid' , 'sections.id as secid' )
+            ->where('sections.id','=' ,$id)
+            ->get();
 
          $stuid = DB::table('sections')
             ->join('students', 'students.id', '=', 'sections.student_id')
-            ->select('students.id')
-            ->where('sections.id', '=',$id)->get();
+            ->select('students.id' )
+            ->where('sections.id','=' ,$id)
+            ->get();
+         $enrid = DB::table('sections')
+            ->join('enrollments', 'enrollments.id', '=', 'sections.enrollment_id')
+            ->select('enrollments.id' )
+            ->where('sections.id','=' ,$id)
+            ->get();
 
-            $courses= DB::table('students')
-            ->join('sections', 'students.id', '=', 'sections.student_id')
-            ->join('courses', 'courses.id', '=', 'sections.course_id')
-            ->select('courses.title', 'courses.id')
-            ->where('students.id', '=',$stuid[0]->id)->get();
-
-            $times= DB::table('students')
-            ->join('sections', 'students.id', '=', 'sections.student_id')
-            ->join('times', 'times.id', '=', 'sections.time_id')
-            ->select('times.time', 'times.id')
-            ->where('students.id', '=',$stuid[0]->id)->get();
-
-            $teachers= DB::table('students')
+        $sctt = DB::table('students')
             ->join('sections', 'students.id', '=', 'sections.student_id')
             ->join('teachers', 'teachers.id', '=', 'sections.teacher_id')
-            ->select('teachers.name', 'teachers.id')
-            ->where('students.id', '=',$stuid[0]->id)->get();
+            ->join('courses', 'courses.id', '=', 'sections.course_id')
+            ->join('times', 'times.id', '=', 'sections.time_id')
+            ->select('students.*',  'teachers.name as tname' ,'teachers.id as tid' ,'courses.title', 'courses.id as couid' ,'times.time' , 'times.id as tiid' , 'sections.id as secid' )
+            ->where('students.id','=' ,$stuid[0]->id)
+            ->get();
 
-            $enrid= DB::table('sections')
-            ->join('enrollments', 'enrollments.id', '=', 'sections.enrollment_id')
-            ->select('enrollments.id')
-            ->where('sections.id', '=',$id)->get();
+       
 
-            $student = Student::findOrFail($stuid[0]->id);
-          
-
-        return Inertia::render('Features/students/NewEnrollment', [
-            'student' => $student,
-            'section'=>'section',
-            'teachers'=>$teachers,
-            'times'=>$times,
-            'courses'=>$courses,
+        return Inertia::render('Features/students/EditEnrollment', [
+            // 'student' => $student,
+            // 'teachers'=>$teachers,
+            // 'times'=>$times,
+            // 'courses'=>$courses,
+            "enrid"=>$enrid[0]->id,
             'id'=>$id,
-            'enrid'=>$enrid[0]->id,
+            'ctt'=>$ctt,
+            'sctt'=>$sctt
+            
         ]);
     }
 

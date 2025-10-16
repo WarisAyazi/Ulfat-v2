@@ -6,8 +6,6 @@ import Heading from "@/ui/Heading";
 import Budget from "./Budget";
 
 function Time({ time, section, data }) {
-    console.log(section);
-
     return (
         <div>
             <Row type="horizontal">

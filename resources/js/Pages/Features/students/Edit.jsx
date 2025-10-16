@@ -23,7 +23,7 @@ function Edit({ student }) {
         name: student.name,
         fname: student.fname,
 
-        gender: student.gender,
+        language: student.language,
         phone_number: student.phone_number,
     });
 
@@ -86,21 +86,23 @@ function Edit({ student }) {
                     </div>
                     <div>
                         <FormRow type="student">
-                            <Label htmlFor="gender">Gender</Label>
+                            <Label htmlFor="language">language</Label>
                             <Select
-                                id="gender"
+                                id="language"
                                 aria-label="Default select example"
-                                value={data.gender}
+                                value={data.language}
                                 onChange={(e) =>
-                                    setData("gender", e.target.value)
+                                    setData("language", e.target.value)
                                 }
                             >
-                                <option defaultChecked>Gender</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
+                                <option defaultChecked>language</option>
+                                <option value="Dari">Dari</option>
+                                <option value="Pashto">Pashto</option>
                             </Select>
-                            {errors.gender && (
-                                <p className="text-red-600">{errors.gender}</p>
+                            {errors.language && (
+                                <p className="text-red-600">
+                                    {errors.language}
+                                </p>
                             )}
                         </FormRow>
                         <FormRow type="student">

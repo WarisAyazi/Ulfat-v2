@@ -15,37 +15,56 @@ const StyledCreateStudent = styled.div`
     flex-direction: column;
     width: 100%;
 `;
+const Space = styled.div`
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    width: 90%;
+    height: 4rem;
+`;
 
-function NewEnrollment({ student, enrid, teachers, id, courses, times }) {
-    const uniTea = teachers.filter(
-        (obj, index, self) => index === self.findIndex((o) => o.id === obj.id)
-    );
-    const uniTim = times.filter(
-        (obj, index, self) => index === self.findIndex((o) => o.id === obj.id)
-    );
-    const uniCou = courses.filter(
-        (obj, index, self) => index === self.findIndex((o) => o.id === obj.id)
+function EditEnrollment({ enrid, id, ctt, sctt }) {
+    const uniCtt = sctt.filter(
+        (obj, index, self) =>
+            index === self.findIndex((o) => o.secid === obj.secid)
     );
 
-    const { data, setData, post, reset, processing, errors } = useForm({
-        name: student.name,
-        id: student.id,
+    const { data, setData, put, reset, processing, errors } = useForm({
+        name: ctt[0].name,
+        id: ctt[0].id,
         enrid,
-        subject: "",
+        subject: ctt[0].couid,
         month: "",
-        time: "",
-        teacher: "",
-        amount: "400",
+        time: ctt[0].tiid,
+        teacher: ctt[0].tid,
+        amount: ctt[0].amount,
     });
+    const months = [
+        "Hamal",
+        "Saur",
+        "Jawza",
+        "Saratan",
+        "Asad",
+        "Sunbula",
+        "Mizan",
+        "Aqrab",
+        "Qaws",
+        "Jadi",
+        "Dalwa",
+        "Hoot",
+    ];
+
+    const semesters = ["First semester", "Second Semester", "Third Semester"];
 
     function onSubmit(e) {
         e.preventDefault();
-        post("/enrollment");
+        console.log(data);
+        put(route("enrollment.update", id));
     }
     return (
         <>
             <Row type="horizontal">
-                <Heading as="h1">Create Student</Heading>
+                <Heading as="h1">Update Student</Heading>
             </Row>
             <StyledCreateStudent>
                 <Form type="create" method="POST" onSubmit={onSubmit}>
@@ -78,8 +97,11 @@ function NewEnrollment({ student, enrid, teachers, id, courses, times }) {
                                 }
                             >
                                 <option defaultChecked>Subject</option>
-                                {uniCou.map((course) => (
-                                    <option value={course.id} key={course.id}>
+                                {uniCtt.map((course) => (
+                                    <option
+                                        value={course.couid}
+                                        key={course.couid}
+                                    >
                                         {course.title}
                                     </option>
                                 ))}
@@ -87,6 +109,56 @@ function NewEnrollment({ student, enrid, teachers, id, courses, times }) {
                             {errors.subject && (
                                 <p className="text-red-600">{errors.subject}</p>
                             )}
+                        </FormRow>
+                        <FormRow type="student">
+                            <Label htmlFor="monthly">Duration</Label>
+                            <Row type="horizontal">
+                                <Space>
+                                    <Label htmlFor="monthly">Monthly</Label>
+                                    <input
+                                        type="radio"
+                                        id="monthly"
+                                        name="DUR"
+                                        value="Monthly"
+                                        checked={data.duration === "Monthly"}
+                                        onChange={(e) =>
+                                            setData("duration", e.target.value)
+                                        }
+                                    />
+                                </Space>
+                                <Space>
+                                    <Label htmlFor="semesterly">
+                                        Semesterly
+                                    </Label>
+                                    <input
+                                        type="radio"
+                                        id="semesterly"
+                                        name="DUR"
+                                        value="Semesterly"
+                                        checked={data.duration === "Semesterly"}
+                                        onChange={(e) =>
+                                            setData("duration", e.target.value)
+                                        }
+                                    />
+                                </Space>
+                                <Space>
+                                    <Label htmlFor="allPackage">
+                                        All Package
+                                    </Label>
+                                    <input
+                                        type="radio"
+                                        id="allPackage"
+                                        name="DUR"
+                                        value="All Package"
+                                        checked={
+                                            data.duration === "All Package"
+                                        }
+                                        onChange={(e) =>
+                                            setData("duration", e.target.value)
+                                        }
+                                    />
+                                </Space>
+                            </Row>
                         </FormRow>
                         <FormRow type="student">
                             <Label htmlFor="month">Month</Label>
@@ -98,19 +170,26 @@ function NewEnrollment({ student, enrid, teachers, id, courses, times }) {
                                     setData("month", e.target.value)
                                 }
                             >
-                                <option defaultChecked>Month</option>
-                                <option value="Hamal">1- Hamal</option>
-                                <option value="Saur">2- Saur</option>
-                                <option value="Jawza">3- Jawza</option>
-                                <option value="Saratan">4- Saratan</option>
-                                <option value="Asad">5- Asad</option>
-                                <option value="Sunbula">6- Sunbula</option>
-                                <option value="Mizan">7- Mizan</option>
-                                <option value="Aqrab">8- Aqrab</option>
-                                <option value="Qaws">9- Qaws</option>
-                                <option value="Jadi">10- Jadi</option>
-                                <option value="Dalwa">11- Dalwa</option>
-                                <option value="Hoot">12- Hoot</option>
+                                <option defaultChecked>{data.duration}</option>
+
+                                {data.duration === "Monthly" &&
+                                    months.map((month, i) => (
+                                        <option value={month} key={month}>
+                                            {i + 1}- {month}
+                                        </option>
+                                    ))}
+                                {data.duration === "Semesterly" &&
+                                    semesters.map((semester, i) => (
+                                        <option value={semester} key={semester}>
+                                            {i + 1}- {semester}
+                                        </option>
+                                    ))}
+
+                                {data.duration === "All Package" && (
+                                    <option value="All Package">
+                                        All Package
+                                    </option>
+                                )}
                             </Select>
                             {errors.month && (
                                 <p className="text-red-600">{errors.month}</p>
@@ -130,8 +209,8 @@ function NewEnrollment({ student, enrid, teachers, id, courses, times }) {
                             >
                                 <option defaultChecked>Time</option>
 
-                                {uniTim.map((time) => (
-                                    <option value={time.id} key={time.id}>
+                                {uniCtt.map((time) => (
+                                    <option value={time.tiid} key={time.tiid}>
                                         {time.time}
                                     </option>
                                 ))}
@@ -153,9 +232,12 @@ function NewEnrollment({ student, enrid, teachers, id, courses, times }) {
                             >
                                 <option defaultChecked>Teacher</option>
 
-                                {uniTea.map((teacher) => (
-                                    <option value={teacher.id} key={teacher.id}>
-                                        {teacher.name}
+                                {uniCtt.map((teacher) => (
+                                    <option
+                                        value={teacher.tid}
+                                        key={teacher.tid}
+                                    >
+                                        {teacher.tname}
                                     </option>
                                 ))}
                             </Select>
@@ -188,7 +270,7 @@ function NewEnrollment({ student, enrid, teachers, id, courses, times }) {
                                 Cancel
                             </Button>
                             <Button type="submit" disabled={processing}>
-                                {processing ? "Saving...." : "Enroll"}
+                                {processing ? "Updateing" : "Update Enrollment"}
                             </Button>
                         </FormRow>
                     </div>
@@ -198,6 +280,6 @@ function NewEnrollment({ student, enrid, teachers, id, courses, times }) {
     );
 }
 
-NewEnrollment.layout = (page) => <AppLayout>{page}</AppLayout>;
+EditEnrollment.layout = (page) => <AppLayout>{page}</AppLayout>;
 
-export default NewEnrollment;
+export default EditEnrollment;

@@ -23,6 +23,13 @@ const Row = styled.div`
         css`
             gap: 1.6rem;
         `}
+    ${(props) =>
+        props.type === "radio" &&
+        css`
+            align-items: center;
+            /* justify-content: space-around; */
+            /* gap: 3rem; */
+        `}
 `;
 
 Row.defaultProps = {

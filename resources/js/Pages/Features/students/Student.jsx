@@ -12,7 +12,6 @@ const StyledBtn = styled.div`
     gap: 2rem;
 `;
 function Student({ student, section, ctt }) {
-    console.log(section);
     return (
         <div>
             <Row type="horizontal">

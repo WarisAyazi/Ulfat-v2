@@ -10,14 +10,14 @@ const Items = styled.div`
 `;
 
 function Student({ student }) {
-    const { id, name, fname, gender, phone_number } = student;
+    const { id, name, fname, language, phone_number } = student;
 
     return (
         <Table.Row>
             <Items>{id}</Items>
             <Items>{name}</Items>
             <Items>{fname}</Items>
-            <Items>{gender}</Items>
+            <Items>{language}</Items>
             <Items>
                 <LinkBtn size="small" href={route("students.show", id)}>
                     Detail

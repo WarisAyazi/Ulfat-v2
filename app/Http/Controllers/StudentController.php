@@ -114,7 +114,7 @@ class StudentController extends Controller
         $request->validate([
             'name' => 'required', 'string',
             'fname' => 'required', 'string',
-            'gender' => 'required', 'string',
+            'language' => 'required', 'string',
             'phone_number' => 'required', 'integer',
         ]);
         $student->update($request->all());

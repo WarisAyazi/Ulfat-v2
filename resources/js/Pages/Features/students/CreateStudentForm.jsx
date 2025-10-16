@@ -19,23 +19,49 @@ const StyledCreateStudent = styled.div`
     width: 100%;
 `;
 
+const Space = styled.div`
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    width: 90%;
+    height: 4rem;
+`;
+
 function CreateStudentForm({ teachers, courses, times }) {
     const { data, setData, post, reset, processing, errors } = useForm({
         name: "Hello",
         fname: "Hi",
         subject: 1,
-        gender: "male",
-        month: "Hamal",
+        language: "Dari",
+        month: "",
         time: 1,
         teacher: 1,
         amount: "400",
         phone_number: 33,
+        duration: "Monthly",
     });
 
     function onSubmit(e) {
         e.preventDefault();
         post("/new-student");
     }
+
+    const months = [
+        "Hamal",
+        "Saur",
+        "Jawza",
+        "Saratan",
+        "Asad",
+        "Sunbula",
+        "Mizan",
+        "Aqrab",
+        "Qaws",
+        "Jadi",
+        "Dalwa",
+        "Hoot",
+    ];
+
+    const semesters = ["First semester", "Second Semester", "Third Semester"];
 
     if (!teachers && !courses && !times)
         return (
@@ -112,21 +138,23 @@ function CreateStudentForm({ teachers, courses, times }) {
                         </FormRow>
 
                         <FormRow type="student">
-                            <Label htmlFor="gender">Gender</Label>
+                            <Label htmlFor="language">language</Label>
                             <Select
-                                id="gender"
+                                id="language"
                                 aria-label="Default select example"
-                                value={data.gender}
+                                value={data.language}
                                 onChange={(e) =>
-                                    setData("gender", e.target.value)
+                                    setData("language", e.target.value)
                                 }
                             >
-                                <option defaultChecked>Gender</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
+                                <option defaultChecked>language</option>
+                                <option value="Dari">Dari</option>
+                                <option value="Pashto">Pashto</option>
                             </Select>
-                            {errors.gender && (
-                                <p className="text-red-600">{errors.gender}</p>
+                            {errors.language && (
+                                <p className="text-red-600">
+                                    {errors.language}
+                                </p>
                             )}
                         </FormRow>
                         <FormRow type="student">
@@ -149,7 +177,57 @@ function CreateStudentForm({ teachers, courses, times }) {
                     </div>
                     <div>
                         <FormRow type="student">
-                            <Label htmlFor="month">Month</Label>
+                            <Label htmlFor="monthly">Duration</Label>
+                            <Row type="horizontal">
+                                <Space>
+                                    <Label htmlFor="monthly">Monthly</Label>
+                                    <input
+                                        type="radio"
+                                        id="monthly"
+                                        name="DUR"
+                                        value="Monthly"
+                                        checked={data.duration === "Monthly"}
+                                        onChange={(e) =>
+                                            setData("duration", e.target.value)
+                                        }
+                                    />
+                                </Space>
+                                <Space>
+                                    <Label htmlFor="semesterly">
+                                        Semesterly
+                                    </Label>
+                                    <input
+                                        type="radio"
+                                        id="semesterly"
+                                        name="DUR"
+                                        value="Semesterly"
+                                        checked={data.duration === "Semesterly"}
+                                        onChange={(e) =>
+                                            setData("duration", e.target.value)
+                                        }
+                                    />
+                                </Space>
+                                <Space>
+                                    <Label htmlFor="allPackage">
+                                        All Package
+                                    </Label>
+                                    <input
+                                        type="radio"
+                                        id="allPackage"
+                                        name="DUR"
+                                        value="All Package"
+                                        checked={
+                                            data.duration === "All Package"
+                                        }
+                                        onChange={(e) =>
+                                            setData("duration", e.target.value)
+                                        }
+                                    />
+                                </Space>
+                            </Row>
+                        </FormRow>
+                        <FormRow type="student">
+                            <Label htmlFor="month">{data.duration}</Label>
                             <Select
                                 id="month"
                                 aria-label="Default select example"
@@ -158,19 +236,26 @@ function CreateStudentForm({ teachers, courses, times }) {
                                     setData("month", e.target.value)
                                 }
                             >
-                                <option defaultChecked>Month</option>
-                                <option value="Hamal">1- Hamal</option>
-                                <option value="Saur">2- Saur</option>
-                                <option value="Jawza">3- Jawza</option>
-                                <option value="Saratan">4- Saratan</option>
-                                <option value="Asad">5- Asad</option>
-                                <option value="Sunbula">6- Sunbula</option>
-                                <option value="Mizan">7- Mizan</option>
-                                <option value="Aqrab">8- Aqrab</option>
-                                <option value="Qaws">9- Qaws</option>
-                                <option value="Jadi">10- Jadi</option>
-                                <option value="Dalwa">11- Dalwa</option>
-                                <option value="Hoot">12- Hoot</option>
+                                <option defaultChecked>{data.duration}</option>
+
+                                {data.duration === "Monthly" &&
+                                    months.map((month, i) => (
+                                        <option value={month} key={month}>
+                                            {i + 1}- {month}
+                                        </option>
+                                    ))}
+                                {data.duration === "Semesterly" &&
+                                    semesters.map((semester, i) => (
+                                        <option value={semester} key={semester}>
+                                            {i + 1}- {semester}
+                                        </option>
+                                    ))}
+
+                                {data.duration === "All Package" && (
+                                    <option value="All Package">
+                                        All Package
+                                    </option>
+                                )}
                             </Select>
                             {errors.month && (
                                 <p className="text-red-600">{errors.month}</p>

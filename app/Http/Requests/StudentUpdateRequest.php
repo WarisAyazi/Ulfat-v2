@@ -22,7 +22,7 @@ class StudentUpdateRequest extends FormRequest
         return [
             'first_name' => ['required', 'string', 'max:50'],
             'last_name' => ['required', 'string', 'max:50'],
-            'gender' => ['required', 'string', 'max:30'],
+            'language' => ['required', 'string', 'max:30'],
             'phone_number' => ['required', 'integer'],
             'date_of_birth' => ['required'],
         ];

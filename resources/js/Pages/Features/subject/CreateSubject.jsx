@@ -52,23 +52,6 @@ function CreateSubject() {
                 </FormRow>
 
                 <FormRow type="student">
-                    <Label htmlFor="language">Subject language</Label>
-                    <Select
-                        id="language"
-                        value={data.language}
-                        onChange={(e) => setData("language", e.target.value)}
-                    >
-                        <option defaultChecked>Language</option>
-
-                        <option>Dari</option>
-                        <option>Pashto</option>
-                    </Select>
-                    {errors.language && (
-                        <p className="text-red-600">{errors.language}</p>
-                    )}
-                </FormRow>
-
-                <FormRow type="student">
                     <Label htmlFor="classroom">Class Number</Label>
                     <Input
                         type="text"

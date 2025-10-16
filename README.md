@@ -5,8 +5,7 @@
 to install laravel
 
         composer install
-
-
+        composer require morilog/jalali
 
 to install react and it's libraries
 
