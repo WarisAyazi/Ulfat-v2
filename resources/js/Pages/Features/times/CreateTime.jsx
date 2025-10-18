@@ -7,6 +7,8 @@ import Label from "@/ui/Label";
 import { useForm } from "@inertiajs/react";
 import styled from "styled-components";
 import { MdOutlineMoreTime } from "react-icons/md";
+import toast from "react-hot-toast";
+
 const Add = styled.div`
     display: flex;
     align-items: center;
@@ -20,7 +22,14 @@ function CreateTime() {
     function onCreateTime(e) {
         e.preventDefault();
         console.log(data);
-        post("/times");
+        post("/times", {
+            onSuccess: () => {
+                toast.success("Time added successfully 🎉.");
+            },
+            onError: () => {
+                toast.error("Failed to add Time 😞");
+            },
+        });
     }
     return (
         <>
@@ -29,7 +38,7 @@ function CreateTime() {
                     <span>
                         <MdOutlineMoreTime />
                     </span>
-                    <span>Create Time</span>
+                    <span>Add Time</span>
                 </Add>
             </Heading>
             <Form onSubmit={onCreateTime}>
@@ -42,6 +51,9 @@ function CreateTime() {
                         onChange={(e) => setData("time", e.target.value)}
                         placeholder="Time"
                     />
+                    {errors.time && (
+                        <p className="text-red-600">{errors.time}</p>
+                    )}
                 </FormRow>
 
                 <FormRow type="teacher">

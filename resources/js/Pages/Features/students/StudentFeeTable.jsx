@@ -3,6 +3,7 @@ import LinkBtn from "@/ui/LinkBtn";
 import Heading from "@/ui/Heading";
 import Row from "@/ui/Row";
 import styled from "styled-components";
+import { formatCurrency } from "@/utils/helpers";
 
 const StyledFull = styled.div`
     width: 100%;
@@ -36,7 +37,7 @@ function StudentFeeTable({ section }) {
                                 <div>{c.title}</div>
                                 <div>{c.time}</div>
                                 <div>{c.month}</div>
-                                <div>{c.amount}</div>
+                                <div>AFG {formatCurrency(c.amount)}</div>
                                 <div>{c.date}</div>
                                 <div>
                                     <LinkBtn

@@ -1,15 +1,12 @@
-import { Link } from "@inertiajs/react";
-import {
-    HiBookOpen,
-    HiChevronDoubleUp,
-    HiCircleStack,
-    HiOutlineHome,
-} from "react-icons/hi2";
+import { Link, usePage } from "@inertiajs/react";
+import { HiBookOpen, HiOutlineHome, HiUserCircle } from "react-icons/hi2";
+import { GoPersonAdd } from "react-icons/go";
+import { FaPersonCirclePlus } from "react-icons/fa6";
+import { CgTime } from "react-icons/cg";
 import styled, { css } from "styled-components";
 import { PiStudentBold } from "react-icons/pi";
 import { GiTeacher } from "react-icons/gi";
-import { FaUserPlus } from "react-icons/fa6";
-import NavLink from "@/Components/NavLink";
+import Dropdown from "@/Components/Dropdown";
 
 const NavList = styled.ul`
     display: flex;
@@ -79,14 +76,15 @@ const StyledNavLink = styled(Link)`
 `;
 
 function MainNav() {
+    const user = usePage().props.auth.user;
     return (
         <nav>
             <NavList>
                 <li>
                     <StyledNavLink
-                        href={route("dashboard")}
+                        href="/dashboard"
                         // active={true}
-                        $active={route().current("dashboard")}
+                        // $active={route().current("dashboard")}
                     >
                         <HiOutlineHome />
                         <span>Dashboard</span>
@@ -98,7 +96,8 @@ function MainNav() {
                         href={route("new-student.create")}
                         $active={route().current("new-student.create")}
                     >
-                        <FaUserPlus /> <span>Create Student</span>
+                        <GoPersonAdd />
+                        <span>Add Student</span>
                     </StyledNavLink>
                 </li>
                 <li>
@@ -121,7 +120,8 @@ function MainNav() {
                 </li>
                 <li>
                     <StyledNavLink href="/times">
-                        <HiCircleStack /> <span>Time</span>
+                        <CgTime />
+                        <span>Time</span>
                     </StyledNavLink>
                 </li>
                 <li>
@@ -129,7 +129,41 @@ function MainNav() {
                         href="/create-teacher"
                         $active={route().current("/students")}
                     >
-                        <HiChevronDoubleUp /> <span>Create Teacher</span>
+                        <FaPersonCirclePlus />
+                        <span>Add Teacher</span>
+                    </StyledNavLink>
+                </li>
+                <li>
+                    <StyledNavLink>
+                        <Dropdown>
+                            <Dropdown.Trigger>
+                                <span className="inline-flex gap-5 rounded-md">
+                                    <HiUserCircle />
+                                    <button
+                                        type="button"
+                                        className="focus:outline-none"
+                                    >
+                                        {user.name}
+                                    </button>
+                                </span>
+                            </Dropdown.Trigger>
+
+                            <Dropdown.Content>
+                                <Dropdown.Link href={route("profile.edit")}>
+                                    Profile
+                                </Dropdown.Link>
+                                <Dropdown.Link href="profile-register">
+                                    Register
+                                </Dropdown.Link>
+                                <Dropdown.Link
+                                    href={route("logout")}
+                                    method="post"
+                                    as="button"
+                                >
+                                    Log Out
+                                </Dropdown.Link>
+                            </Dropdown.Content>
+                        </Dropdown>
                     </StyledNavLink>
                 </li>
             </NavList>

@@ -8,6 +8,7 @@ import Select from "@/ui/Select";
 import { useForm } from "@inertiajs/react";
 import { HiPlus } from "react-icons/hi2";
 import styled from "styled-components";
+import toast from "react-hot-toast";
 
 const Add = styled.div`
     display: flex;
@@ -18,13 +19,19 @@ const Add = styled.div`
 function CreateSubject() {
     const { data, setData, post, processing, reset, errors } = useForm({
         title: "",
-        language: "",
         classroom: "",
     });
 
     function onCreateSubject(e) {
         e.preventDefault();
-        post("/courses");
+        post("/courses", {
+            onSuccess: () => {
+                toast.success("Course added successfully 🎉.");
+            },
+            onError: () => {
+                toast.error("Failed to add Course 😞");
+            },
+        });
     }
     return (
         <>
@@ -33,7 +40,7 @@ function CreateSubject() {
                     <span>
                         <HiPlus />
                     </span>
-                    <span>Create Course</span>
+                    <span>Add Course</span>
                 </Add>
             </Heading>
             <Form onSubmit={onCreateSubject}>

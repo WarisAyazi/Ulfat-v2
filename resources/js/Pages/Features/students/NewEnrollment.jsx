@@ -9,6 +9,7 @@ import Row from "@/ui/Row";
 import Select from "@/ui/Select";
 import { useForm } from "@inertiajs/react";
 import styled from "styled-components";
+import toast from "react-hot-toast";
 
 const StyledCreateStudent = styled.div`
     display: flex;
@@ -40,12 +41,19 @@ function NewEnrollment({ student, enrid, teachers, id, courses, times }) {
 
     function onSubmit(e) {
         e.preventDefault();
-        post("/enrollment");
+        post("/enrollment", {
+            onSuccess: () => {
+                toast.success("Enrollment added successfully 🎉.");
+            },
+            onError: () => {
+                toast.error("Failed to add Enrollment 😞");
+            },
+        });
     }
     return (
         <>
             <Row type="horizontal">
-                <Heading as="h1">Create Student</Heading>
+                <Heading as="h1">Add new Enrollment</Heading>
             </Row>
             <StyledCreateStudent>
                 <Form type="create" method="POST" onSubmit={onSubmit}>

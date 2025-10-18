@@ -9,6 +9,7 @@ import Row from "@/ui/Row";
 import Select from "@/ui/Select";
 import { useForm } from "@inertiajs/react";
 import styled from "styled-components";
+import toast from "react-hot-toast";
 
 const StyledCreateStudent = styled.div`
     display: flex;
@@ -59,7 +60,14 @@ function EditEnrollment({ enrid, id, ctt, sctt }) {
     function onSubmit(e) {
         e.preventDefault();
         console.log(data);
-        put(route("enrollment.update", id));
+        put(route("enrollment.update", id), {
+            onSuccess: () => {
+                toast.success("Enrollment Edited successfully 🎉.");
+            },
+            onError: () => {
+                toast.error("Failed to Edit Enrollment 😞");
+            },
+        });
     }
     return (
         <>

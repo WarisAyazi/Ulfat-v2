@@ -1,4 +1,5 @@
 import Table from "@/ui/Table";
+import { formatCurrency } from "@/utils/helpers";
 
 function BudgetTable({ data }) {
     let x = 1;
@@ -27,7 +28,7 @@ function BudgetTable({ data }) {
                         <div>{c.language}</div>
                         <div>{c.time}</div>
                         <div>{c.month}</div>
-                        <div>{c.amount}</div>
+                        <div>AFG {formatCurrency(c.amount)}</div>
                         <div>{c.year}</div>
                     </Table.Row>
                 )}

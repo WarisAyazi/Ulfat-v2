@@ -10,6 +10,7 @@ import styled from "styled-components";
 import Form from "@/ui/Form";
 import Input from "@/ui/Input";
 import Button from "@/ui/Button";
+import toast from "react-hot-toast";
 
 const StyledCreateStudent = styled.div`
     display: flex;
@@ -27,7 +28,14 @@ function Edit({ course }) {
 
     function onSubmit(e) {
         e.preventDefault();
-        put(route("courses.update", course.id));
+        put(route("courses.update", course.id), {
+            onSuccess: () => {
+                toast.success("Course Edited successfully 🎉.");
+            },
+            onError: () => {
+                toast.error("Failed to edit Course 😞");
+            },
+        });
     }
     return (
         <>

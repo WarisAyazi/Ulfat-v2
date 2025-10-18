@@ -7,6 +7,7 @@ import CreateTeacher from "./CreateTeacher";
 import CreateSubject from "../subject/CreateSubject";
 import CreateTime from "../times/CreateTime";
 import Row from "@/ui/Row";
+import { useEffect } from "react";
 
 const StyledCreateTeacher = styled.div`
     display: grid;
@@ -22,6 +23,14 @@ const FormLayout = styled.div`
 `;
 
 function CreateTeacherForm() {
+    useEffect(() => {
+        const hasVisdted = sessionStorage.getItem("hasVisitedl");
+
+        if (!hasVisdted) {
+            sessionStorage.setItem("hasVisitedl", "ture");
+            window.location.reload();
+        }
+    }, []);
     return (
         <>
             <Row type="horizontal">

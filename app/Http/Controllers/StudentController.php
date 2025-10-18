@@ -29,7 +29,8 @@ class StudentController extends Controller
             $search = $request->input('search');
             $students = Student::query()->when($search , function($query, $search){
                 $query->where('name' ,'like', "%{$search}%")
-                ->orWhere('id' , 'like',  "%{$search}%");},
+                ->orWhere('id' , 'like',  "%{$search}%")
+                ->orderBy('created_at', 'desc');},
                 function ($query){
                     $query->latest()->limit(100);
 

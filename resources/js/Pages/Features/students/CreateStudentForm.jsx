@@ -12,6 +12,8 @@ import Label from "@/ui/Label";
 import { useForm } from "@inertiajs/react";
 import Row from "@/ui/Row";
 import Heading from "@/ui/Heading";
+import { useEffect } from "react";
+import toast from "react-hot-toast";
 
 const StyledCreateStudent = styled.div`
     display: flex;
@@ -28,6 +30,14 @@ const Space = styled.div`
 `;
 
 function CreateStudentForm({ teachers, courses, times }) {
+    useEffect(() => {
+        const hasVisdted = sessionStorage.getItem("hasVisited");
+
+        if (!hasVisdted) {
+            sessionStorage.setItem("hasVisited", "true");
+            window.location.reload();
+        }
+    }, []);
     const { data, setData, post, reset, processing, errors } = useForm({
         name: "Hello",
         fname: "Hi",
@@ -43,7 +53,14 @@ function CreateStudentForm({ teachers, courses, times }) {
 
     function onSubmit(e) {
         e.preventDefault();
-        post("/new-student");
+        post("/new-student", {
+            onSuccess: () => {
+                toast.success("Student added successfully 🎉.");
+            },
+            onError: () => {
+                toast.error("Failed to add student 😞");
+            },
+        });
     }
 
     const months = [
@@ -77,7 +94,7 @@ function CreateStudentForm({ teachers, courses, times }) {
     return (
         <>
             <Row type="horizontal">
-                <Heading as="h1">Create Student</Heading>
+                <Heading as="h1">Add Student</Heading>
             </Row>
             <StyledCreateStudent>
                 <Form type="create" method="POST" onSubmit={onSubmit}>
