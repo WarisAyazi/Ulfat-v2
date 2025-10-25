@@ -3,6 +3,7 @@ import Sidebar from "./Sidebar";
 import styled from "styled-components";
 import Header from "./Header";
 import { Toaster } from "react-hot-toast";
+import { useEffect } from "react";
 
 const StyledApplayout = styled.div`
     display: grid;
@@ -22,6 +23,14 @@ const Main = styled.div`
 `;
 
 function AppLayout({ children }) {
+    useEffect(() => {
+        const hasVisdted = sessionStorage.getItem("hasVisited");
+
+        if (!hasVisdted) {
+            sessionStorage.setItem("hasVisited", "true");
+            window.location.reload();
+        }
+    }, []);
     return (
         <AuthenticatedLayout>
             <StyledApplayout>

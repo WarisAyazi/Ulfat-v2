@@ -54,7 +54,8 @@ class CreateStudentController extends Controller
             'teacher' => 'required', 'integer',
             'amount' => 'required', 'integer',
             'phone_number' => 'required', 'integer',
-        ]);
+        ],['fname'=>'The father name field is required.',
+                    'phone_number'=>'The phone number field is required.']);
         
         try {
 
@@ -118,7 +119,8 @@ class CreateStudentController extends Controller
             'teacher' => 'required', 'integer',
             'amount' => 'required', 'integer',
             'phone_number' => 'required', 'integer',
-        ]);
+        ],['fname'=>'The father name field is required.',
+                    'phone_number'=>'The phone number field is required.']);
         
         try {
             $student = Student::findOrFail($createStudent);

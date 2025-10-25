@@ -12,7 +12,6 @@ import Label from "@/ui/Label";
 import { useForm } from "@inertiajs/react";
 import Row from "@/ui/Row";
 import Heading from "@/ui/Heading";
-import { useEffect } from "react";
 import toast from "react-hot-toast";
 
 const StyledCreateStudent = styled.div`
@@ -30,14 +29,6 @@ const Space = styled.div`
 `;
 
 function CreateStudentForm({ teachers, courses, times }) {
-    useEffect(() => {
-        const hasVisdted = sessionStorage.getItem("hasVisited");
-
-        if (!hasVisdted) {
-            sessionStorage.setItem("hasVisited", "true");
-            window.location.reload();
-        }
-    }, []);
     const { data, setData, post, reset, processing, errors } = useForm({
         name: "Hello",
         fname: "Hi",
@@ -77,7 +68,6 @@ function CreateStudentForm({ teachers, courses, times }) {
         "Dalwa",
         "Hoot",
     ];
-
     const semesters = ["First semester", "Second Semester", "Third Semester"];
 
     if (!teachers && !courses && !times)

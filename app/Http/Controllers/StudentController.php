@@ -117,7 +117,8 @@ class StudentController extends Controller
             'fname' => 'required', 'string',
             'language' => 'required', 'string',
             'phone_number' => 'required', 'integer',
-        ]);
+        ],['fname'=>'The father name field is required.',
+                    'phone_number'=>'The phone number field is required.']);
         $student->update($request->all());
 
         return redirect()->route('students.show' , $request->id);

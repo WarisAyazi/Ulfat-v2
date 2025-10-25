@@ -26,4 +26,11 @@ class TeacherStoreRequest extends FormRequest
             'education' => ['required', 'string', 'max:50'],
         ];
     }
+    public function messages()
+    {
+        return[
+            'fname'=>'The father name field is required.',
+            'phone_number'=>'The phone number field is required.'
+        ];
+    }
 }
