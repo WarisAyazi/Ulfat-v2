@@ -43,7 +43,7 @@ function CreateStudentForm({ teachers, courses, times }) {
                 <Row type="horizontal">
                     <Heading as="h1">
                         To add Student you have to first Add Teacher, Course and
-                        Tiem.
+                        Time.
                     </Heading>
                 </Row>
             </>

@@ -4,8 +4,10 @@ use App\Http\Controllers\CourseTimeController;
 use App\Http\Controllers\CreateStudentController;
 use App\Http\Controllers\newController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StdShowController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -50,6 +52,13 @@ Route::resource('/courses', App\Http\Controllers\CourseController::class);
 Route::resource('/enrollment', App\Http\Controllers\EnrollmentController::class);
 
 
+Route::get('/locale/{locale}', function($locale) {
+    app()->setLocale($locale);
+    Session()->put('locale', $locale);
+    return redirect()->back();
+});
+
+Route::get('/student/show/{id}', [StdShowController::class, 'show']);
 
 Route::get('/newEnrollment/{id}' , [newController::class,'newEnrollment'])->name('newEnrollment');
 Route::get('/newCourse/{id}' , [newController::class,'newCourse'])->name('newCourse');
