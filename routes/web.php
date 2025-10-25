@@ -3,8 +3,10 @@
 use App\Http\Controllers\CreateStudentController;
 use App\Http\Controllers\newController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StdShowController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -47,6 +49,8 @@ Route::resource('/teachers', App\Http\Controllers\TeacherController::class);
 Route::resource('/times', App\Http\Controllers\TimesController::class);
 Route::resource('/courses', App\Http\Controllers\CourseController::class);
 Route::resource('/enrollment', App\Http\Controllers\EnrollmentController::class);
+
+
 
 Route::get('/newEnrollment/{id}' , [newController::class,'newEnrollment'])->name('newEnrollment');
 Route::get('/newCourse/{id}' , [newController::class,'newCourse'])->name('newCourse');
