@@ -5,14 +5,24 @@ import FormRow from "@/ui/FormRow";
 import { useForm } from "@inertiajs/react";
 import Select from "@/ui/Select";
 import styled from "styled-components";
+import Label from "@/ui/Label";
+import Row from "@/ui/Row";
 
 const Flex = styled.div`
     display: grid;
-    grid-template-columns: 2fr 2fr 1fr;
+    grid-template-columns: 2fr 2fr 2fr;
     align-items: center;
     gap: 1rem;
     width: 100%;
-    justify-content: space-between;
+    justify-content: center;
+`;
+
+const Space = styled.div`
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    width: 100%;
+    height: 4rem;
 `;
 function BudgetForm({ section }) {
     const ctt = section.filter(
@@ -23,15 +33,29 @@ function BudgetForm({ section }) {
     const { data, setData, post, processing, reset, errors } = useForm({
         id: ctt[0].id,
         time: 1,
-        course: 1,
+        teacher: 1,
         month: "Hamal",
         year: "",
     });
 
+    const months = [
+        "Hamal",
+        "Saur",
+        "Jawza",
+        "Saratan",
+        "Asad",
+        "Sunbula",
+        "Mizan",
+        "Aqrab",
+        "Qaws",
+        "Jadi",
+        "Dalwa",
+        "Hoot",
+    ];
+    const semesters = ["First semester", "Second Semester", "Third Semester"];
+
     function onCreateTime(e) {
         e.preventDefault();
-        console.log(data);
-
         post(route("TeacherBudget"));
     }
     return (
@@ -43,7 +67,7 @@ function BudgetForm({ section }) {
                         value={data.course}
                         onChange={(e) => setData("course", e.target.value)}
                     >
-                        <option defaultChecked>Course</option>
+                        <option defaultChecked>Courses</option>
 
                         {ctt.map((course) => (
                             <option value={course.id} key={course.id}>
@@ -56,12 +80,72 @@ function BudgetForm({ section }) {
                     )}
                 </FormRow>
                 <FormRow type="student">
+                    <Row type="horizontal">
+                        <Space>
+                            <Label htmlFor="monthly">Monthly</Label>
+                            <input
+                                type="radio"
+                                id="monthly"
+                                name="DUR"
+                                value="Monthly"
+                                checked={data.duration === "Monthly"}
+                                onChange={(e) =>
+                                    setData("duration", e.target.value)
+                                }
+                            />
+                        </Space>
+                        <Space>
+                            <Label htmlFor="semesterly">Semesterly</Label>
+                            <input
+                                type="radio"
+                                id="semesterly"
+                                name="DUR"
+                                value="Semesterly"
+                                checked={data.duration === "Semesterly"}
+                                onChange={(e) =>
+                                    setData("duration", e.target.value)
+                                }
+                            />
+                        </Space>
+                        <Space>
+                            <Label htmlFor="allPackage">All Pac...</Label>
+                            <input
+                                type="radio"
+                                id="allPackage"
+                                name="DUR"
+                                value="All Package"
+                                checked={data.duration === "All Package"}
+                                onChange={(e) =>
+                                    setData("duration", e.target.value)
+                                }
+                            />
+                        </Space>
+                    </Row>
+                </FormRow>
+                <FormRow type="student">
+                    <Select
+                        id="language"
+                        value={data.language}
+                        onChange={(e) => setData("language", e.target.value)}
+                    >
+                        <option defaultChecked>Language</option>
+                        <option value="Dari">Dari</option>
+                        <option value="Pashto">Pashto</option>
+                    </Select>
+                    {errors.language && (
+                        <p className="text-red-600">{errors.language}</p>
+                    )}
+                </FormRow>
+            </Flex>
+            <Flex>
+                <FormRow type="student">
                     <Select
                         id="time"
                         value={data.time}
                         onChange={(e) => setData("time", e.target.value)}
                     >
                         <option defaultChecked>Time</option>
+
                         {ctt.map((time) => (
                             <option value={time.id} key={time.id}>
                                 {time.time}
@@ -72,28 +156,31 @@ function BudgetForm({ section }) {
                         <p className="text-red-600">{errors.time}</p>
                     )}
                 </FormRow>
-            </Flex>
-            <Flex>
                 <FormRow type="student">
                     <Select
                         id="month"
+                        aria-label="Default select example"
                         value={data.month}
                         onChange={(e) => setData("month", e.target.value)}
                     >
-                        <option defaultChecked>Month</option>
+                        <option defaultChecked>{data.duration}</option>
 
-                        <option value="Hamal">1- Hamal</option>
-                        <option value="Saur">2- Saur</option>
-                        <option value="Jawza">3- Jawza</option>
-                        <option value="Saratan">4- Saratan</option>
-                        <option value="Asad">5- Asad</option>
-                        <option value="Sunbula">6- Sunbula</option>
-                        <option value="Mizan">7- Mizan</option>
-                        <option value="Aqrab">8- Aqrab</option>
-                        <option value="Qaws">9- Qaws</option>
-                        <option value="Jadi">10- Jadi</option>
-                        <option value="Dalwa">11- Dalwa</option>
-                        <option value="Hoot">12- Hoot</option>
+                        {data.duration === "Monthly" &&
+                            months.map((month, i) => (
+                                <option value={month} key={month}>
+                                    {i + 1}- {month}
+                                </option>
+                            ))}
+                        {data.duration === "Semesterly" &&
+                            semesters.map((semester, i) => (
+                                <option value={semester} key={semester}>
+                                    {i + 1}- {semester}
+                                </option>
+                            ))}
+
+                        {data.duration === "All Package" && (
+                            <option value="All Package">All Package</option>
+                        )}
                     </Select>
                     {errors.month && (
                         <p className="text-red-600">{errors.month}</p>
@@ -113,11 +200,12 @@ function BudgetForm({ section }) {
                         ))}
                     </Select>
                     {errors.year && (
-                        <p className="text-red-600">{errors.time}</p>
+                        <p className="text-red-600">{errors.year}</p>
                     )}
                 </FormRow>
-
-                <FormRow type="teacher">
+                <FormRow type="student"></FormRow>
+                <FormRow type="student"></FormRow>
+                <FormRow type="student">
                     <Button type="submit" disabled={processing}>
                         {processing ? "Searching...." : "Search"}
                     </Button>

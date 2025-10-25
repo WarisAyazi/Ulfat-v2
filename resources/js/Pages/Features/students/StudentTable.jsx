@@ -7,7 +7,7 @@ const StyledFull = styled.div`
     width: 100%;
 `;
 function StudentTable({ student }) {
-    const { id, name, fname, gender, phone_number, created_at } = student;
+    const { id, name, fname, language, phone_number, created_at } = student;
     return (
         <StyledFull>
             <Table columns="1fr 2fr 2fr 2fr 2fr 2fr 2fr ">
@@ -15,7 +15,7 @@ function StudentTable({ student }) {
                     <div>ID</div>
                     <div>Name</div>
                     <div>Father Name</div>
-                    <div>Gender</div>
+                    <div>language</div>
                     <div>Phone Number</div>
                     <div>Registration</div>
                     <div>Action</div>
@@ -25,7 +25,7 @@ function StudentTable({ student }) {
                     <div>{id}</div>
                     <div>{name}</div>
                     <div>{fname}</div>
-                    <div>{gender}</div>
+                    <div>{language}</div>
                     <div>{phone_number}</div>
                     <div>{created_at}</div>
                     <div>

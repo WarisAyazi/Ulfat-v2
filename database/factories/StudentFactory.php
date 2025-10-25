@@ -23,7 +23,7 @@ class StudentFactory extends Factory
         return [
             'first_name' => fake()->firstName(),
             'last_name' => fake()->lastName(),
-            'gender' => fake()->regexify('[A-Za-z0-9]{30}'),
+            'language' => fake()->regexify('[A-Za-z0-9]{30}'),
             'phone_number' => fake()->phoneNumber(),
             'date_of_birth' => fake()->numberBetween(-10000, 10000),
         ];

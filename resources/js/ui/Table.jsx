@@ -7,7 +7,7 @@ const StyledTable = styled.div`
     font-size: 1.4rem;
     background-color: var(--color-grey-0);
     border-radius: 7px;
-    overflow: hidden;
+    /* overflow: scroll; */
     margin-top: 1rem;
     margin-bottom: 4rem;
 `;
@@ -38,6 +38,12 @@ const StyledRow = styled(CommonRow)`
 
     &:not(:last-child) {
         border-bottom: 1px solid var(--color-grey-100);
+    }
+    &:nth-child(even) {
+        background-color: var(--color-grey-50);
+    }
+    &:hover {
+        background-color: var(--color-grey-200);
     }
 `;
 

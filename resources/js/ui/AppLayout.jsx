@@ -2,13 +2,12 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import Sidebar from "./Sidebar";
 import styled from "styled-components";
 import Header from "./Header";
-import { Outlet } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 
 const StyledApplayout = styled.div`
     display: grid;
     grid-template-columns: 26rem 104rem;
     grid-template-rows: auto 1fr;
-    height: 100vh;
     max-width: 130rem;
     margin: 0 auto;
 `;
@@ -19,15 +18,35 @@ const Main = styled.div`
     display: flex;
     flex-direction: column;
     gap: 3rem;
+    height: auto;
 `;
 
 function AppLayout({ children }) {
     return (
         <AuthenticatedLayout>
             <StyledApplayout>
-                <Header />
                 <Sidebar />
                 <Main>{children}</Main>
+                <Toaster
+                    position="top-center"
+                    gutter={12}
+                    containerStyle={{ margin: "8px" }}
+                    toastOptions={{
+                        success: {
+                            duration: 3000,
+                        },
+                        error: {
+                            duration: 5000,
+                        },
+                        style: {
+                            fontSize: "16px",
+                            maxWidth: "500px",
+                            padding: "16px 24px",
+                            backgroundColor: "var(--color-grey-0)",
+                            color: "var(--color-grey-700)",
+                        },
+                    }}
+                />
             </StyledApplayout>
         </AuthenticatedLayout>
     );

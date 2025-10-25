@@ -9,6 +9,7 @@ import Select from "@/ui/Select";
 import { useForm } from "@inertiajs/react";
 import { HiUserPlus } from "react-icons/hi2";
 import styled from "styled-components";
+import toast from "react-hot-toast";
 
 const Add = styled.div`
     display: flex;
@@ -26,7 +27,14 @@ function CreateTeacher({ teacher }) {
     });
     function onCreateTeacher(e) {
         e.preventDefault();
-        put(route("teachers.update", teacher.id));
+        put(route("teachers.update", teacher.id), {
+            onSuccess: () => {
+                toast.success("Teacher Edited successfully 🎉.");
+            },
+            onError: () => {
+                toast.error("Failed to Edit Teacher 😞");
+            },
+        });
     }
     return (
         <>

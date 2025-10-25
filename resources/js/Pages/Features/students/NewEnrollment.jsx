@@ -9,6 +9,7 @@ import Row from "@/ui/Row";
 import Select from "@/ui/Select";
 import { useForm } from "@inertiajs/react";
 import styled from "styled-components";
+import toast from "react-hot-toast";
 
 const StyledCreateStudent = styled.div`
     display: flex;
@@ -16,15 +17,7 @@ const StyledCreateStudent = styled.div`
     width: 100%;
 `;
 
-function NewEnrollment({
-    student,
-    enrid,
-    teachers,
-    id,
-    courses,
-    times,
-    section,
-}) {
+function NewEnrollment({ student, enrid, teachers, id, courses, times }) {
     const uniTea = teachers.filter(
         (obj, index, self) => index === self.findIndex((o) => o.id === obj.id)
     );
@@ -35,7 +28,7 @@ function NewEnrollment({
         (obj, index, self) => index === self.findIndex((o) => o.id === obj.id)
     );
 
-    const { data, setData, post, put, reset, processing, errors } = useForm({
+    const { data, setData, post, reset, processing, errors } = useForm({
         name: student.name,
         id: student.id,
         enrid,
@@ -48,17 +41,19 @@ function NewEnrollment({
 
     function onSubmit(e) {
         e.preventDefault();
-        if (section !== "section") post("/enrollment");
-        if (section === "section") put(route("enrollment.update", id));
+        post("/enrollment", {
+            onSuccess: () => {
+                toast.success("Enrollment added successfully 🎉.");
+            },
+            onError: () => {
+                toast.error("Failed to add Enrollment 😞");
+            },
+        });
     }
     return (
         <>
             <Row type="horizontal">
-                <Heading as="h1">
-                    {section !== "section"
-                        ? "Create Student"
-                        : "Update Student"}
-                </Heading>
+                <Heading as="h1">Add new Enrollment</Heading>
             </Row>
             <StyledCreateStudent>
                 <Form type="create" method="POST" onSubmit={onSubmit}>
@@ -201,11 +196,7 @@ function NewEnrollment({
                                 Cancel
                             </Button>
                             <Button type="submit" disabled={processing}>
-                                {processing
-                                    ? "Saving...."
-                                    : section !== "section"
-                                    ? "Enroll"
-                                    : "Update Enrollment"}
+                                {processing ? "Saving...." : "Enroll"}
                             </Button>
                         </FormRow>
                     </div>

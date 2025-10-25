@@ -19,7 +19,7 @@ class Student extends BaseModel
     protected $fillable = [
         'name',
         'fname',
-        'gender',
+        'language',
         'phone_number',
     ];
 

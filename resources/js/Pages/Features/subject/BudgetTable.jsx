@@ -1,14 +1,16 @@
 import Table from "@/ui/Table";
+import { formatCurrency } from "@/utils/helpers";
 
 function BudgetTable({ data }) {
-    let x = 0;
+    let x = 1;
     return (
-        <Table columns="2fr 2fr 2fr 2fr 2fr 2fr 2fr 2fr">
+        <Table columns="1fr 2fr 2fr 2fr 2fr 2fr 2fr 2fr 2fr">
             <Table.Header>
                 <div>#</div>
                 <div>S/Name</div>
                 <div>T/Name</div>
                 <div>C/Name</div>
+                <div>Language</div>
                 <div>Time</div>
                 <div>Month</div>
                 <div>Amount</div>
@@ -19,13 +21,14 @@ function BudgetTable({ data }) {
                 data={data}
                 render={(c) => (
                     <Table.Row key={c.created_at}>
-                        <div>{x + 1}</div>
-                        <div>{c.sname}</div>
+                        <div>{x++}</div>
+                        <div>{c.name}</div>
                         <div>{c.tname}</div>
                         <div>{c.title}</div>
+                        <div>{c.language}</div>
                         <div>{c.time}</div>
                         <div>{c.month}</div>
-                        <div>{c.amount}</div>
+                        <div>AFG {formatCurrency(c.amount)}</div>
                         <div>{c.year}</div>
                     </Table.Row>
                 )}

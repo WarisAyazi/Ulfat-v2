@@ -18,9 +18,10 @@ class TeacherController extends Controller
         $search = $request->input('search');
             $teachers = Teacher::query()->when($search , function($query, $search){
                 $query->where('name' ,'like', "%{$search}%")
-                ->orWhere('id' , 'like',  "%{$search}%");},
+                ->orWhere('id' , 'like',  "%{$search}%")
+                ->orderBy('created_at', 'desc');},
                 function ($query){
-                    $query->latest()->limit(100);
+                    $query->latest()->limit(50);
 
                 })->get();
             return Inertia::render('Features/teachers/AllTeachers', [

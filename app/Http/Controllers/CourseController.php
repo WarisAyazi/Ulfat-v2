@@ -20,7 +20,8 @@ class CourseController extends Controller
        $search = $request->input('search');
             $courses = Course::query()->when($search , function($query, $search){
                 $query->where('title' ,'like', "%{$search}%")
-                ->orWhere('id' , 'like',  "%{$search}%");},
+                ->orWhere('id' , 'like',  "%{$search}%")
+                ->orderBy('created_at', 'desc');},
                 function ($query){
                     $query->latest()->limit(50);
 
@@ -51,9 +52,6 @@ class CourseController extends Controller
             ->where('courses.id','=' ,$id)
              ->get() ;
 
-      
-
-        
         $course = Course::findOrFail($id);
         return Inertia::render('Features/subject/Subject', [
             'course' => $course,

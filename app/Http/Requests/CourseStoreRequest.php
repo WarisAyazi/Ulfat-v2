@@ -21,8 +21,7 @@ class CourseStoreRequest extends FormRequest
     {
         return [
             'title' => ['required', 'string', 'max:50'],
-            'language' => ['required', 'string', 'max:40'],
-            'classroom' => ['required', 'integer'],
+            'classroom' => ['required', 'string'],
         ];
     }
 }

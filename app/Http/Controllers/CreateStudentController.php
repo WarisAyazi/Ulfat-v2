@@ -47,7 +47,7 @@ class CreateStudentController extends Controller
         $request->validate([
             'name' => 'required', 'string',
             'fname' => 'required', 'string',
-            'gender' => 'required', 'string',
+            'language' => 'required', 'string',
             'subject' => 'required', 'integer',
             'month' => 'required', 'string',
             'time' => 'required', 'integer',
@@ -61,7 +61,7 @@ class CreateStudentController extends Controller
             $student = new Student();
             $student->name = $request->name;
             $student->fname = $request->fname;
-            $student->gender = $request->gender;
+            $student->language = $request->language;
             $student->phone_number = $request->phone_number;
             $student->save();
 
@@ -111,7 +111,7 @@ class CreateStudentController extends Controller
         $request->validate([
             'name' => 'required', 'string',
             'fname' => 'required', 'string',
-            'gender' => 'required', 'string',
+            'language' => 'required', 'string',
             'subject' => 'required', 'integer',
             'month' => 'required', 'string',
             'time' => 'required', 'integer',
@@ -125,7 +125,7 @@ class CreateStudentController extends Controller
 
             $student->name = $request->name;
             $student->fname = $request->fname;
-            $student->gender = $request->gender;
+            $student->language = $request->language;
             $student->phone_number = $request->phone_number;
             $student->save();
 
