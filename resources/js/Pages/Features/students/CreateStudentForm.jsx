@@ -1,3 +1,6 @@
+import { useForm, usePage } from "@inertiajs/react";
+import toast from "react-hot-toast";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 import Input from "../../../ui/Input";
@@ -7,12 +10,10 @@ import Button from "../../../ui/Button";
 import AppLayout from "@/ui/AppLayout";
 import Select from "@/ui/Select";
 import FormRow from "@/ui/FormRow";
-
-import Label from "@/ui/Label";
-import { useForm } from "@inertiajs/react";
-import Row from "@/ui/Row";
 import Heading from "@/ui/Heading";
-import toast from "react-hot-toast";
+import Label from "@/ui/Label";
+import Row from "@/ui/Row";
+import StudentPrint from "@/Pages/StudentPrint";
 
 const StyledCreateStudent = styled.div`
     display: flex;
@@ -28,7 +29,57 @@ const Space = styled.div`
     height: 4rem;
 `;
 
+const PrintDialog = styled.div`
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+`;
+
+const PrintDialogContent = styled.div`
+    background: white;
+    border-radius: 8px;
+    max-width: 800px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+`;
+
+const PrintDialogHeader = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+`;
+
+const PrintDialogTitle = styled.h2`
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #1f2937;
+`;
+
+const PrintDialogBody = styled.div`
+    padding: 1.5rem;
+`;
+
+const PrintDialogFooter = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-top: 1px solid #e5e7eb;
+`;
+
 function CreateStudentForm({ teachers, courses, times }) {
+    const [showPrintDialog, setShowPrintDialog] = useState(false);
+    const [printData, setPrintData] = useState(null);
+    const { flash } = usePage().props;
+
     const { data, setData, post, reset, processing, errors } = useForm({
         name: "Hello",
         fname: "Hi",
@@ -42,17 +93,69 @@ function CreateStudentForm({ teachers, courses, times }) {
         duration: "Monthly",
     });
 
+    useEffect(() => {
+        if (flash?.success) {
+            toast.success(flash.success);
+        }
+
+        if (flash?.error) {
+            toast.error(flash.error);
+        }
+
+        if (flash?.print_data) {
+            setPrintData(flash.print_data);
+            setShowPrintDialog(true);
+        }
+    }, [flash]);
+
     function onSubmit(e) {
         e.preventDefault();
         post("/new-student", {
-            onSuccess: () => {
-                toast.success("Student added successfully 🎉.");
-            },
+            preserveScroll: true,
             onError: () => {
                 toast.error("Failed to add student 😞");
             },
         });
     }
+
+    // Update your print handler in CreateStudentForm component
+    const handlePrint = () => {
+        // Create a style element for landscape printing
+        const landscapeStyle = document.createElement("style");
+        landscapeStyle.innerHTML = `
+        @page {
+            size: landscape;
+            margin: 0.5in;
+        }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .print-container, .print-container * {
+                visibility: visible;
+            }
+            .print-container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+        }
+    `;
+        document.head.appendChild(landscapeStyle);
+
+        window.print();
+
+        // Remove the style after printing
+        setTimeout(() => {
+            document.head.removeChild(landscapeStyle);
+        }, 100);
+    };
+
+    const handleClosePrint = () => {
+        setShowPrintDialog(false);
+        setPrintData(null);
+    };
 
     const months = [
         "Hamal",
@@ -81,6 +184,7 @@ function CreateStudentForm({ teachers, courses, times }) {
                 </Row>
             </>
         );
+
     return (
         <>
             <Row type="horizontal">
@@ -88,6 +192,7 @@ function CreateStudentForm({ teachers, courses, times }) {
             </Row>
             <StyledCreateStudent>
                 <Form type="create" method="POST" onSubmit={onSubmit}>
+                    {/* Your existing form fields remain the same */}
                     <div>
                         <FormRow type="student">
                             <Label htmlFor="name">Student name</Label>
@@ -132,7 +237,6 @@ function CreateStudentForm({ teachers, courses, times }) {
                                 }
                             >
                                 <option defaultChecked>Subject</option>
-
                                 {courses.map((course) => (
                                     <option value={course.id} key={course.id}>
                                         {course.title}
@@ -164,6 +268,7 @@ function CreateStudentForm({ teachers, courses, times }) {
                                 </p>
                             )}
                         </FormRow>
+
                         <FormRow type="student">
                             <Label htmlFor="phone_number">Phone Number</Label>
                             <Input
@@ -233,6 +338,7 @@ function CreateStudentForm({ teachers, courses, times }) {
                                 </Space>
                             </Row>
                         </FormRow>
+
                         <FormRow type="student">
                             <Label htmlFor="month">{data.duration}</Label>
                             <Select
@@ -244,7 +350,6 @@ function CreateStudentForm({ teachers, courses, times }) {
                                 }
                             >
                                 <option defaultChecked>{data.duration}</option>
-
                                 {data.duration === "Monthly" &&
                                     months.map((month, i) => (
                                         <option value={month} key={month}>
@@ -257,7 +362,6 @@ function CreateStudentForm({ teachers, courses, times }) {
                                             {i + 1}- {semester}
                                         </option>
                                     ))}
-
                                 {data.duration === "All Package" && (
                                     <option value="All Package">
                                         All Package
@@ -280,7 +384,6 @@ function CreateStudentForm({ teachers, courses, times }) {
                                 }
                             >
                                 <option defaultChecked>Time</option>
-
                                 {times.map((time) => (
                                     <option value={time.id} key={time.id}>
                                         {time.time}
@@ -303,7 +406,6 @@ function CreateStudentForm({ teachers, courses, times }) {
                                 }
                             >
                                 <option defaultChecked>Teacher</option>
-
                                 {teachers.map((teacher) => (
                                     <option value={teacher.id} key={teacher.id}>
                                         {teacher.name}
@@ -314,6 +416,7 @@ function CreateStudentForm({ teachers, courses, times }) {
                                 <p className="text-red-600">{errors.teacher}</p>
                             )}
                         </FormRow>
+
                         <FormRow type="student">
                             <Label htmlFor="amount">Fee</Label>
                             <Input
@@ -345,9 +448,54 @@ function CreateStudentForm({ teachers, courses, times }) {
                     </div>
                 </Form>
             </StyledCreateStudent>
+
+            {showPrintDialog && printData && (
+                <PrintDialog className="print-dialog">
+                    <PrintDialogContent>
+                        <PrintDialogHeader>
+                            <PrintDialogTitle>
+                                Student Enrollment Confirmation
+                            </PrintDialogTitle>
+                            <button
+                                onClick={handleClosePrint}
+                                className="text-gray-500 hover:text-gray-700"
+                            >
+                                <svg
+                                    className="w-6 h-6"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M6 18L18 6M6 6l12 12"
+                                    />
+                                </svg>
+                            </button>
+                        </PrintDialogHeader>
+                        <PrintDialogBody>
+                            <StudentPrint data={printData} />
+                        </PrintDialogBody>
+                        <PrintDialogFooter>
+                            <Button
+                                variation="secondary"
+                                onClick={handleClosePrint}
+                            >
+                                Close
+                            </Button>
+                            <Button onClick={handlePrint}>
+                                Print Confirmation
+                            </Button>
+                        </PrintDialogFooter>
+                    </PrintDialogContent>
+                </PrintDialog>
+            )}
         </>
     );
 }
+
 CreateStudentForm.layout = (page) => <AppLayout>{page}</AppLayout>;
 
 export default CreateStudentForm;

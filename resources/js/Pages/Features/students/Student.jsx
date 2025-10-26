@@ -11,20 +11,22 @@ const StyledBtn = styled.div`
     display: flex;
     gap: 2rem;
 `;
-function Student({ student, section, ctt }) {
+function Student({ student, section, ctt, printedData }) {
+    console.log(printedData);
     return (
         <div>
             <Row type="horizontal">
                 <Heading as="h1">{student.name} </Heading>
                 <StyledBtn>
                     {/* button for printing */}
-                    <LinkBtn onClick={
-                        window.onmouseenter = function() {
-                            window.print()
+                    <LinkBtn
+                        onClick={
+                            (window.onmouseenter = function () {
+                                window.print();
+                            })
                         }
-                    }>
+                    >
                         Print 🖨️
-
                     </LinkBtn>
 
                     <LinkBtn

@@ -58,6 +58,7 @@ class CreateStudentController extends Controller
                     'phone_number'=>'The phone number field is required.']);
         
         try {
+          
 
             $student = new Student();
             $student->name = $request->name;
@@ -80,9 +81,46 @@ class CreateStudentController extends Controller
             $section->enrollment_id = $enrollment->id;
             $section->save();
             
-            
-            
-            return redirect()->route('students.show', ['student' => $student->id]);
+            // Get related data for printing
+        $teacher = Teacher::find($request->teacher);
+        $course = Course::find($request->subject);
+        $time = Time::find($request->time);
+
+        $printData = [
+            'student' => [
+                'id' => $student->id,
+                'name' => $student->name,
+                'fname' => $student->fname,
+                'language' => $student->language,
+                'phone_number' => $student->phone_number,
+                'created_at' => $student->created_at,
+            ],
+            'enrollment' => [
+                'month' => $enrollment->month,
+                'amount' => $enrollment->amount,
+            ],
+            'section' => [
+                'teacher_name' => $teacher->name ?? 'N/A',
+                'course_name' => $course->title ?? 'N/A',
+                'time_slot' => $time->time ?? 'N/A',
+            ],
+        ];
+
+          $teachers = Teacher::all();
+        $courses = Course::all();
+        $times = Time::all();
+          return Inertia::render('Features/students/CreateStudentForm', [
+            'teachers' => $teachers,
+            'courses' => $courses,
+            'times' => $times,
+            'flash' => [
+                'success' => 'Student added successfully!',
+                'print_data' => $printData
+            ]
+        ]);
+        
+                
+    
         } catch (Exception $e) {
             error_log($e);
         }
