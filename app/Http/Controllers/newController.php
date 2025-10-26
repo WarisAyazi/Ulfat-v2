@@ -69,7 +69,8 @@ class newController extends Controller
             'time'=>'required',
             'month'=>'required',
             'year'=> 'required',
-            'language'=> 'required'
+            'language'=> 'required',
+
         ]); 
 
 

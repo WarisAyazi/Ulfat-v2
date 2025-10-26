@@ -1,11 +1,29 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Head } from "@inertiajs/react";
 import styled, { keyframes } from "styled-components";
 import { formatCurrency } from "@/utils/helpers";
 
 // Animations
 const fadeIn = keyframes`
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { 
+    opacity: 0; 
+    transform: translateY(30px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+`;
+
+const slideIn = keyframes`
+  from { 
+    opacity: 0; 
+    transform: translateX(-20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateX(0); 
+  }
 `;
 
 const pulse = keyframes`
@@ -14,781 +32,811 @@ const pulse = keyframes`
   100% { transform: scale(1); }
 `;
 
-// Styled Components
-const DashboardContainer = styled.div`
-    padding: 2rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    min-height: 100vh;
+const glow = keyframes`
+  0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); }
+  50% { box-shadow: 0 0 30px rgba(99, 102, 241, 0.6); }
 `;
 
-const DashboardHeader = styled.div`
+// Main Container
+const DashboardContainer = styled.div`
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 2rem;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+`;
+
+// Header
+const Header = styled.div`
     text-align: center;
     margin-bottom: 3rem;
     animation: ${fadeIn} 0.8s ease-out;
 `;
 
-const DashboardTitle = styled.h1`
+const Title = styled.h1`
+    font-size: 3.5rem;
+    font-weight: 800;
     color: white;
-    font-size: 3rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    letter-spacing: -0.5px;
 `;
 
-const DashboardSubtitle = styled.p`
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 1.2rem;
+const Subtitle = styled.p`
+    font-size: 1.4rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 400;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
 `;
 
+// Stats Grid
 const StatsGrid = styled.div`
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
 `;
 
 const StatCard = styled.div`
     background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    padding: 2rem;
-    border-radius: 20px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(20px);
+    padding: 2.5rem 2rem;
+    border-radius: 24px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     animation: ${fadeIn} 0.6s ease-out;
 
     &:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15),
+            0 4px 12px rgba(0, 0, 0, 0.1);
+        animation: ${glow} 2s ease-in-out infinite;
     }
 `;
 
 const StatIcon = styled.div`
-    width: 60px;
-    height: 60px;
-    border-radius: 15px;
+    width: 70px;
+    height: 70px;
+    border-radius: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.8rem;
-    margin-bottom: 1rem;
+    font-size: 2.2rem;
+    margin-bottom: 1.5rem;
     background: ${(props) => props.background};
     color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 `;
 
 const StatValue = styled.div`
-    font-size: 2.5rem;
+    font-size: 2.8rem;
     font-weight: 800;
-    color: #2d3748;
+    color: #1f2937;
     margin-bottom: 0.5rem;
     background: linear-gradient(135deg, #667eea, #764ba2);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
 `;
 
 const StatLabel = styled.div`
-    color: #718096;
-    font-size: 1rem;
+    font-size: 1.1rem;
+    color: #6b7280;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 `;
 
 const StatTrend = styled.div`
-    color: ${(props) => (props.positive ? "#48bb78" : "#f56565")};
-    font-size: 0.9rem;
+    font-size: 1rem;
     font-weight: 600;
-    margin-top: 0.5rem;
-`;
-
-const ChartsContainer = styled.div`
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 2rem;
-    margin-bottom: 2rem;
-
-    @media (max-width: 1024px) {
-        grid-template-columns: 1fr;
-    }
-`;
-
-const ChartCard = styled.div`
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    padding: 2rem;
-    border-radius: 20px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    animation: ${fadeIn} 0.8s ease-out;
-`;
-
-const ChartHeader = styled.h3`
-    color: #2d3748;
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
+    margin-top: 1rem;
+    color: ${(props) => (props.positive ? "#10b981" : "#ef4444")};
     display: flex;
     align-items: center;
     gap: 0.5rem;
 `;
 
-const MonthlyBreakdownGrid = styled.div`
+// Main Content Grid
+const ContentGrid = styled.div`
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+
+    @media (max-width: 1200px) {
+        grid-template-columns: 1fr;
+    }
+`;
+
+// Card Components
+const Card = styled.div`
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    padding: 2.5rem;
+    border-radius: 24px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    animation: ${slideIn} 0.8s ease-out;
+    transition: all 0.3s ease;
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 36px rgba(0, 0, 0, 0.15),
+            0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+`;
+
+const CardHeader = styled.div`
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+`;
+
+const CardIcon = styled.div`
+    width: 50px;
+    height: 50px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, ${(props) => props.color});
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    margin-right: 1rem;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+`;
+
+const CardTitle = styled.h2`
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+`;
+
+// Duration Cards
+const DurationGrid = styled.div`
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+`;
+
+const DurationCard = styled.div`
+    background: linear-gradient(135deg, ${(props) => props.gradient});
+    padding: 2rem;
+    border-radius: 20px;
+    color: white;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: ${fadeIn} 0.6s ease-out;
+
+    &:hover {
+        transform: translateX(8px) scale(1.02);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+    }
+`;
+
+const DurationHeader = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+`;
+
+const DurationInfo = styled.div`
+    display: flex;
+    align-items: center;
     gap: 1rem;
-    margin-top: 1.5rem;
+`;
+
+const DurationIcon = styled.div`
+    font-size: 2.5rem;
+`;
+
+const DurationName = styled.div`
+    font-size: 1.4rem;
+    font-weight: 700;
+`;
+
+const DurationStats = styled.div`
+    text-align: right;
+`;
+
+const DurationValue = styled.div`
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin-bottom: 0.25rem;
+`;
+
+const DurationLabel = styled.div`
+    font-size: 1rem;
+    opacity: 0.9;
+    font-weight: 500;
+`;
+
+const DurationDetails = styled.div`
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    font-size: 1rem;
+`;
+
+const DetailItem = styled.div`
+    text-align: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+`;
+
+const DetailLabel = styled.div`
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+`;
+
+const DetailValue = styled.div`
+    font-size: 1.3rem;
+    font-weight: 700;
+`;
+
+// Monthly Grid
+const MonthlyGrid = styled.div`
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1.2rem;
+    max-height: 500px;
+    /* overflow-y: auto; */
+    padding-right: 0.5rem;
+
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 10px;
+    }
 `;
 
 const MonthCard = styled.div`
     background: ${(props) =>
         props.isCurrent
-            ? "linear-gradient(135deg, #667eea, #764ba2)"
-            : "#f7fafc"};
-    color: ${(props) => (props.isCurrent ? "white" : "#2d3748")};
-    padding: 1.5rem 1rem;
-    border-radius: 15px;
+            ? "linear-gradient(135deg, #8b5cf6, #a855f7)"
+            : "rgba(255, 255, 255, 0.9)"};
+    color: ${(props) => (props.isCurrent ? "white" : "#374151")};
+    padding: 1.8rem 1.2rem;
+    border-radius: 18px;
     text-align: center;
     transition: all 0.3s ease;
-    cursor: pointer;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    animation: ${fadeIn} 0.6s ease-out;
 
     &:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        transform: translateY(-6px) scale(1.05);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
     }
 `;
 
 const MonthName = styled.div`
+    font-size: 1.2rem;
     font-weight: 700;
-    font-size: 1.1rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
 `;
 
 const MonthAmount = styled.div`
-    font-size: 1.3rem;
+    font-size: 1.6rem;
     font-weight: 800;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.5rem;
+    color: ${(props) => (props.isCurrent ? "white" : "#1f2937")};
 `;
 
 const MonthEnrollments = styled.div`
-    font-size: 0.8rem;
-    opacity: 0.8;
+    font-size: 1rem;
+    opacity: ${(props) => (props.isCurrent ? 0.9 : 0.7)};
+    font-weight: 500;
 `;
 
-const ProgressBar = styled.div`
-    width: 100%;
-    height: 8px;
-    background: #e2e8f0;
-    border-radius: 4px;
-    margin-top: 0.5rem;
-    overflow: hidden;
-`;
-
-const ProgressFill = styled.div`
-    width: ${(props) => props.percentage}%;
-    height: 100%;
-    background: linear-gradient(90deg, #48bb78, #38a169);
-    border-radius: 4px;
-    transition: width 0.5s ease;
-`;
-
-const TimeFilter = styled.div`
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 2rem;
-    justify-content: center;
-`;
-
-const FilterButton = styled.button`
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 50px;
-    background: ${(props) =>
-        props.active
-            ? "rgba(255, 255, 255, 0.95)"
-            : "rgba(255, 255, 255, 0.2)"};
-    color: ${(props) => (props.active ? "#667eea" : "white")};
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
-
-    &:hover {
-        background: rgba(255, 255, 255, 0.95);
-        color: #667eea;
-        transform: translateY(-2px);
-    }
-`;
-
-const PercentageCalculator = styled.div`
+// Recent Enrollments Table
+const TableContainer = styled.div`
     background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    padding: 2rem;
-    border-radius: 20px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(20px);
+    padding: 2.5rem;
+    border-radius: 24px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    margin-bottom: 2rem;
     animation: ${fadeIn} 1s ease-out;
 `;
 
-const CalculatorHeader = styled.h3`
-    color: #2d3748;
-    font-size: 1.5rem;
+const TableTitle = styled.h2`
+    font-size: 1.8rem;
     font-weight: 700;
-    margin-bottom: 1.5rem;
+    color: #1f2937;
+    margin-bottom: 2rem;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-`;
-
-const CalculatorControls = styled.div`
-    display: flex;
     gap: 1rem;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
 `;
 
-const PercentageInput = styled.input`
-    padding: 1rem;
-    border: 2px solid #e2e8f0;
-    border-radius: 12px;
+const Table = styled.table`
+    width: 100%;
+    border-collapse: collapse;
     font-size: 1.1rem;
-    width: 120px;
-    transition: all 0.3s ease;
-    font-weight: 600;
-
-    &:focus {
-        outline: none;
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
 `;
 
-const PercentageSlider = styled.input`
-    flex: 1;
-    min-width: 200px;
-    height: 12px;
-    border-radius: 6px;
-    background: #e2e8f0;
-    outline: none;
-
-    &::-webkit-slider-thumb {
-        appearance: none;
-        width: 24px;
-        height: 24px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        cursor: pointer;
-        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-    }
-`;
-
-const PercentageDisplay = styled.div`
-    padding: 1rem 1.5rem;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
+const TableHeader = styled.thead`
+    background: rgba(99, 102, 241, 0.1);
     border-radius: 12px;
-    font-weight: 700;
-    font-size: 1.2rem;
-    min-width: 80px;
-    text-align: center;
-    animation: ${pulse} 2s infinite;
 `;
 
-const ResultsGrid = styled.div`
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-`;
-
-const ResultCard = styled.div`
-    background: #f7fafc;
-    padding: 1.5rem;
-    border-radius: 12px;
-    border-left: 4px solid ${(props) => props.color};
-    transition: all 0.3s ease;
-
-    &:hover {
-        transform: translateX(5px);
-    }
-`;
-
-const ResultLabel = styled.div`
-    color: #718096;
-    font-size: 0.9rem;
+const TableHeaderCell = styled.th`
+    padding: 1.2rem 1rem;
+    text-align: left;
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    color: #374151;
+    font-size: 1rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    border-bottom: 2px solid rgba(99, 102, 241, 0.2);
 `;
 
-const ResultValue = styled.div`
-    color: #2d3748;
-    font-size: 1.4rem;
-    font-weight: 800;
+const TableRow = styled.tr`
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+    &:hover {
+        background: rgba(99, 102, 241, 0.05);
+        transform: translateX(4px);
+    }
+
+    &:last-child {
+        border-bottom: none;
+    }
 `;
 
-// Afghan months
-const AFGHAN_MONTHS = [
-    "Hamal",
-    "Saur",
-    "Jawza",
-    "Saratan",
-    "Asad",
-    "Sunbula",
-    "Mizan",
-    "Aqrab",
-    "Qaws",
-    "Jadi",
-    "Dalwa",
-    "Hoot",
-];
+const TableCell = styled.td`
+    padding: 1.2rem 1rem;
+    color: #4b5563;
+    font-weight: 500;
+    font-size: 1.1rem;
+`;
 
-function BudgetDashboard({ data }) {
-    const [timeFilter, setTimeFilter] = useState("yearly"); // 'monthly' or 'yearly'
-    const [percentage, setPercentage] = useState(65);
+// Badge Component
+const Badge = styled.span`
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: ${(props) => {
+        switch (props.duration) {
+            case "Monthly":
+                return "linear-gradient(135deg, #3b82f6, #06b6d4)";
+            case "Semesterly":
+                return "linear-gradient(135deg, #10b981, #34d399)";
+            case "All Package":
+                return "linear-gradient(135deg, #8b5cf6, #a855f7)";
+            default:
+                return "linear-gradient(135deg, #6b7280, #9ca3af)";
+        }
+    }};
+    color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+`;
 
+// Loading and Error States
+const LoadingContainer = styled.div`
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 2rem;
+`;
+
+const LoadingSpinner = styled.div`
+    width: 80px;
+    height: 80px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+`;
+
+const LoadingText = styled.div`
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 600;
+`;
+
+const ErrorContainer = styled.div`
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
+
+const ErrorCard = styled.div`
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    padding: 3rem;
+    border-radius: 24px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    animation: ${pulse} 2s ease-in-out infinite;
+`;
+
+const ErrorIcon = styled.div`
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+`;
+
+const ErrorTitle = styled.h2`
+    font-size: 2rem;
+    color: #1f2937;
+    margin-bottom: 1rem;
+    font-weight: 700;
+`;
+
+const ErrorMessage = styled.p`
+    font-size: 1.2rem;
+    color: #6b7280;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+`;
+
+const RetryButton = styled.button`
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+`;
+
+// Main Dashboard Component
+export default function Dashboard() {
     const [dashboardData, setDashboardData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    // Fetch data from Laravel API
     useEffect(() => {
-        const fetchDashboardData = async () => {
-            try {
-                setLoading(true);
-                const response = await fetch("/dashboard/all-data");
-                const result = await response.json();
-
-                if (result.success) {
-                    setDashboardData(result.data);
-                }
-            } catch (err) {
-                console.error("Dashboard fetch error:", err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchDashboardData();
     }, []);
 
-    const {
-        statistics,
-        monthlyData,
-        yearlyData,
-        durationBreakdown,
-        percentageCalculations,
-    } = useMemo(() => {
-        if (!dashboardData || loading) {
-            return {
-                statistics: {
-                    totalStudents: 0,
-                    totalAmount: 0,
-                    totalEnrollments: 0,
-                    averageAmount: 0,
-                    currentMonthAmount: 0,
-                    currentMonthEnrollments: 0,
-                },
-                monthlyData: {},
-                yearlyData: {},
-                durationBreakdown: {},
-                percentageCalculations: {
-                    percentageAmount: 0,
-                    remainingAmount: 0,
-                    perStudentAmount: 0,
-                },
-            };
-        }
+    const fetchDashboardData = async () => {
+        try {
+            setLoading(true);
+            const response = await fetch("/api/dashboard/data");
+            const result = await response.json();
 
-        const {
-            statistics: apiStats,
-            monthlyData: apiMonthly,
-            yearlyData: apiYearly,
-            durationBreakdown: apiDuration,
-        } = dashboardData;
-
-        // Calculate total percentages for duration breakdown
-        const totalEnrollments = apiStats.totalEnrollments || 1;
-        const totalAmount = apiStats.totalAmount || 1;
-
-        const enhancedDurationBreakdown = { ...apiDuration };
-        Object.keys(enhancedDurationBreakdown).forEach((duration) => {
-            const data = enhancedDurationBreakdown[duration];
-            data.percentage = Math.round((data.count / totalEnrollments) * 100);
-            data.amount_percentage = Math.round(
-                (data.total_amount / totalAmount) * 100
+            if (result.success) {
+                setDashboardData(result.data);
+            } else {
+                setError(result.message);
+            }
+        } catch (err) {
+            setError(
+                "Failed to load dashboard data. Please check your connection."
             );
-        });
-
-        // Current month
-        const currentMonth = new Date().toLocaleString("en-US", {
-            month: "long",
-        });
-        const currentMonthData = apiMonthly[currentMonth] || {
-            amount: 0,
-            count: 0,
-        };
-
-        // Percentage calculations
-        const percentageAmount = (apiStats.totalAmount * percentage) / 100;
-        const remainingAmount = apiStats.totalAmount - percentageAmount;
-        const perStudentAmount =
-            apiStats.totalStudents > 0
-                ? percentageAmount / apiStats.totalStudents
-                : 0;
-        return {
-            statistics: {
-                ...apiStats,
-                currentMonthAmount: currentMonthData.amount,
-                currentMonthEnrollments: currentMonthData.count,
-            },
-            monthlyData: apiMonthly,
-            yearlyData: apiYearly,
-            durationBreakdown: enhancedDurationBreakdown,
-            percentageCalculations: {
-                percentageAmount,
-                remainingAmount,
-                perStudentAmount,
-            },
-        };
-    }, [dashboardData, percentage, loading]);
-
-    const handlePercentageChange = (e) => {
-        const value = Math.min(100, Math.max(0, parseInt(e.target.value) || 0));
-        setPercentage(value);
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const handleSliderChange = (e) => {
-        setPercentage(parseInt(e.target.value));
-    };
+    if (loading) {
+        return (
+            <LoadingContainer>
+                <LoadingSpinner />
+                <LoadingText>Loading Dashboard...</LoadingText>
+            </LoadingContainer>
+        );
+    }
 
-    // Calculate progress percentage for current month
-    const maxMonthlyAmount = Math.max(
-        ...Object.values(monthlyData).map((m) => m.amount),
-        1
-    );
-    const currentMonthProgress =
-        (statistics.currentMonthAmount / maxMonthlyAmount) * 100;
+    if (error) {
+        return (
+            <ErrorContainer>
+                <ErrorCard>
+                    <ErrorIcon>⚠️</ErrorIcon>
+                    <ErrorTitle>Dashboard Error</ErrorTitle>
+                    <ErrorMessage>{error}</ErrorMessage>
+                    <RetryButton onClick={fetchDashboardData}>
+                        Try Again
+                    </RetryButton>
+                </ErrorCard>
+            </ErrorContainer>
+        );
+    }
+
+    const { overview, durationStats, monthlyDurationData, recentEnrollments } =
+        dashboardData;
+
+    // Afghan months
+    const afghanMonths = [
+        "Hamal",
+        "Saur",
+        "Jawza",
+        "Saratan",
+        "Asad",
+        "Sunbula",
+        "Mizan",
+        "Aqrab",
+        "Qaws",
+        "Jadi",
+        "Dalwa",
+        "Hoot",
+    ];
 
     return (
-        <DashboardContainer>
-            <DashboardHeader>
-                <DashboardTitle>🎓 Student Budget Dashboard</DashboardTitle>
-                <DashboardSubtitle>
-                    Comprehensive overview with duration-based analytics
-                </DashboardSubtitle>
-            </DashboardHeader>
+        <>
+            <Head title="Duration Analytics Dashboard" />
 
-            {/* Duration Breakdown Section */}
-            <ChartCard>
-                <ChartHeader>📊 Enrollment Duration Analysis</ChartHeader>
-                <div
-                    style={{
-                        display: "grid",
-                        gridTemplateColumns:
-                            "repeat(auto-fit, minmax(200px, 1fr))",
-                        gap: "1rem",
-                    }}
-                >
-                    {Object.entries(durationBreakdown).map(
-                        ([duration, data]) => (
-                            <div
-                                key={duration}
-                                style={{
-                                    background:
-                                        "linear-gradient(135deg, #667eea, #764ba2)",
-                                    color: "white",
-                                    padding: "1.5rem",
-                                    borderRadius: "12px",
-                                    textAlign: "center",
-                                }}
-                            >
-                                <div
-                                    style={{
-                                        fontSize: "2rem",
-                                        marginBottom: "0.5rem",
-                                    }}
-                                >
-                                    {duration === "Monthly" && "📅"}
-                                    {duration === "Semesterly" && "🎓"}
-                                    {duration === "All Package" && "⭐"}
-                                </div>
-                                <div
-                                    style={{
-                                        fontSize: "1.5rem",
-                                        fontWeight: "bold",
-                                    }}
-                                >
-                                    {data.count}
-                                </div>
-                                <div
-                                    style={{ fontSize: "0.9rem", opacity: 0.9 }}
-                                >
-                                    {duration} Enrollments
-                                </div>
-                                <div
-                                    style={{
-                                        fontSize: "1.1rem",
-                                        fontWeight: "bold",
-                                        marginTop: "0.5rem",
-                                    }}
-                                >
-                                    {formatCurrency(data.total_amount)}
-                                </div>
-                                <div
-                                    style={{ fontSize: "0.8rem", opacity: 0.9 }}
-                                >
-                                    {data.percentage}% of total •{" "}
-                                    {data.amount_percentage}% of revenue
-                                </div>
-                            </div>
-                        )
-                    )}
-                </div>
-            </ChartCard>
+            <DashboardContainer>
+                <Header>
+                    <Title>🎓 Dashboard</Title>
+                    <Subtitle>
+                        Comprehensive insights into student enrollment durations
+                        and revenue performance
+                    </Subtitle>
+                </Header>
 
-            <TimeFilter>
-                <FilterButton
-                    active={timeFilter === "monthly"}
-                    onClick={() => setTimeFilter("monthly")}
-                >
-                    📅 Monthly View
-                </FilterButton>
-                <FilterButton
-                    active={timeFilter === "yearly"}
-                    onClick={() => setTimeFilter("yearly")}
-                >
-                    📊 Yearly View
-                </FilterButton>
-            </TimeFilter>
+                <StatsGrid>
+                    <StatCard>
+                        <StatIcon background="linear-gradient(135deg, #3b82f6, #06b6d4)">
+                            👥
+                        </StatIcon>
+                        <StatValue>{overview.totalStudents}</StatValue>
+                        <StatLabel>Total Students</StatLabel>
+                        <StatTrend positive>Active enrollments</StatTrend>
+                    </StatCard>
 
-            {/* Key Statistics */}
-            <StatsGrid>
-                <StatCard>
-                    <StatIcon background="linear-gradient(135deg, #667eea, #764ba2)">
-                        👥
-                    </StatIcon>
-                    <StatValue>{statistics.totalStudents}</StatValue>
-                    <StatLabel>Total Students</StatLabel>
-                    <StatTrend positive>+12% this year</StatTrend>
-                </StatCard>
+                    <StatCard>
+                        <StatIcon background="linear-gradient(135deg, #10b981, #34d399)">
+                            📚
+                        </StatIcon>
+                        <StatValue>{overview.totalEnrollments}</StatValue>
+                        <StatLabel>Total Enrollments</StatLabel>
+                        <StatTrend positive>All durations</StatTrend>
+                    </StatCard>
 
-                <StatCard>
-                    <StatIcon background="linear-gradient(135deg, #f093fb, #f5576c)">
-                        💰
-                    </StatIcon>
-                    <StatValue>
-                        {formatCurrency(statistics.totalAmount)}
-                    </StatValue>
-                    <StatLabel>Total Revenue</StatLabel>
-                    <StatTrend positive>+18% growth</StatTrend>
-                </StatCard>
-
-                <StatCard>
-                    <StatIcon background="linear-gradient(135deg, #4facfe, #00f2fe)">
-                        📚
-                    </StatIcon>
-                    <StatValue>{statistics.totalEnrollments}</StatValue>
-                    <StatLabel>Total Enrollments</StatLabel>
-                    <StatTrend positive>+8% this month</StatTrend>
-                </StatCard>
-
-                <StatCard>
-                    <StatIcon background="linear-gradient(135deg, #43e97b, #38f9d7)">
-                        📊
-                    </StatIcon>
-                    <StatValue>
-                        {formatCurrency(statistics.averageAmount)}
-                    </StatValue>
-                    <StatLabel>Average per Enrollment</StatLabel>
-                    <StatTrend positive>+5% increase</StatTrend>
-                </StatCard>
-            </StatsGrid>
-
-            <ChartsContainer>
-                {/* Monthly Breakdown */}
-                <ChartCard>
-                    <ChartHeader>📅 Monthly Revenue Breakdown</ChartHeader>
-                    <MonthlyBreakdownGrid>
-                        {AFGHAN_MONTHS.map((month) => {
-                            const monthData = monthlyData[month] || {
-                                amount: 0,
-                                count: 0,
-                            };
-                            const isCurrent = month === "Hamal"; // Assuming current month
-
-                            return (
-                                <MonthCard key={month} isCurrent={isCurrent}>
-                                    <MonthName>{month}</MonthName>
-                                    <MonthAmount>
-                                        {formatCurrency(monthData.amount)}
-                                    </MonthAmount>
-                                    <MonthEnrollments>
-                                        {monthData.count} enrollments
-                                    </MonthEnrollments>
-                                    {isCurrent && (
-                                        <ProgressBar>
-                                            <ProgressFill
-                                                percentage={
-                                                    currentMonthProgress
-                                                }
-                                            />
-                                        </ProgressBar>
-                                    )}
-                                </MonthCard>
-                            );
-                        })}
-                    </MonthlyBreakdownGrid>
-                </ChartCard>
-
-                {/* Yearly Summary */}
-                <ChartCard>
-                    <ChartHeader>📊 Yearly Summary</ChartHeader>
-                    <div style={{ marginBottom: "1.5rem" }}>
-                        <StatValue
-                            style={{ fontSize: "2rem", marginBottom: "0.5rem" }}
-                        >
-                            {formatCurrency(statistics.totalAmount)}
+                    <StatCard>
+                        <StatIcon background="linear-gradient(135deg, #f59e0b, #f97316)">
+                            💰
+                        </StatIcon>
+                        <StatValue>
+                            {formatCurrency(overview.totalRevenue)} AF
                         </StatValue>
-                        <StatLabel>Total Revenue This Year</StatLabel>
-                    </div>
+                        <StatLabel>Total Revenue</StatLabel>
+                        <StatTrend positive>All time</StatTrend>
+                    </StatCard>
 
-                    {Object.entries(yearlyData).map(([year, data]) => (
-                        <div
-                            key={year}
-                            style={{
-                                marginBottom: "1rem",
-                                padding: "1rem",
-                                background: "#f7fafc",
-                                borderRadius: "10px",
-                            }}
-                        >
-                            <div
-                                style={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    alignItems: "center",
-                                }}
-                            >
-                                <span
-                                    style={{
-                                        fontWeight: "600",
-                                        color: "#2d3748",
-                                    }}
-                                >
-                                    Year {year}
-                                </span>
-                                <span
-                                    style={{
-                                        fontWeight: "700",
-                                        color: "#667eea",
-                                    }}
-                                >
-                                    {formatCurrency(data.amount)}
-                                </span>
-                            </div>
-                            <div
-                                style={{
-                                    fontSize: "0.8rem",
-                                    color: "#718096",
-                                    marginTop: "0.25rem",
-                                }}
-                            >
-                                {data.count} enrollments
-                            </div>
-                        </div>
-                    ))}
-                </ChartCard>
-            </ChartsContainer>
+                    <StatCard>
+                        <StatIcon background="linear-gradient(135deg, #8b5cf6, #a855f7)">
+                            📊
+                        </StatIcon>
+                        <StatValue>
+                            {formatCurrency(overview.averageRevenue)} AF
+                        </StatValue>
+                        <StatLabel>Average per Enrollment</StatLabel>
+                        <StatTrend positive>Across all durations</StatTrend>
+                    </StatCard>
+                </StatsGrid>
 
-            {/* Percentage Calculator */}
-            <PercentageCalculator>
-                <CalculatorHeader>
-                    🧮 Revenue Distribution Calculator
-                </CalculatorHeader>
-
-                <CalculatorControls>
-                    <div>
-                        <label
-                            style={{
-                                display: "block",
-                                marginBottom: "0.5rem",
-                                fontWeight: "600",
-                                color: "#4a5568",
-                            }}
-                        >
-                            Distribution Percentage:
-                        </label>
-                        <PercentageInput
-                            type="number"
-                            min="0"
-                            max="100"
-                            value={percentage}
-                            onChange={handlePercentageChange}
-                        />
-                    </div>
-
-                    <div style={{ flex: 1, minWidth: "250px" }}>
-                        <label
-                            style={{
-                                display: "block",
-                                marginBottom: "0.5rem",
-                                fontWeight: "600",
-                                color: "#4a5568",
-                            }}
-                        >
-                            Adjust Distribution:
-                        </label>
-                        <PercentageSlider
-                            type="range"
-                            min="0"
-                            max="100"
-                            value={percentage}
-                            onChange={handleSliderChange}
-                        />
-                    </div>
-
-                    <PercentageDisplay>{percentage}%</PercentageDisplay>
-                </CalculatorControls>
-
-                <ResultsGrid>
-                    <ResultCard color="#667eea">
-                        <ResultLabel>Distributed Amount</ResultLabel>
-                        <ResultValue>
-                            {formatCurrency(
-                                percentageCalculations.percentageAmount
+                <ContentGrid>
+                    {/* Duration Performance */}
+                    <Card>
+                        <CardHeader>
+                            <CardIcon color="#3b82f6, #06b6d4">🎯</CardIcon>
+                            <CardTitle>Duration Performance</CardTitle>
+                        </CardHeader>
+                        <DurationGrid>
+                            {Object.entries(durationStats).map(
+                                ([duration, stats]) => (
+                                    <DurationCard
+                                        key={duration}
+                                        gradient={getDurationGradient(duration)}
+                                    >
+                                        <DurationHeader>
+                                            <DurationInfo>
+                                                <DurationIcon>
+                                                    {getDurationIcon(duration)}
+                                                </DurationIcon>
+                                                <DurationName>
+                                                    {duration}
+                                                </DurationName>
+                                            </DurationInfo>
+                                            <DurationStats>
+                                                <DurationValue>
+                                                    {stats.enrollment_count}
+                                                </DurationValue>
+                                                <DurationLabel>
+                                                    enrollments
+                                                </DurationLabel>
+                                            </DurationStats>
+                                        </DurationHeader>
+                                        <DurationDetails>
+                                            <DetailItem>
+                                                <DetailLabel>
+                                                    Revenue
+                                                </DetailLabel>
+                                                <DetailValue>
+                                                    {formatCurrency(
+                                                        stats.total_revenue
+                                                    )}{" "}
+                                                    AF
+                                                </DetailValue>
+                                            </DetailItem>
+                                            <DetailItem>
+                                                <DetailLabel>
+                                                    Average
+                                                </DetailLabel>
+                                                <DetailValue>
+                                                    {formatCurrency(
+                                                        stats.average_revenue
+                                                    )}{" "}
+                                                    AF
+                                                </DetailValue>
+                                            </DetailItem>
+                                            <DetailItem>
+                                                <DetailLabel>
+                                                    Enrollment %
+                                                </DetailLabel>
+                                                <DetailValue>
+                                                    {
+                                                        stats.enrollment_percentage
+                                                    }
+                                                    %
+                                                </DetailValue>
+                                            </DetailItem>
+                                            <DetailItem>
+                                                <DetailLabel>
+                                                    Revenue %
+                                                </DetailLabel>
+                                                <DetailValue>
+                                                    {stats.revenue_percentage}%
+                                                </DetailValue>
+                                            </DetailItem>
+                                        </DurationDetails>
+                                    </DurationCard>
+                                )
                             )}
-                        </ResultValue>
-                    </ResultCard>
+                        </DurationGrid>
+                    </Card>
 
-                    <ResultCard color="#f56565">
-                        <ResultLabel>Remaining Balance</ResultLabel>
-                        <ResultValue>
-                            {formatCurrency(
-                                percentageCalculations.remainingAmount
-                            )}
-                        </ResultValue>
-                    </ResultCard>
+                    {/* Monthly Analysis */}
+                    <Card>
+                        <CardHeader>
+                            <CardIcon color="#8b5cf6, #a855f7">📅</CardIcon>
+                            <CardTitle>Monthly Analysis</CardTitle>
+                        </CardHeader>
+                        <MonthlyGrid>
+                            {afghanMonths.map((month) => {
+                                const data = monthlyDurationData[month] || {
+                                    total_enrollments: 0,
+                                    total_revenue: 0,
+                                };
+                                const isCurrent = month === "Hamal"; // You can make this dynamic
 
-                    <ResultCard color="#48bb78">
-                        <ResultLabel>Per Student</ResultLabel>
-                        <ResultValue>
-                            {formatCurrency(
-                                percentageCalculations.perStudentAmount
-                            )}
-                        </ResultValue>
-                    </ResultCard>
+                                return (
+                                    <MonthCard
+                                        key={month}
+                                        isCurrent={isCurrent}
+                                    >
+                                        <MonthName>{month}</MonthName>
+                                        <MonthAmount isCurrent={isCurrent}>
+                                            {formatCurrency(data.total_revenue)}{" "}
+                                            AF
+                                        </MonthAmount>
+                                        <MonthEnrollments isCurrent={isCurrent}>
+                                            {data.total_enrollments} enrollments
+                                        </MonthEnrollments>
+                                    </MonthCard>
+                                );
+                            })}
+                        </MonthlyGrid>
+                    </Card>
+                </ContentGrid>
 
-                    <ResultCard color="#ed8936">
-                        <ResultLabel>Total Base</ResultLabel>
-                        <ResultValue>
-                            {formatCurrency(statistics.totalAmount)}
-                        </ResultValue>
-                    </ResultCard>
-                </ResultsGrid>
-            </PercentageCalculator>
-        </DashboardContainer>
+                {/* Recent Enrollments */}
+                <TableContainer>
+                    <TableTitle>
+                        <span>🆕</span>
+                        Recent Enrollments
+                    </TableTitle>
+                    <Table>
+                        <TableHeader>
+                            <tr>
+                                <TableHeaderCell>Student</TableHeaderCell>
+                                <TableHeaderCell>Teacher</TableHeaderCell>
+                                <TableHeaderCell>Course</TableHeaderCell>
+                                <TableHeaderCell>Month</TableHeaderCell>
+                                <TableHeaderCell>Duration</TableHeaderCell>
+                                <TableHeaderCell>Amount</TableHeaderCell>
+                            </tr>
+                        </TableHeader>
+                        <tbody>
+                            {recentEnrollments.map((enrollment, index) => (
+                                <TableRow key={index}>
+                                    <TableCell>
+                                        {enrollment.student_name}
+                                    </TableCell>
+                                    <TableCell>
+                                        {enrollment.teacher_name}
+                                    </TableCell>
+                                    <TableCell>
+                                        {enrollment.course_name}
+                                    </TableCell>
+                                    <TableCell>{enrollment.month}</TableCell>
+                                    <TableCell>
+                                        <Badge duration={enrollment.duration}>
+                                            {enrollment.duration}
+                                        </Badge>
+                                    </TableCell>
+                                    <TableCell>${enrollment.amount}</TableCell>
+                                </TableRow>
+                            ))}
+                        </tbody>
+                    </Table>
+                </TableContainer>
+            </DashboardContainer>
+        </>
     );
 }
 
-export default BudgetDashboard;
+// Helper functions
+function getDurationIcon(duration) {
+    switch (duration) {
+        case "Monthly":
+            return "📅";
+        case "Semesterly":
+            return "🎓";
+        case "All Package":
+            return "⭐";
+        default:
+            return "📊";
+    }
+}
+
+function getDurationGradient(duration) {
+    switch (duration) {
+        case "Monthly":
+            return "#3b82f6, #06b6d4";
+        case "Semesterly":
+            return "#10b981, #34d399";
+        case "All Package":
+            return "#8b5cf6, #a855f7";
+        default:
+            return "#6b7280, #9ca3af";
+    }
+}

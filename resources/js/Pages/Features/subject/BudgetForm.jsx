@@ -37,6 +37,7 @@ function BudgetForm({ section }) {
         teacher: 1,
         month: "Hamal",
         year: "",
+        duration: "",
     });
 
     const months = [

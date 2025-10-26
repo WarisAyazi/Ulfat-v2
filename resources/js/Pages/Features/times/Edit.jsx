@@ -19,7 +19,7 @@ const StyledCreateStudent = styled.div`
 `;
 
 function Edit({ time }) {
-    const { data, setData, put, reset, processing, errors } = useForm({
+    const { data, setData, put, get, processing, errors } = useForm({
         id: time.id,
         ttime: time.time,
     });
@@ -76,9 +76,11 @@ function Edit({ time }) {
                             <Button
                                 variation="secondary"
                                 type="reset"
-                                onClick={() => reset()}
+                                onClick={() =>
+                                    get(route("times.show", time.id))
+                                }
                             >
-                                Cancel
+                                Back
                             </Button>
                             <Button type="submit" disabled={processing}>
                                 {processing ? "Updating...." : " Update Time"}

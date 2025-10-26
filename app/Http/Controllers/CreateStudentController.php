@@ -68,12 +68,11 @@ class CreateStudentController extends Controller
             $student->phone_number = $request->phone_number;
             $student->save();
 
-            $durationType = $this->determineDurationType($request->month);
 
             $enrollment = new Enrollment();
             $enrollment->month = $request->month;
             $enrollment->amount = $request->amount;
-            // $enrollment->duration = $durationType;
+            $enrollment->duration = $request->duration;
             $enrollment->save();
 
 
@@ -102,7 +101,7 @@ class CreateStudentController extends Controller
             'enrollment' => [
                 'month' => $enrollment->month,
                 'amount' => $enrollment->amount,
-                // 'duration' => $enrollment->duration,
+                'duration' => $enrollment->duration,
             ],
             'section' => [
                 'teacher_name' => $teacher->name ?? 'N/A',
@@ -131,24 +130,7 @@ class CreateStudentController extends Controller
         }
     }
 
-      private function determineDurationType($month)
-    {
-        // Afghan months for monthly enrollment
-        $afghanMonths = ['Hamal', 'Saur', 'Jawza', 'Saratan', 'Asad', 'Sunbula', 'Mizan', 'Aqrab', 'Qaws', 'Jadi', 'Dalwa', 'Hoot'];
-        
-        // Semesters
-        $semesters = ['First semester', 'Second Semester', 'Third Semester'];
-
-        if (in_array($month, $afghanMonths)) {
-            return 'Monthly';
-        } elseif (in_array($month, $semesters)) {
-            return 'Semesterly';
-        } elseif ($month === 'All Package') {
-            return 'All Package';
-        } else {
-            return 'Monthly'; // Default fallback
-        }
-    }
+    
 
     /**
      * Display the specified resource.

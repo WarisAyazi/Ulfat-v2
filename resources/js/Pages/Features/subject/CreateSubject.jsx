@@ -45,13 +45,13 @@ function CreateSubject() {
             </Heading>
             <Form onSubmit={onCreateSubject}>
                 <FormRow type="student">
-                    <Label htmlFor="title">Sourse Name</Label>
+                    <Label htmlFor="title">Course Name</Label>
                     <Input
                         type="text"
                         id="title"
                         value={data.title}
                         onChange={(e) => setData("title", e.target.value)}
-                        placeholder="Subject Name"
+                        placeholder="Course Name"
                     />
                     {errors.title && (
                         <p className="text-red-600">{errors.title}</p>

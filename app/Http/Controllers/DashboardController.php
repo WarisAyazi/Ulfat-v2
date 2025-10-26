@@ -23,216 +23,230 @@ class DashboardController extends Controller
     }
 
     /**
-     * Get comprehensive statistics for the dashboard
+     * Get comprehensive dashboard data with duration analytics
      */
-    public function getStatistics(Request $request)
+    public function getDashboardData()
     {
         try {
-            // Total Students
+            // Basic statistics
             $totalStudents = Student::count();
-
-            // Total Amount from all enrollments
-            $totalAmount = Enrollment::sum('amount');
-
-            // Total Enrollments (through sections)
             $totalEnrollments = Section::count();
+            $totalRevenue = Enrollment::sum('amount');
+            $averageRevenue = $totalEnrollments > 0 ? $totalRevenue / $totalEnrollments : 0;
 
-            // Average amount per enrollment
-            $averageAmount = $totalEnrollments > 0 ? $totalAmount / $totalEnrollments : 0;
+            // Duration analytics
+            $durationStats = $this->getDurationStats();
+            $monthlyDurationData = $this->getMonthlyDurationData();
+            $revenueByDuration = $this->getRevenueByDuration();
+            $enrollmentTrends = $this->getEnrollmentTrends();
 
-            // Current month statistics (assuming current month is Hamal for demo)
-            $currentMonth = 'Hamal';
-            $currentMonthData = $this->getMonthData($currentMonth);
-
-            // Monthly growth (compared to previous month)
-            $previousMonth = 'Hoot'; // Assuming previous month
-            $previousMonthData = $this->getMonthData($previousMonth);
-            
-            $monthlyGrowth = $previousMonthData['amount'] > 0 
-                ? (($currentMonthData['amount'] - $previousMonthData['amount']) / $previousMonthData['amount']) * 100 
-                : 0;
-
-            // Yearly growth
-            $currentYear = now()->year;
-            $previousYear = $currentYear - 1;
-            
-            $currentYearAmount = $this->getYearAmount($currentYear);
-            $previousYearAmount = $this->getYearAmount($previousYear);
-            
-            $yearlyGrowth = $previousYearAmount > 0 
-                ? (($currentYearAmount - $previousYearAmount) / $previousYearAmount) * 100 
-                : 0;
+            // Recent activity
+            $recentEnrollments = $this->getRecentEnrollments(10);
 
             return response()->json([
                 'success' => true,
                 'data' => [
-                    'totalStudents' => $totalStudents,
-                    'totalAmount' => (float) $totalAmount,
-                    'totalEnrollments' => $totalEnrollments,
-                    'averageAmount' => (float) $averageAmount,
-                    'currentMonthAmount' => $currentMonthData['amount'],
-                    'currentMonthEnrollments' => $currentMonthData['count'],
-                    'monthlyGrowth' => (float) $monthlyGrowth,
-                    'yearlyGrowth' => (float) $yearlyGrowth,
-                    'currentYearAmount' => $currentYearAmount,
+                    'overview' => [
+                        'totalStudents' => $totalStudents,
+                        'totalEnrollments' => $totalEnrollments,
+                        'totalRevenue' => (float) $totalRevenue,
+                        'averageRevenue' => (float) round($averageRevenue, 2),
+                    ],
+                    'durationStats' => $durationStats,
+                    'monthlyDurationData' => $monthlyDurationData,
+                    'revenueByDuration' => $revenueByDuration,
+                    'enrollmentTrends' => $enrollmentTrends,
+                    'recentEnrollments' => $recentEnrollments,
                 ]
             ]);
 
         } catch (\Exception $e) {
+            // \Log::error('Dashboard error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to fetch statistics: ' . $e->getMessage()
+                'message' => 'Failed to load dashboard data'
             ], 500);
         }
     }
 
     /**
-     * Get monthly breakdown data
+     * Get detailed duration statistics
      */
-    public function getMonthlyData()
+    private function getDurationStats()
     {
-        try {
-            $monthlyData = DB::table('sections')
-                ->join('enrollments', 'sections.enrollment_id', '=', 'enrollments.id')
-                ->select(
-                    'enrollments.month',
-                    DB::raw('SUM(enrollments.amount) as total_amount'),
-                    DB::raw('COUNT(sections.id) as enrollment_count')
-                )
-                ->groupBy('enrollments.month')
-                ->get()
-                ->keyBy('month');
+        $stats = DB::table('enrollments')
+            ->select(
+                'duration',
+                DB::raw('COUNT(*) as enrollment_count'),
+                DB::raw('SUM(amount) as total_revenue'),
+                DB::raw('AVG(amount) as average_revenue'),
+                DB::raw('MAX(amount) as max_revenue'),
+                DB::raw('MIN(amount) as min_revenue')
+            )
+            ->groupBy('duration')
+            ->get();
 
-            // Afghan months with default values
-            $afghanMonths = ['Hamal', 'Saur', 'Jawza', 'Saratan', 'Asad', 'Sunbula', 'Mizan', 'Aqrab', 'Qaws', 'Jadi', 'Dalwa', 'Hoot'];
-            
-            $formattedData = [];
-            foreach ($afghanMonths as $month) {
-                $monthData = $monthlyData->get($month);
-                $formattedData[$month] = [
-                    'amount' => $monthData ? (float) $monthData->total_amount : 0,
-                    'count' => $monthData ? $monthData->enrollment_count : 0
+        $totalEnrollments = $stats->sum('enrollment_count');
+        $totalRevenue = $stats->sum('total_revenue');
+
+        $result = [];
+        foreach ($stats as $stat) {
+            $percentage = $totalEnrollments > 0 ? ($stat->enrollment_count / $totalEnrollments) * 100 : 0;
+            $revenuePercentage = $totalRevenue > 0 ? ($stat->total_revenue / $totalRevenue) * 100 : 0;
+
+            $result[$stat->duration] = [
+                'enrollment_count' => $stat->enrollment_count,
+                'total_revenue' => (float) $stat->total_revenue,
+                'average_revenue' => (float) round($stat->average_revenue, 2),
+                'max_revenue' => (float) $stat->max_revenue,
+                'min_revenue' => (float) $stat->min_revenue,
+                'enrollment_percentage' => round($percentage, 1),
+                'revenue_percentage' => round($revenuePercentage, 1),
+            ];
+        }
+
+        // Ensure all duration types are present
+        $durations = ['Monthly', 'Semesterly', 'All Package'];
+        foreach ($durations as $duration) {
+            if (!isset($result[$duration])) {
+                $result[$duration] = [
+                    'enrollment_count' => 0,
+                    'total_revenue' => 0,
+                    'average_revenue' => 0,
+                    'max_revenue' => 0,
+                    'min_revenue' => 0,
+                    'enrollment_percentage' => 0,
+                    'revenue_percentage' => 0,
+                ];
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get monthly data with duration breakdown
+     */
+    private function getMonthlyDurationData()
+    {
+        $months = ['Hamal', 'Saur', 'Jawza', 'Saratan', 'Asad', 'Sunbula', 'Mizan', 'Aqrab', 'Qaws', 'Jadi', 'Dalwa', 'Hoot'];
+        
+        $monthlyData = DB::table('enrollments')
+            ->select(
+                'month',
+                'duration',
+                DB::raw('COUNT(*) as count'),
+                DB::raw('SUM(amount) as revenue')
+            )
+            ->groupBy('month', 'duration')
+            ->get();
+
+        $result = [];
+        foreach ($months as $month) {
+            $result[$month] = [
+                'total_enrollments' => 0,
+                'total_revenue' => 0,
+                'durations' => []
+            ];
+
+            // Initialize all durations for this month
+            foreach (['Monthly', 'Semesterly', 'All Package'] as $duration) {
+                $result[$month]['durations'][$duration] = [
+                    'count' => 0,
+                    'revenue' => 0
                 ];
             }
 
-            return response()->json([
-                'success' => true,
-                'data' => $formattedData
-            ]);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to fetch monthly data: ' . $e->getMessage()
-            ], 500);
+            // Fill with actual data
+            foreach ($monthlyData as $data) {
+                if ($data->month === $month) {
+                    $result[$month]['total_enrollments'] += $data->count;
+                    $result[$month]['total_revenue'] += $data->revenue;
+                    $result[$month]['durations'][$data->duration] = [
+                        'count' => $data->count,
+                        'revenue' => (float) $data->revenue
+                    ];
+                }
+            }
         }
+
+        return $result;
     }
 
     /**
-     * Get yearly breakdown data
+     * Get revenue distribution by duration
      */
-    public function getYearlyData()
+    private function getRevenueByDuration()
     {
-        try {
-            $yearlyData = DB::table('sections')
-                ->join('enrollments', 'sections.enrollment_id', '=', 'enrollments.id')
-                ->select(
-                    DB::raw('YEAR(enrollments.created_at) as year'),
-                    DB::raw('SUM(enrollments.amount) as total_amount'),
-                    DB::raw('COUNT(sections.id) as enrollment_count')
-                )
-                ->groupBy(DB::raw('YEAR(enrollments.created_at)'))
-                ->orderBy('year', 'desc')
-                ->get()
-                ->keyBy('year');
-
-            return response()->json([
-                'success' => true,
-                'data' => $yearlyData
-            ]);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to fetch yearly data: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-
-    /**
-     * Get all dashboard data in one request
-     */
-    public function getAllData()
-    {
-        try {
-            $statistics = $this->getStatisticsData();
-            $monthlyData = $this->getMonthlyData()->getData()->data;
-            $yearlyData = $this->getYearlyData()->getData()->data;
-
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'statistics' => $statistics,
-                    'monthlyData' => $monthlyData,
-                    'yearlyData' => $yearlyData
-                ]
-            ]);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to fetch dashboard data: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-
-    /**
-     * Helper method to get month data
-     */
-    private function getMonthData($month)
-    {
-        $data = DB::table('sections')
-            ->join('enrollments', 'sections.enrollment_id', '=', 'enrollments.id')
-            ->where('enrollments.month', $month)
+        return DB::table('enrollments')
             ->select(
-                DB::raw('COALESCE(SUM(enrollments.amount), 0) as total_amount'),
-                DB::raw('COUNT(sections.id) as enrollment_count')
+                'duration',
+                DB::raw('SUM(amount) as revenue'),
+                DB::raw('COUNT(*) as count')
             )
-            ->first();
-
-        return [
-            'amount' => (float) ($data->total_amount ?? 0),
-            'count' => $data->enrollment_count ?? 0
-        ];
+            ->groupBy('duration')
+            ->orderBy('revenue', 'desc')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'duration' => $item->duration,
+                    'revenue' => (float) $item->revenue,
+                    'count' => $item->count
+                ];
+            });
     }
 
     /**
-     * Helper method to get year amount
+     * Get enrollment trends (last 6 months)
      */
-    private function getYearAmount($year)
+    private function getEnrollmentTrends()
     {
-        $data = DB::table('enrollments')
-            ->whereYear('created_at', $year)
-            ->sum('amount');
+        $recentMonths = DB::table('enrollments')
+            ->select(
+                'month',
+                'duration',
+                DB::raw('COUNT(*) as count'),
+                DB::raw('SUM(amount) as revenue')
+            )
+            ->groupBy('month', 'duration')
+            ->orderBy('month')
+            ->get();
 
-        return (float) ($data ?? 0);
+        return $recentMonths;
     }
 
     /**
-     * Helper method for statistics data
+     * Get recent enrollments with duration info
      */
-    private function getStatisticsData()
+    private function getRecentEnrollments($limit = 30)
     {
-        $totalStudents = Student::count();
-        $totalAmount = Enrollment::sum('amount');
-        $totalEnrollments = Section::count();
-        $averageAmount = $totalEnrollments > 0 ? $totalAmount / $totalEnrollments : 0;
-
-        return [
-            'totalStudents' => $totalStudents,
-            'totalAmount' => (float) $totalAmount,
-            'totalEnrollments' => $totalEnrollments,
-            'averageAmount' => (float) $averageAmount,
-        ];
+        return DB::table('enrollments')
+            ->join('sections', 'enrollments.id', '=', 'sections.enrollment_id')
+            ->join('students', 'sections.student_id', '=', 'students.id')
+            ->join('teachers', 'sections.teacher_id', '=', 'teachers.id')
+            ->join('courses', 'sections.course_id', '=', 'courses.id')
+            ->select(
+                'students.name as student_name',
+                'teachers.name as teacher_name',
+                'courses.title as course_name',
+                'enrollments.month',
+                'enrollments.duration',
+                'enrollments.amount',
+                'enrollments.created_at'
+            )
+            ->orderBy('enrollments.created_at', 'desc')
+            ->limit($limit)
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'student_name' => $item->student_name,
+                    'teacher_name' => $item->teacher_name,
+                    'course_name' => $item->course_name,
+                    'month' => $item->month,
+                    'duration' => $item->duration,
+                    'amount' => (float) $item->amount,
+                    'enrolled_at' => $item->created_at,
+                ];
+            });
     }
 }

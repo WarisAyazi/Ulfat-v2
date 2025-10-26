@@ -18,18 +18,13 @@ Route::get('/', function () {
     ]);
 });
 
-// Update the existing dashboard route to use the controller
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-// Add dashboard API routes
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard/statistics', [DashboardController::class, 'getStatistics'])->name('dashboard.statistics');
-    Route::get('/dashboard/monthly-data', [DashboardController::class, 'getMonthlyData'])->name('dashboard.monthly');
-    Route::get('/dashboard/yearly-data', [DashboardController::class, 'getYearlyData'])->name('dashboard.yearly');
-    Route::get('/dashboard/all-data', [DashboardController::class, 'getAllData'])->name('dashboard.all-data');
-});
+Route::get('/api/dashboard/data', [DashboardController::class, 'getDashboardData'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard.data');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

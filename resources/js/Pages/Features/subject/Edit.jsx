@@ -19,10 +19,9 @@ const StyledCreateStudent = styled.div`
 `;
 
 function Edit({ course }) {
-    const { data, setData, put, reset, processing, errors } = useForm({
+    const { data, setData, put, get, processing, errors } = useForm({
         id: course.id,
         title: course.title,
-        language: course.language,
         classroom: course.classroom,
     });
 
@@ -75,29 +74,9 @@ function Edit({ course }) {
                     </div>
                     <div>
                         <FormRow type="student">
-                            <Label htmlFor="language">Subject language</Label>
-                            <Select
-                                id="language"
-                                value={data.language}
-                                onChange={(e) =>
-                                    setData("language", e.target.value)
-                                }
-                            >
-                                <option defaultChecked>Language</option>
-
-                                <option>Dari</option>
-                                <option>Pashto</option>
-                            </Select>
-                            {errors.language && (
-                                <p className="text-red-600">
-                                    {errors.language}
-                                </p>
-                            )}
-                        </FormRow>
-                        <FormRow type="student">
                             <Label htmlFor="classroom">Class Number</Label>
                             <Input
-                                type="number"
+                                type="text"
                                 id="classroom"
                                 value={data.classroom}
                                 onChange={(e) =>
@@ -114,9 +93,11 @@ function Edit({ course }) {
                             <Button
                                 variation="secondary"
                                 type="reset"
-                                onClick={() => reset()}
+                                onClick={() =>
+                                    get(route("courses.show", course.id))
+                                }
                             >
-                                Cancel
+                                Back
                             </Button>
                             <Button type="submit" disabled={processing}>
                                 {processing ? "Updating...." : " Update Course"}

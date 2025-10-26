@@ -326,6 +326,10 @@ export default function StudentPrint({ data }) {
                             </DetailItem>
 
                             <DetailItem>
+                                <Label>Duration:</Label>
+                                <Value>{data.enrollment.duration}</Value>
+                            </DetailItem>
+                            <DetailItem>
                                 <Label>Period:</Label>
                                 <Value>{data.enrollment.month}</Value>
                             </DetailItem>

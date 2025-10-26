@@ -47,12 +47,15 @@ class EnrollmentController extends Controller
         'time' => 'required|integer',
         'teacher' => 'required|integer',
         'amount' => 'required|integer',
+        'duration' => 'required',
+
     ]);
 
     try {
         $enrollment = new Enrollment();
         $enrollment->month = $request->month;
         $enrollment->amount = $request->amount;
+        $enrollment->duration = $request->duration;
         $enrollment->save();
 
         $section = new Section();
@@ -167,13 +170,15 @@ class EnrollmentController extends Controller
         'time' => 'required',
         'teacher' => 'required',
         'amount' => 'required|integer',
+        'duration' => 'required',
     ]);
 
     try {
         
         Enrollment::where('id', $request->enrid)->update([
             'month' => $request->month, 
-            'amount' => $request->amount
+            'amount' => $request->amount,
+            'duration' => $request->duration
         ]);
         
         Section::where('id', $id)->update([

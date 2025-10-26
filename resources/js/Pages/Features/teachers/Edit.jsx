@@ -18,7 +18,7 @@ const Add = styled.div`
 `;
 
 function CreateTeacher({ teacher }) {
-    const { data, setData, put, reset, processing, errors } = useForm({
+    const { data, setData, put, get, processing, errors } = useForm({
         id: teacher.id,
         name: teacher.name,
         fname: teacher.fname,
@@ -111,9 +111,9 @@ function CreateTeacher({ teacher }) {
                     <Button
                         variation="secondary"
                         type="reset"
-                        onClick={() => reset()}
+                        onClick={() => get(route("teachers.show", teacher.id))}
                     >
-                        Cancel
+                        Back
                     </Button>
                     <Button type="submit" disabled={processing}>
                         {processing ? "Updating" : "Update Teacher"}

@@ -88,6 +88,7 @@ function EditEnrollment({ enrid, id, ctt, sctt }) {
         time: ctt[0].tiid,
         teacher: ctt[0].tid,
         amount: ctt[0].amount,
+        duration: "",
     });
     const months = [
         "Hamal",

@@ -102,13 +102,12 @@ function CreateStudentForm({ teachers, courses, times }) {
 
     function onSubmit(e) {
         e.preventDefault();
-        console.log(data);
-        // post("/new-student", {
-        //     preserveScroll: true,
-        //     onError: () => {
-        //         toast.error("Failed to add student 😞");
-        //     },
-        // });
+        post("/new-student", {
+            preserveScroll: true,
+            onError: () => {
+                toast.error("Failed to add student 😞");
+            },
+        });
     }
     const months = [
         "Hamal",
