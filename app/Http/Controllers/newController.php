@@ -70,7 +70,7 @@ class newController extends Controller
             'month'=>'required',
             'year'=> 'required',
             'language'=> 'required'
-        ]);
+        ]); 
 
 
         $section = DB::table('courses')
@@ -79,7 +79,7 @@ class newController extends Controller
             ->join('teachers', 'teachers.id', '=', 'sections.teacher_id')
             ->join('times', 'times.id', '=',  'sections.time_id')
             ->join('enrollments', 'enrollments.id', '=', 'sections.enrollment_id')
-            ->select('courses.*',  'enrollments.created_at as year', 'students.name as sname' , 'teachers.name as tname', 'times.time' , 'sections.id as seid' )
+            ->select('courses.*',  'enrollments.year', 'students.name as sname' , 'teachers.name as tname', 'times.time' , 'sections.id as seid' )
             ->where('courses.id','=' ,$request->id)
             ->get();
 

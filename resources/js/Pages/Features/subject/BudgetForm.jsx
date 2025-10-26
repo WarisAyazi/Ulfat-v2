@@ -29,6 +29,7 @@ function BudgetForm({ section }) {
         (obj, index, self) =>
             index === self.findIndex((o) => o.course_id === obj.course_id)
     );
+
     if (ctt[0] === undefined) return;
     const { data, setData, post, processing, reset, errors } = useForm({
         id: ctt[0].id,
@@ -53,7 +54,6 @@ function BudgetForm({ section }) {
         "Hoot",
     ];
     const semesters = ["First semester", "Second Semester", "Third Semester"];
-
     function onCreateTime(e) {
         e.preventDefault();
         post(route("CourseBudget"));
@@ -193,9 +193,12 @@ function BudgetForm({ section }) {
                         onChange={(e) => setData("year", e.target.value)}
                     >
                         <option defaultChecked>Year</option>
-                        {ctt.map((section) => (
-                            <option value={section.year} key={section.year}>
-                                {section.year}
+                        {ctt.map((entollment) => (
+                            <option
+                                value={entollment.year}
+                                key={entollment.year}
+                            >
+                                {entollment.year}
                             </option>
                         ))}
                     </Select>

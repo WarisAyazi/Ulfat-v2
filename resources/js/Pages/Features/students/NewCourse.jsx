@@ -7,9 +7,11 @@ import Input from "@/ui/Input";
 import Label from "@/ui/Label";
 import Row from "@/ui/Row";
 import Select from "@/ui/Select";
-import { useForm } from "@inertiajs/react";
+import { useForm, usePage } from "@inertiajs/react";
 import styled from "styled-components";
 import toast from "react-hot-toast";
+import { useEffect, useState } from "react";
+import PrintDialogs from "@/ui/PrintDialogs";
 
 const StyledCreateStudent = styled.div`
     display: flex;
@@ -24,7 +26,55 @@ const Space = styled.div`
     height: 4rem;
 `;
 function NewCourse({ student, teachers, courses, times }) {
-    const { data, setData, post, reset, processing, errors } = useForm({
+    const [showPrintDialog, setShowPrintDialog] = useState(false);
+    const [printData, setPrintData] = useState(null);
+    const { flash } = usePage().props;
+    console.log(flash);
+
+    useEffect(() => {
+        if (flash?.print_data) {
+            setPrintData(flash.print_data);
+            setShowPrintDialog(true);
+        }
+    }, [flash]);
+
+    const handlePrint = () => {
+        const landscapeStyle = document.createElement("style");
+        landscapeStyle.innerHTML = `
+                @page {
+                    size: landscape;
+                    margin: 0.5in;
+                }
+                @media print {
+                    body * {
+                        visibility: hidden;
+                    }
+                    .print-container, .print-container * {
+                        visibility: visible;
+                    }
+                    .print-container {
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        width: 100%;
+                    }
+                }
+            `;
+        document.head.appendChild(landscapeStyle);
+
+        window.print();
+
+        setTimeout(() => {
+            document.head.removeChild(landscapeStyle);
+        }, 100);
+    };
+
+    const handleClosePrint = () => {
+        setShowPrintDialog(false);
+        setPrintData(null);
+    };
+
+    const { data, setData, post, get, processing, errors } = useForm({
         name: student.name,
         id: student.id,
         subject: 1,
@@ -263,9 +313,11 @@ function NewCourse({ student, teachers, courses, times }) {
                             <Button
                                 variation="secondary"
                                 type="reset"
-                                onClick={() => reset()}
+                                onClick={() =>
+                                    get(route("students.show", student.id))
+                                }
                             >
-                                Cancel
+                                Back
                             </Button>
                             <Button type="submit" disabled={processing}>
                                 {processing ? "Saving...." : "Enroll"}
@@ -274,6 +326,13 @@ function NewCourse({ student, teachers, courses, times }) {
                     </div>
                 </Form>
             </StyledCreateStudent>
+            {showPrintDialog && printData && (
+                <PrintDialogs
+                    handlePrint={handlePrint}
+                    handleClosePrint={handleClosePrint}
+                    printData={printData}
+                />
+            )}
         </>
     );
 }

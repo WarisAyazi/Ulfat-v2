@@ -6,7 +6,6 @@ import Heading from "@/ui/Heading";
 import Budget from "./Budget";
 
 function Teacher({ teacher, section, data }) {
-    console.log(section);
     return (
         <div>
             <Row type="horizontal">

@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\EnrollmentStoreRequest;
 use App\Http\Requests\EnrollmentUpdateRequest;
+use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Section;
+use App\Models\Teacher;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -15,6 +17,7 @@ use Illuminate\View\View;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\Student;
+use App\Models\Time;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
@@ -35,38 +38,75 @@ class EnrollmentController extends Controller
         return view('enrollment.create');
     }
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required', 'string',
-            'subject' => 'required', 'integer',
-            'month' => 'required', 'string',
-            'time' => 'required', 'integer',
-            'teacher' => 'required', 'integer',
-            'amount' => 'required', 'integer',
+  public function store(Request $request)
+{
+    $request->validate([
+        'name' => 'required|string',
+        'subject' => 'required|integer',
+        'month' => 'required|string',
+        'time' => 'required|integer',
+        'teacher' => 'required|integer',
+        'amount' => 'required|integer',
+    ]);
+
+    try {
+        $enrollment = new Enrollment();
+        $enrollment->month = $request->month;
+        $enrollment->amount = $request->amount;
+        $enrollment->save();
+
+        $section = new Section();
+        $section->time_id = $request->time;
+        $section->student_id = $request->id;
+        $section->teacher_id = $request->teacher;
+        $section->course_id = $request->subject;
+        $section->enrollment_id = $enrollment->id;
+        $section->save();
+
+        // Get related data for printing
+        $student = Student::find($request->id);
+        $teacher = Teacher::find($request->teacher);
+        $course = Course::find($request->subject);
+        $time = Time::find($request->time);
+
+        $printData = [
+            'student' => [
+                'id' => $student->id,
+                'name' => $student->name,
+                'fname' => $student->fname ?? 'N/A',
+                'language' => $student->language ?? 'N/A',
+                'phone_number' => $student->phone_number ?? 'N/A',
+                'created_at' => $student->created_at,
+            ],
+            'enrollment' => [
+                'month' => $enrollment->month,
+                'duration' => $enrollment->duration ?? 'N/A',
+                'amount' => $enrollment->amount,
+            ],
+            'section' => [
+                'teacher_name' => $teacher->name ?? 'N/A',
+                'course_title' => $course->title ?? 'N/A',
+                'time_slot' => $time->time ?? 'N/A',
+            ],
+            
+        ];
+
+        // Store the previous URL in session
+        $previousUrl = url()->previous();
+        session(['back_url' => $previousUrl]);
+
+        // Return to the previous page with print data
+        return redirect()->to($previousUrl)->with([
+            'success' => 'Enrollment added successfully!',
+            'print_data' => $printData
         ]);
-        try {
-            $enrollment = new Enrollment();
-            $enrollment->month = $request->month;
-            $enrollment->amount = $request->amount;
-            $enrollment->save();
 
-
-            $section = new Section();
-            $section->time_id = $request->time;
-            $section->student_id = $request->id;
-            $section->teacher_id = $request->teacher;
-            $section->course_id = $request->subject;
-            $section->enrollment_id = $enrollment->id;
-            $section->save();
-            
-            
-            
-            return redirect()->route('students.show', ['student' => $request->id]);
-        } catch (Exception $e) {
-            error_log($e);
-        }
+    } catch (Exception $e) {
+        error_log($e);
+        $previousUrl = url()->previous();
+        return redirect()->to($previousUrl)->with('error', 'Failed to add enrollment: ' . $e->getMessage());
     }
+}
 
     public function show(Request $request, Enrollment $enrollment): View
     {
@@ -110,10 +150,7 @@ class EnrollmentController extends Controller
        
 
         return Inertia::render('Features/students/EditEnrollment', [
-            // 'student' => $student,
-            // 'teachers'=>$teachers,
-            // 'times'=>$times,
-            // 'courses'=>$courses,
+            
             "enrid"=>$enrid[0]->id,
             'id'=>$id,
             'ctt'=>$ctt,
@@ -122,22 +159,72 @@ class EnrollmentController extends Controller
         ]);
     }
 
-    public function update(Request $request,$id)
-    {
-         $request->validate([
-            'subject' => 'required', 'integer',
-            'month' => 'required', 'string',
-            'time' => 'required', 'integer',
-            'teacher' => 'required', 'integer',
-            'amount' => 'required', 'integer',
+   public function update(Request $request, $id)
+{
+    $request->validate([
+        'subject' => 'required|integer',
+        'month' => 'required|string',
+        'time' => 'required',
+        'teacher' => 'required',
+        'amount' => 'required|integer',
+    ]);
+
+    try {
+        
+        Enrollment::where('id', $request->enrid)->update([
+            'month' => $request->month, 
+            'amount' => $request->amount
+        ]);
+        
+        Section::where('id', $id)->update([
+            'time_id' => $request->time, 
+            'teacher_id' => $request->teacher,
+            'course_id' => $request->subject
         ]);
 
-       Enrollment::where('id', $request->enrid)->update(['month' =>$request->month, 'amount'=>$request->amount]);
-       section::where('id', $id)->update(['time_id' =>$request->time, 'teacher_id'=>$request->teacher,'course_id'=>$request->subject]);
-        
-        return redirect()->route('students.show', ['student' => $request->id]);
+        $section = Section::find($id);
+        $enrollment = Enrollment::find($request->enrid);
+        $student = Student::find($section->student_id);
+        $teacher = Teacher::find($request->teacher);
+        $course = Course::find($request->subject);
+        $time = Time::find($request->time);
 
+    
+            $printData = [
+                'student' => [
+                    'id' => $student->id,
+                    'name' => $student->name,
+                    'fname' => $student->fname,
+                    'language' => $student->language,
+                    'phone_number' => $student->phone_number,
+                    'created_at' => $student->created_at,
+                ],
+                'enrollment' => [
+                    'month' => $enrollment->month,
+                    'duration' => $enrollment->duration ?? 'N/A',
+                    'amount' => $enrollment->amount,
+                ],
+                'section' => [
+                    'teacher_name' => $teacher->name ?? 'N/A',
+                    'course_title' => $course->title ?? 'N/A',
+                    'time_slot' => $time->time ?? 'N/A',
+                ],
+                'print_date' =>$enrollment->created_at ,
+                'update_type' => 'UPDATED'
+            ];
+
+            return redirect()->route('enrollment.edit', $request->enrid)->with([
+                'success' => 'Enrollment updated successfully!',
+                'print_data' => $printData
+            ]);
+        
+
+        // return redirect()->route('enrollment.edit', $request->enrid)->with('error', 'Failed to retrieve student data.');
+
+    } catch (Exception $e) {
+        return redirect()->route('enrollment.edit', $request->enrid)->with('error', 'Failed to update enrollment: ' . $e->getMessage());
     }
+}
 
     public function destroy(Request $request, Enrollment $enrollment): RedirectResponse
     {

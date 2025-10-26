@@ -51,9 +51,10 @@ class CreateStudentController extends Controller
             'subject' => 'required', 'integer',
             'month' => 'required', 'string',
             'time' => 'required', 'integer',
-            'teacher' => 'required', 'integer',
+            'teacher' => 'required', 'integer', 
             'amount' => 'required', 'integer',
             'phone_number' => 'required', 'integer',
+              'duration' => 'required|string',
         ],['fname'=>'The father name field is required.',
                     'phone_number'=>'The phone number field is required.']);
         
@@ -67,9 +68,12 @@ class CreateStudentController extends Controller
             $student->phone_number = $request->phone_number;
             $student->save();
 
+            $durationType = $this->determineDurationType($request->month);
+
             $enrollment = new Enrollment();
             $enrollment->month = $request->month;
             $enrollment->amount = $request->amount;
+            // $enrollment->duration = $durationType;
             $enrollment->save();
 
 
@@ -98,10 +102,11 @@ class CreateStudentController extends Controller
             'enrollment' => [
                 'month' => $enrollment->month,
                 'amount' => $enrollment->amount,
+                // 'duration' => $enrollment->duration,
             ],
             'section' => [
                 'teacher_name' => $teacher->name ?? 'N/A',
-                'course_name' => $course->title ?? 'N/A',
+                'course_title' => $course->title ?? 'N/A',
                 'time_slot' => $time->time ?? 'N/A',
             ],
         ];
@@ -113,7 +118,7 @@ class CreateStudentController extends Controller
             'teachers' => $teachers,
             'courses' => $courses,
             'times' => $times,
-            'flash' => [
+            'flash' => [ 
                 'success' => 'Student added successfully!',
                 'print_data' => $printData
             ]
@@ -123,6 +128,25 @@ class CreateStudentController extends Controller
     
         } catch (Exception $e) {
             error_log($e);
+        }
+    }
+
+      private function determineDurationType($month)
+    {
+        // Afghan months for monthly enrollment
+        $afghanMonths = ['Hamal', 'Saur', 'Jawza', 'Saratan', 'Asad', 'Sunbula', 'Mizan', 'Aqrab', 'Qaws', 'Jadi', 'Dalwa', 'Hoot'];
+        
+        // Semesters
+        $semesters = ['First semester', 'Second Semester', 'Third Semester'];
+
+        if (in_array($month, $afghanMonths)) {
+            return 'Monthly';
+        } elseif (in_array($month, $semesters)) {
+            return 'Semesterly';
+        } elseif ($month === 'All Package') {
+            return 'All Package';
+        } else {
+            return 'Monthly'; // Default fallback
         }
     }
 

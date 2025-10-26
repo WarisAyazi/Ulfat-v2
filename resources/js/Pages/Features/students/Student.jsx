@@ -18,17 +18,6 @@ function Student({ student, section, ctt, printedData }) {
             <Row type="horizontal">
                 <Heading as="h1">{student.name} </Heading>
                 <StyledBtn>
-                    {/* button for printing */}
-                    <LinkBtn
-                        onClick={
-                            (window.onmouseenter = function () {
-                                window.print();
-                            })
-                        }
-                    >
-                        Print 🖨️
-                    </LinkBtn>
-
                     <LinkBtn
                         size="medium"
                         href={route("newEnrollment", student.id)}

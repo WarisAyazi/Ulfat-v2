@@ -7,9 +7,11 @@ import Input from "@/ui/Input";
 import Label from "@/ui/Label";
 import Row from "@/ui/Row";
 import Select from "@/ui/Select";
-import { useForm } from "@inertiajs/react";
+import { useForm, usePage } from "@inertiajs/react";
 import styled from "styled-components";
 import toast from "react-hot-toast";
+import { useEffect, useState } from "react";
+import PrintDialogs from "@/ui/PrintDialogs";
 
 const StyledCreateStudent = styled.div`
     display: flex;
@@ -25,12 +27,59 @@ const Space = styled.div`
 `;
 
 function EditEnrollment({ enrid, id, ctt, sctt }) {
+    const [showPrintDialog, setShowPrintDialog] = useState(false);
+    const [printData, setPrintData] = useState(null);
+    const { flash } = usePage().props;
+    console.log(flash);
+
+    useEffect(() => {
+        if (flash?.print_data) {
+            setPrintData(flash.print_data);
+            setShowPrintDialog(true);
+        }
+    }, [flash]);
+
+    const handlePrint = () => {
+        const landscapeStyle = document.createElement("style");
+        landscapeStyle.innerHTML = `
+            @page {
+                size: landscape;
+                margin: 0.5in;
+            }
+            @media print {
+                body * {
+                    visibility: hidden;
+                }
+                .print-container, .print-container * {
+                    visibility: visible;
+                }
+                .print-container {
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                }
+            }
+        `;
+        document.head.appendChild(landscapeStyle);
+
+        window.print();
+
+        setTimeout(() => {
+            document.head.removeChild(landscapeStyle);
+        }, 100);
+    };
+
+    const handleClosePrint = () => {
+        setShowPrintDialog(false);
+        setPrintData(null);
+    };
+
     const uniCtt = sctt.filter(
         (obj, index, self) =>
             index === self.findIndex((o) => o.secid === obj.secid)
     );
-
-    const { data, setData, put, reset, processing, errors } = useForm({
+    const { data, setData, put, get, processing, errors } = useForm({
         name: ctt[0].name,
         id: ctt[0].id,
         enrid,
@@ -59,7 +108,6 @@ function EditEnrollment({ enrid, id, ctt, sctt }) {
 
     function onSubmit(e) {
         e.preventDefault();
-        console.log(data);
         put(route("enrollment.update", id), {
             onSuccess: () => {
                 toast.success("Enrollment Edited successfully 🎉.");
@@ -273,9 +321,11 @@ function EditEnrollment({ enrid, id, ctt, sctt }) {
                             <Button
                                 variation="secondary"
                                 type="reset"
-                                onClick={() => reset()}
+                                onClick={() =>
+                                    get(route("students.show", sctt[0].id))
+                                }
                             >
-                                Cancel
+                                Back
                             </Button>
                             <Button type="submit" disabled={processing}>
                                 {processing ? "Updateing" : "Update Enrollment"}
@@ -284,6 +334,13 @@ function EditEnrollment({ enrid, id, ctt, sctt }) {
                     </div>
                 </Form>
             </StyledCreateStudent>
+            {showPrintDialog && printData && (
+                <PrintDialogs
+                    handlePrint={handlePrint}
+                    handleClosePrint={handleClosePrint}
+                    printData={printData}
+                />
+            )}
         </>
     );
 }

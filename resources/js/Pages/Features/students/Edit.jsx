@@ -19,7 +19,7 @@ const StyledCreateStudent = styled.div`
 `;
 
 function Edit({ student }) {
-    const { data, setData, put, reset, processing, errors } = useForm({
+    const { data, setData, put, get, processing, errors } = useForm({
         id: student.id,
         name: student.name,
         fname: student.fname,
@@ -134,9 +134,11 @@ function Edit({ student }) {
                             <Button
                                 variation="secondary"
                                 type="reset"
-                                onClick={() => reset()}
+                                onClick={() =>
+                                    get(route("students.show", student.id))
+                                }
                             >
-                                Cancel
+                                Back
                             </Button>
                             <Button type="submit" disabled={processing}>
                                 {processing

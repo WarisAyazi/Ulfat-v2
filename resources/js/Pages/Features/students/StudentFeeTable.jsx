@@ -37,7 +37,7 @@ function StudentFeeTable({ section }) {
                                 <div>{c.title}</div>
                                 <div>{c.time}</div>
                                 <div>{c.month}</div>
-                                <div>AFG {formatCurrency(c.amount)}</div>
+                                <div>{formatCurrency(c.amount)} AF</div>
                                 <div>{c.date}</div>
                                 <div>
                                     <LinkBtn

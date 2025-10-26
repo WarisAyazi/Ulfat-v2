@@ -7,9 +7,11 @@ import Input from "@/ui/Input";
 import Label from "@/ui/Label";
 import Row from "@/ui/Row";
 import Select from "@/ui/Select";
-import { useForm } from "@inertiajs/react";
+import { useForm, usePage } from "@inertiajs/react";
 import styled from "styled-components";
 import toast from "react-hot-toast";
+import PrintDialogs from "@/ui/PrintDialogs";
+import { useEffect, useState } from "react";
 
 const StyledCreateStudent = styled.div`
     display: flex;
@@ -26,6 +28,54 @@ const Space = styled.div`
 `;
 
 function NewEnrollment({ student, enrid, teachers, id, courses, times }) {
+    const [showPrintDialog, setShowPrintDialog] = useState(false);
+    const [printData, setPrintData] = useState(null);
+    const { flash } = usePage().props;
+    console.log(flash);
+
+    useEffect(() => {
+        if (flash?.print_data) {
+            setPrintData(flash.print_data);
+            setShowPrintDialog(true);
+        }
+    }, [flash]);
+
+    const handlePrint = () => {
+        const landscapeStyle = document.createElement("style");
+        landscapeStyle.innerHTML = `
+                @page {
+                    size: landscape;
+                    margin: 0.5in;
+                }
+                @media print {
+                    body * {
+                        visibility: hidden;
+                    }
+                    .print-container, .print-container * {
+                        visibility: visible;
+                    }
+                    .print-container {
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        width: 100%;
+                    }
+                }
+            `;
+        document.head.appendChild(landscapeStyle);
+
+        window.print();
+
+        setTimeout(() => {
+            document.head.removeChild(landscapeStyle);
+        }, 100);
+    };
+
+    const handleClosePrint = () => {
+        setShowPrintDialog(false);
+        setPrintData(null);
+    };
+
     const uniTea = teachers.filter(
         (obj, index, self) => index === self.findIndex((o) => o.id === obj.id)
     );
@@ -36,7 +86,7 @@ function NewEnrollment({ student, enrid, teachers, id, courses, times }) {
         (obj, index, self) => index === self.findIndex((o) => o.id === obj.id)
     );
 
-    const { data, setData, post, reset, processing, errors } = useForm({
+    const { data, setData, post, get, processing, errors } = useForm({
         name: student.name,
         id: student.id,
         enrid,
@@ -272,9 +322,11 @@ function NewEnrollment({ student, enrid, teachers, id, courses, times }) {
                             <Button
                                 variation="secondary"
                                 type="reset"
-                                onClick={() => reset()}
+                                onClick={() =>
+                                    get(route("students.show", student.id))
+                                }
                             >
-                                Cancel
+                                Back
                             </Button>
                             <Button type="submit" disabled={processing}>
                                 {processing ? "Saving...." : "Enroll"}
@@ -283,6 +335,13 @@ function NewEnrollment({ student, enrid, teachers, id, courses, times }) {
                     </div>
                 </Form>
             </StyledCreateStudent>
+            {showPrintDialog && printData && (
+                <PrintDialogs
+                    handlePrint={handlePrint}
+                    handleClosePrint={handleClosePrint}
+                    printData={printData}
+                />
+            )}
         </>
     );
 }

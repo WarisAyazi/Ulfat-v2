@@ -1,5 +1,3 @@
-// resources/js/Pages/StudentPrint.jsx
-
 import React from "react";
 import styled from "styled-components";
 
@@ -261,13 +259,9 @@ const GlobalPrintStyles = styled.div`
     }
 `;
 
-// Simple barcode generator using text (for thermal printers)
-const generateTextBarcode = (studentId) => {
-    return `*${studentId}*`;
-};
-
 export default function StudentPrint({ data }) {
     if (!data) return null;
+    console.log(data);
 
     return (
         <>
@@ -276,19 +270,10 @@ export default function StudentPrint({ data }) {
                 <PrintContent>
                     {/* Header */}
                     <Header>
-                        <Title>Eng Hamidullah Ulfat Academic Center</Title>
+                        <Title>Eng. Hamidullah Ulfat Academic Center</Title>
                         <Flex>
                             <div>
                                 <Subtitle>ENROLLMENT CONFIRMATION</Subtitle>
-                                <div
-                                    style={{
-                                        fontSize: "8pt",
-                                        marginTop: "0.05in",
-                                    }}
-                                >
-                                    ID: {data.student.id} |{" "}
-                                    {data.student.created_at}
-                                </div>
                             </div>
                             <div>
                                 <img src="logo.jpg" width="110px" alt="" />
@@ -329,7 +314,7 @@ export default function StudentPrint({ data }) {
                         <DetailGrid>
                             <DetailItem>
                                 <Label>Course:</Label>
-                                <Value>{data.section.course_name}</Value>
+                                <Value>{data.section.course_title}</Value>
                             </DetailItem>
                             <DetailItem>
                                 <Label>Teacher:</Label>
@@ -357,6 +342,7 @@ export default function StudentPrint({ data }) {
                     <BarcodeArea>
                         <BarcodeText>
                             <Subtitle>STUDENT ID: {data.student.id}</Subtitle>{" "}
+                            <Subtitle>{data.student.created_at}</Subtitle>{" "}
                         </BarcodeText>
                     </BarcodeArea>
 
@@ -366,10 +352,9 @@ export default function StudentPrint({ data }) {
                     <Notes>
                         <NotesTitle>IMPORTANT NOTES</NotesTitle>
                         <NotesList>
-                            <li>Keep this receipt for records</li>
                             <li>Present on first day of class</li>
                             <li>Contact admin for changes</li>
-                            <li>Fees non-refundable after 7 days</li>
+                            <li>The paid fee is non-refundable</li>
                         </NotesList>
                     </Notes>
 
@@ -384,8 +369,8 @@ export default function StudentPrint({ data }) {
 
                     {/* Watermark */}
                     <Watermark>
-                        <div style={{ fontSize: "6pt", color: "#666" }}>
-                            {data.student.created_at} | Official Document
+                        <div style={{ fontSize: "8pt", color: "#666" }}>
+                            Contact us : 0777,555,836
                         </div>
                     </Watermark>
                 </PrintContent>
