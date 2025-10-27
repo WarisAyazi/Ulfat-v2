@@ -16,7 +16,6 @@ function Subject({ course }) {
         <Table.Row>
             <Items>{id}</Items>
             <Items>{title}</Items>
-            <Items>{language}</Items>
             <Items>{classroom}</Items>
             <Items>
                 <LinkBtn size="small" href={route("courses.show", id)}>

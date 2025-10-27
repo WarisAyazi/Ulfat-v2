@@ -21,11 +21,10 @@ function AllSubjects({ courses }) {
                 <Heading as="h1">All Courses</Heading>
                 <FindById group="course" />
             </Row>
-            <Table columns="1fr 2fr 2fr 2fr 1fr">
+            <Table columns="1fr 2fr  2fr 1fr">
                 <Table.Header>
                     <div>ID</div>
                     <div>Course Name</div>
-                    <div>Language</div>
                     <div>Class Number</div>
                     <div>Details</div>
                 </Table.Header>

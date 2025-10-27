@@ -27,8 +27,10 @@ const Space = styled.div`
 function BudgetForm({ section }) {
     const ctt = section.filter(
         (obj, index, self) =>
-            index === self.findIndex((o) => o.course_id === obj.course_id)
+            index ===
+            self.findIndex((o) => o.tname === obj.tname && o.year === obj.year)
     );
+    console.log(section);
 
     if (ctt[0] === undefined) return;
     const { data, setData, post, processing, reset, errors } = useForm({
@@ -71,7 +73,7 @@ function BudgetForm({ section }) {
                         <option defaultChecked>Teacher</option>
 
                         {ctt.map((teacher) => (
-                            <option value={teacher.id} key={teacher.id}>
+                            <option value={teacher.id} key={teacher.seid}>
                                 {teacher.tname}
                             </option>
                         ))}
@@ -148,7 +150,7 @@ function BudgetForm({ section }) {
                         <option defaultChecked>Time</option>
 
                         {ctt.map((time) => (
-                            <option value={time.id} key={time.id}>
+                            <option value={time.id} key={time.seid}>
                                 {time.time}
                             </option>
                         ))}
@@ -197,7 +199,7 @@ function BudgetForm({ section }) {
                         {ctt.map((entollment) => (
                             <option
                                 value={entollment.year}
-                                key={entollment.year}
+                                key={entollment.seid}
                             >
                                 {entollment.year}
                             </option>

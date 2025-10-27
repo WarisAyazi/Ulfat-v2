@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Head } from "@inertiajs/react";
 import styled, { keyframes } from "styled-components";
-import { formatCurrency } from "@/utils/helpers";
 
 // Animations
 const fadeIn = keyframes`
@@ -32,15 +31,10 @@ const pulse = keyframes`
   100% { transform: scale(1); }
 `;
 
-const glow = keyframes`
-  0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); }
-  50% { box-shadow: 0 0 30px rgba(99, 102, 241, 0.6); }
-`;
-
 // Main Container
 const DashboardContainer = styled.div`
     min-height: 100vh;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    //background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     padding: 2rem;
     font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
 `;
@@ -55,7 +49,7 @@ const Header = styled.div`
 const Title = styled.h1`
     font-size: 3.5rem;
     font-weight: 800;
-    color: white;
+    color: #555;
     margin-bottom: 1rem;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     letter-spacing: -0.5px;
@@ -63,11 +57,73 @@ const Title = styled.h1`
 
 const Subtitle = styled.p`
     font-size: 1.4rem;
-    color: rgba(255, 255, 255, 0.9);
+    color: #555;
     font-weight: 400;
     max-width: 600px;
     margin: 0 auto;
     line-height: 1.6;
+`;
+
+// Year Selector
+const YearSelectorContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    animation: ${fadeIn} 0.8s ease-out;
+`;
+
+const YearLabel = styled.span`
+    font-size: 1.3rem;
+    color: #555;
+    font-weight: 600;
+`;
+
+const YearSelect = styled.select`
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 16px;
+    padding: 1rem 1.5rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    min-width: 120px;
+
+    &:hover {
+        border-color: rgba(255, 255, 255, 0.6);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    &:focus {
+        outline: none;
+        border-color: rgba(255, 255, 255, 0.8);
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+    }
+`;
+
+const YearOption = styled.option`
+    font-size: 1.2rem;
+    font-weight: 500;
+    padding: 0.5rem;
+`;
+
+const YearSummary = styled.div`
+    background: rgba(255, 255, 255);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 1rem 2rem;
+    color: #555;
+    font-size: 1.3rem;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 `;
 
 // Stats Grid
@@ -92,7 +148,6 @@ const StatCard = styled.div`
         transform: translateY(-8px);
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15),
             0 4px 12px rgba(0, 0, 0, 0.1);
-        animation: ${glow} 2s ease-in-out infinite;
     }
 `;
 
@@ -173,7 +228,13 @@ const Card = styled.div`
 const CardHeader = styled.div`
     display: flex;
     align-items: center;
+    justify-content: space-between;
     margin-bottom: 2rem;
+`;
+
+const CardTitleSection = styled.div`
+    display: flex;
+    align-items: center;
 `;
 
 const CardIcon = styled.div`
@@ -195,6 +256,16 @@ const CardTitle = styled.h2`
     font-weight: 700;
     color: #1f2937;
     margin: 0;
+`;
+
+const YearBadge = styled.div`
+    background: linear-gradient(135deg, #f59e0b, #f97316);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 `;
 
 // Duration Cards
@@ -289,7 +360,7 @@ const MonthlyGrid = styled.div`
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 1.2rem;
     max-height: 500px;
-    /* overflow-y: auto; */
+    overflow-y: auto;
     padding-right: 0.5rem;
 
     &::-webkit-scrollbar {
@@ -528,21 +599,28 @@ const RetryButton = styled.button`
 // Main Dashboard Component
 export default function Dashboard() {
     const [dashboardData, setDashboardData] = useState(null);
+    const [availableYears, setAvailableYears] = useState([]);
+    const [selectedYear, setSelectedYear] = useState("1404"); // Default to Hijri year
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
         fetchDashboardData();
-    }, []);
+    }, [selectedYear]);
 
     const fetchDashboardData = async () => {
         try {
             setLoading(true);
-            const response = await fetch("/api/dashboard/data");
+            const response = await fetch(
+                `/api/dashboard/data?year=${selectedYear}`
+            );
             const result = await response.json();
 
             if (result.success) {
                 setDashboardData(result.data);
+                if (availableYears.length === 0 && result.data.availableYears) {
+                    setAvailableYears(result.data.availableYears);
+                }
             } else {
                 setError(result.message);
             }
@@ -555,11 +633,19 @@ export default function Dashboard() {
         }
     };
 
+    const handleYearChange = (event) => {
+        setSelectedYear(event.target.value);
+    };
+
+    const getHijriYearDisplay = (year) => {
+        return `۱۴۰${year.toString().slice(-1)}`; // Convert to Persian numerals
+    };
+
     if (loading) {
         return (
             <LoadingContainer>
                 <LoadingSpinner />
-                <LoadingText>Loading Dashboard...</LoadingText>
+                <LoadingText>Loading {selectedYear} Dashboard...</LoadingText>
             </LoadingContainer>
         );
     }
@@ -582,6 +668,12 @@ export default function Dashboard() {
     const { overview, durationStats, monthlyDurationData, recentEnrollments } =
         dashboardData;
 
+    // Generate year options based on available years or default Hijri years
+    const yearOptions =
+        availableYears.length > 0
+            ? availableYears
+            : ["1404", "1403", "1402", "1401", "1400"];
+
     // Afghan months
     const afghanMonths = [
         "Hamal",
@@ -600,16 +692,32 @@ export default function Dashboard() {
 
     return (
         <>
-            <Head title="Duration Analytics Dashboard" />
+            <Head title={`${selectedYear} Duration Analytics Dashboard`} />
 
             <DashboardContainer>
                 <Header>
-                    <Title>🎓 Dashboard</Title>
+                    <Title>🎓 Duration Analytics Dashboard</Title>
                     <Subtitle>
                         Comprehensive insights into student enrollment durations
                         and revenue performance
                     </Subtitle>
                 </Header>
+
+                {/* Year Selector */}
+                <YearSelectorContainer>
+                    <YearLabel>Viewing Data for:</YearLabel>
+                    <YearSelect
+                        value={selectedYear}
+                        onChange={handleYearChange}
+                    >
+                        {yearOptions.map((year) => (
+                            <YearOption key={year} value={year}>
+                                {year} Year
+                            </YearOption>
+                        ))}
+                    </YearSelect>
+                    <YearSummary>📊 سال {selectedYear}</YearSummary>
+                </YearSelectorContainer>
 
                 <StatsGrid>
                     <StatCard>
@@ -618,7 +726,11 @@ export default function Dashboard() {
                         </StatIcon>
                         <StatValue>{overview.totalStudents}</StatValue>
                         <StatLabel>Total Students</StatLabel>
-                        <StatTrend positive>Active enrollments</StatTrend>
+                        <StatTrend positive={overview.studentsGrowth > 0}>
+                            {overview.studentsGrowth > 0 ? "↗" : "↘"}{" "}
+                            {Math.abs(overview.studentsGrowth || 0)}% vs last
+                            year
+                        </StatTrend>
                     </StatCard>
 
                     <StatCard>
@@ -627,29 +739,37 @@ export default function Dashboard() {
                         </StatIcon>
                         <StatValue>{overview.totalEnrollments}</StatValue>
                         <StatLabel>Total Enrollments</StatLabel>
-                        <StatTrend positive>All durations</StatTrend>
+                        <StatTrend positive={overview.enrollmentsGrowth > 0}>
+                            {overview.enrollmentsGrowth > 0 ? "↗" : "↘"}{" "}
+                            {Math.abs(overview.enrollmentsGrowth || 0)}% vs last
+                            year
+                        </StatTrend>
                     </StatCard>
 
                     <StatCard>
                         <StatIcon background="linear-gradient(135deg, #f59e0b, #f97316)">
                             💰
                         </StatIcon>
-                        <StatValue>
-                            {formatCurrency(overview.totalRevenue)} AF
-                        </StatValue>
+                        <StatValue>${overview.totalRevenue}</StatValue>
                         <StatLabel>Total Revenue</StatLabel>
-                        <StatTrend positive>All time</StatTrend>
+                        <StatTrend positive={overview.revenueGrowth > 0}>
+                            {overview.revenueGrowth > 0 ? "↗" : "↘"}{" "}
+                            {Math.abs(overview.revenueGrowth || 0)}% vs last
+                            year
+                        </StatTrend>
                     </StatCard>
 
                     <StatCard>
                         <StatIcon background="linear-gradient(135deg, #8b5cf6, #a855f7)">
                             📊
                         </StatIcon>
-                        <StatValue>
-                            {formatCurrency(overview.averageRevenue)} AF
-                        </StatValue>
+                        <StatValue>${overview.averageRevenue}</StatValue>
                         <StatLabel>Average per Enrollment</StatLabel>
-                        <StatTrend positive>Across all durations</StatTrend>
+                        <StatTrend positive={overview.averageGrowth > 0}>
+                            {overview.averageGrowth > 0 ? "↗" : "↘"}{" "}
+                            {Math.abs(overview.averageGrowth || 0)}% vs last
+                            year
+                        </StatTrend>
                     </StatCard>
                 </StatsGrid>
 
@@ -657,8 +777,11 @@ export default function Dashboard() {
                     {/* Duration Performance */}
                     <Card>
                         <CardHeader>
-                            <CardIcon color="#3b82f6, #06b6d4">🎯</CardIcon>
-                            <CardTitle>Duration Performance</CardTitle>
+                            <CardTitleSection>
+                                <CardIcon color="#3b82f6, #06b6d4">🎯</CardIcon>
+                                <CardTitle>Duration Performance</CardTitle>
+                            </CardTitleSection>
+                            <YearBadge>{selectedYear}</YearBadge>
                         </CardHeader>
                         <DurationGrid>
                             {Object.entries(durationStats).map(
@@ -691,10 +814,7 @@ export default function Dashboard() {
                                                     Revenue
                                                 </DetailLabel>
                                                 <DetailValue>
-                                                    {formatCurrency(
-                                                        stats.total_revenue
-                                                    )}{" "}
-                                                    AF
+                                                    ${stats.total_revenue}
                                                 </DetailValue>
                                             </DetailItem>
                                             <DetailItem>
@@ -702,10 +822,7 @@ export default function Dashboard() {
                                                     Average
                                                 </DetailLabel>
                                                 <DetailValue>
-                                                    {formatCurrency(
-                                                        stats.average_revenue
-                                                    )}{" "}
-                                                    AF
+                                                    ${stats.average_revenue}
                                                 </DetailValue>
                                             </DetailItem>
                                             <DetailItem>
@@ -737,8 +854,13 @@ export default function Dashboard() {
                     {/* Monthly Analysis */}
                     <Card>
                         <CardHeader>
-                            <CardIcon color="#8b5cf6, #a855f7">📅</CardIcon>
-                            <CardTitle>Monthly Analysis</CardTitle>
+                            <CardTitleSection>
+                                <CardIcon color="#8b5cf6, #a855f7">📅</CardIcon>
+                                <CardTitle>
+                                    Monthly Analysis - {selectedYear}
+                                </CardTitle>
+                            </CardTitleSection>
+                            <YearBadge>{selectedYear}</YearBadge>
                         </CardHeader>
                         <MonthlyGrid>
                             {afghanMonths.map((month) => {
@@ -746,7 +868,7 @@ export default function Dashboard() {
                                     total_enrollments: 0,
                                     total_revenue: 0,
                                 };
-                                const isCurrent = month === "Hamal"; // You can make this dynamic
+                                const isCurrent = month === "Hamal"; // You can make this dynamic based on current month
 
                                 return (
                                     <MonthCard
@@ -755,8 +877,7 @@ export default function Dashboard() {
                                     >
                                         <MonthName>{month}</MonthName>
                                         <MonthAmount isCurrent={isCurrent}>
-                                            {formatCurrency(data.total_revenue)}{" "}
-                                            AF
+                                            ${data.total_revenue}
                                         </MonthAmount>
                                         <MonthEnrollments isCurrent={isCurrent}>
                                             {data.total_enrollments} enrollments
@@ -770,10 +891,15 @@ export default function Dashboard() {
 
                 {/* Recent Enrollments */}
                 <TableContainer>
-                    <TableTitle>
-                        <span>🆕</span>
-                        Recent Enrollments
-                    </TableTitle>
+                    <CardHeader>
+                        <CardTitleSection>
+                            <CardIcon color="#10b981, #34d399">🆕</CardIcon>
+                            <CardTitle>
+                                Recent Enrollments - {selectedYear}
+                            </CardTitle>
+                        </CardTitleSection>
+                        <YearBadge>{selectedYear}</YearBadge>
+                    </CardHeader>
                     <Table>
                         <TableHeader>
                             <tr>
@@ -783,6 +909,7 @@ export default function Dashboard() {
                                 <TableHeaderCell>Month</TableHeaderCell>
                                 <TableHeaderCell>Duration</TableHeaderCell>
                                 <TableHeaderCell>Amount</TableHeaderCell>
+                                <TableHeaderCell>Year</TableHeaderCell>
                             </tr>
                         </TableHeader>
                         <tbody>
@@ -804,6 +931,11 @@ export default function Dashboard() {
                                         </Badge>
                                     </TableCell>
                                     <TableCell>${enrollment.amount}</TableCell>
+                                    <TableCell>
+                                        <Badge duration="default">
+                                            {enrollment.year}
+                                        </Badge>
+                                    </TableCell>
                                 </TableRow>
                             ))}
                         </tbody>
