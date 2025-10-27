@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Head } from "@inertiajs/react";
 import styled, { keyframes } from "styled-components";
+import { formatCurrency } from "@/utils/helpers";
 
 // Animations
 const fadeIn = keyframes`
@@ -360,7 +361,7 @@ const MonthlyGrid = styled.div`
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 1.2rem;
     max-height: 500px;
-    overflow-y: auto;
+    /* overflow-y: auto; */
     padding-right: 0.5rem;
 
     &::-webkit-scrollbar {
@@ -379,11 +380,8 @@ const MonthlyGrid = styled.div`
 `;
 
 const MonthCard = styled.div`
-    background: ${(props) =>
-        props.isCurrent
-            ? "linear-gradient(135deg, #8b5cf6, #a855f7)"
-            : "rgba(255, 255, 255, 0.9)"};
-    color: ${(props) => (props.isCurrent ? "white" : "#374151")};
+    background: rgba(225, 225, 225);
+    color: "#374151";
     padding: 1.8rem 1.2rem;
     border-radius: 18px;
     text-align: center;
@@ -408,12 +406,12 @@ const MonthAmount = styled.div`
     font-size: 1.6rem;
     font-weight: 800;
     margin-bottom: 0.5rem;
-    color: ${(props) => (props.isCurrent ? "white" : "#1f2937")};
+    color: "#1f2937";
 `;
 
 const MonthEnrollments = styled.div`
     font-size: 1rem;
-    opacity: ${(props) => (props.isCurrent ? 0.9 : 0.7)};
+    opacity: 0.7;
     font-weight: 500;
 `;
 
@@ -750,7 +748,9 @@ export default function Dashboard() {
                         <StatIcon background="linear-gradient(135deg, #f59e0b, #f97316)">
                             💰
                         </StatIcon>
-                        <StatValue>${overview.totalRevenue}</StatValue>
+                        <StatValue>
+                            {formatCurrency(overview.totalRevenue)} AF
+                        </StatValue>
                         <StatLabel>Total Revenue</StatLabel>
                         <StatTrend positive={overview.revenueGrowth > 0}>
                             {overview.revenueGrowth > 0 ? "↗" : "↘"}{" "}
@@ -763,7 +763,9 @@ export default function Dashboard() {
                         <StatIcon background="linear-gradient(135deg, #8b5cf6, #a855f7)">
                             📊
                         </StatIcon>
-                        <StatValue>${overview.averageRevenue}</StatValue>
+                        <StatValue>
+                            {formatCurrency(overview.averageRevenue)} AF
+                        </StatValue>
                         <StatLabel>Average per Enrollment</StatLabel>
                         <StatTrend positive={overview.averageGrowth > 0}>
                             {overview.averageGrowth > 0 ? "↗" : "↘"}{" "}
@@ -814,7 +816,10 @@ export default function Dashboard() {
                                                     Revenue
                                                 </DetailLabel>
                                                 <DetailValue>
-                                                    ${stats.total_revenue}
+                                                    {formatCurrency(
+                                                        stats.total_revenue
+                                                    )}{" "}
+                                                    AF
                                                 </DetailValue>
                                             </DetailItem>
                                             <DetailItem>
@@ -822,7 +827,10 @@ export default function Dashboard() {
                                                     Average
                                                 </DetailLabel>
                                                 <DetailValue>
-                                                    ${stats.average_revenue}
+                                                    {formatCurrency(
+                                                        stats.average_revenue
+                                                    )}{" "}
+                                                    AF
                                                 </DetailValue>
                                             </DetailItem>
                                             <DetailItem>
@@ -868,18 +876,16 @@ export default function Dashboard() {
                                     total_enrollments: 0,
                                     total_revenue: 0,
                                 };
-                                const isCurrent = month === "Hamal"; // You can make this dynamic based on current month
 
                                 return (
-                                    <MonthCard
-                                        key={month}
-                                        isCurrent={isCurrent}
-                                    >
+                                    <MonthCard key={month}>
                                         <MonthName>{month}</MonthName>
-                                        <MonthAmount isCurrent={isCurrent}>
-                                            ${data.total_revenue}
+                                        <MonthAmount>
+                                            {formatCurrency(data.total_revenue)}{" "}
+                                            AF
                                         </MonthAmount>
-                                        <MonthEnrollments isCurrent={isCurrent}>
+                                        <MonthEnrollments>
+                                            {" "}
                                             {data.total_enrollments} enrollments
                                         </MonthEnrollments>
                                     </MonthCard>
@@ -930,7 +936,9 @@ export default function Dashboard() {
                                             {enrollment.duration}
                                         </Badge>
                                     </TableCell>
-                                    <TableCell>${enrollment.amount}</TableCell>
+                                    <TableCell>
+                                        {formatCurrency(enrollment.amount)} AF
+                                    </TableCell>
                                     <TableCell>
                                         <Badge duration="default">
                                             {enrollment.year}
