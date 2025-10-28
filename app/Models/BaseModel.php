@@ -31,6 +31,11 @@ class BaseModel extends Model
         if (!$value) return null;
         return Jalalian::fromCarbon(Carbon::parse($value))->format('Y-m-d H:i');
     }
+    protected function toShamsiYear($value)
+    {
+        if (!$value) return null;
+        return Jalalian::fromCarbon(Carbon::parse($value))->format('Y');
+    }
 
     // You can also define the reverse conversion (Shamsi → Gregorian)
     public function fromShamsi($date)

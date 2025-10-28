@@ -8,9 +8,11 @@ use App\Models\Section;
 use App\Models\Teacher;
 use App\Models\Course;
 use App\Models\Time;
+use Carbon\Carbon;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Morilog\Jalali\Jalalian;
 
 class DashboardController extends Controller
 {
@@ -206,6 +208,7 @@ class DashboardController extends Controller
                 ->join('students', 'sections.student_id', '=', 'students.id')
                 ->join('teachers', 'sections.teacher_id', '=', 'teachers.id')
                 ->join('courses', 'sections.course_id', '=', 'courses.id')
+                ->join('times', 'sections.time_id', '=', 'times.id')
                 ->select(
                     'students.name as student_name',
                     'teachers.name as teacher_name',
@@ -213,10 +216,12 @@ class DashboardController extends Controller
                     'enrollments.month',
                     'enrollments.duration',
                     'enrollments.amount',
+                    'enrollments.created_at',
+                    'times.time',
                     DB::raw('YEAR(enrollments.created_at) as year')
                 )
                 ->orderBy('enrollments.created_at', 'desc')
-                ->limit($limit)
+                ->limit(300)
                 ->get()
                 ->map(function ($item) {
                     return [
@@ -226,7 +231,8 @@ class DashboardController extends Controller
                         'month' => $item->month,
                         'duration' => $item->duration,
                         'amount' => (float) $item->amount,
-                        'year' => $item->year,
+                        'time' => $item->time,
+                        'year' =>  $item = Jalalian::fromCarbon(Carbon::parse($item->created_at))->format('Y-m-d h:i'),
                     ];
                 });
 

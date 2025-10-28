@@ -6,15 +6,17 @@ import StudentTeacherTable from "./StudentTeacherTable";
 import StudentFeeTable from "./StudentFeeTable";
 import AppLayout from "@/ui/AppLayout";
 import Heading from "@/ui/Heading";
+import { Head } from "@inertiajs/react";
 
 const StyledBtn = styled.div`
     display: flex;
     gap: 2rem;
 `;
-function Student({ student, section, ctt, printedData }) {
-    console.log(printedData);
+function Student({ student, section, ctt }) {
     return (
         <div>
+            <Head title={student.name} />
+
             <Row type="horizontal">
                 <Heading as="h1">{student.name} </Heading>
                 <StyledBtn>

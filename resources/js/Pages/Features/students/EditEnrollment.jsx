@@ -30,7 +30,6 @@ function EditEnrollment({ enrid, id, ctt, sctt }) {
     const [showPrintDialog, setShowPrintDialog] = useState(false);
     const [printData, setPrintData] = useState(null);
     const { flash } = usePage().props;
-    console.log(flash);
 
     useEffect(() => {
         if (flash?.print_data) {
@@ -77,7 +76,7 @@ function EditEnrollment({ enrid, id, ctt, sctt }) {
 
     const uniCtt = sctt.filter(
         (obj, index, self) =>
-            index === self.findIndex((o) => o.secid === obj.secid)
+            index === self.findIndex((o) => o.couid === obj.couid)
     );
     const { data, setData, put, get, processing, errors } = useForm({
         name: ctt[0].name,

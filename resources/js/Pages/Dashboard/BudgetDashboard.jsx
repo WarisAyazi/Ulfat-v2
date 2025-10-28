@@ -483,7 +483,7 @@ const TableCell = styled.td`
 const Badge = styled.span`
     padding: 0.5rem 1rem;
     border-radius: 20px;
-    font-size: 0.9rem;
+    font-size: 1rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -496,7 +496,7 @@ const Badge = styled.span`
             case "All Package":
                 return "linear-gradient(135deg, #8b5cf6, #a855f7)";
             default:
-                return "linear-gradient(135deg, #6b7280, #9ca3af)";
+                return "linear-gradient(135deg, #667ed1, #667eed)";
         }
     }};
     color: white;
@@ -694,7 +694,7 @@ export default function Dashboard() {
 
             <DashboardContainer>
                 <Header>
-                    <Title>🎓 Duration Analytics Dashboard</Title>
+                    <Title>🎓 Eng. Hamidullah Ulfat Academic Center</Title>
                     <Subtitle>
                         Comprehensive insights into student enrollment durations
                         and revenue performance
@@ -912,6 +912,7 @@ export default function Dashboard() {
                                 <TableHeaderCell>Student</TableHeaderCell>
                                 <TableHeaderCell>Teacher</TableHeaderCell>
                                 <TableHeaderCell>Course</TableHeaderCell>
+                                <TableHeaderCell>Time</TableHeaderCell>
                                 <TableHeaderCell>Month</TableHeaderCell>
                                 <TableHeaderCell>Duration</TableHeaderCell>
                                 <TableHeaderCell>Amount</TableHeaderCell>
@@ -930,19 +931,18 @@ export default function Dashboard() {
                                     <TableCell>
                                         {enrollment.course_name}
                                     </TableCell>
-                                    <TableCell>{enrollment.month}</TableCell>
+                                    <TableCell>{enrollment.time}</TableCell>
                                     <TableCell>
                                         <Badge duration={enrollment.duration}>
                                             {enrollment.duration}
                                         </Badge>
                                     </TableCell>
+                                    <TableCell>{enrollment.month}</TableCell>
                                     <TableCell>
                                         {formatCurrency(enrollment.amount)} AF
                                     </TableCell>
                                     <TableCell>
-                                        <Badge duration="default">
-                                            {enrollment.year}
-                                        </Badge>
+                                        <Badge>{enrollment.year}</Badge>
                                     </TableCell>
                                 </TableRow>
                             ))}

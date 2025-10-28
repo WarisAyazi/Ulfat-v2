@@ -9,7 +9,7 @@ import { createRoot } from "react-dom/client";
 const appName = import.meta.env.VITE_APP_NAME || "Laravel";
 
 createInertiaApp({
-    title: (title) => `${title} - ${appName}`,
+    title: (title) => `Ulfat Academic Center`,
     resolve: (name) =>
         resolvePageComponent(
             `./Pages/${name}.jsx`,

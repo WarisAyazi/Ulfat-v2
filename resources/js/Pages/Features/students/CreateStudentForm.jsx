@@ -1,4 +1,4 @@
-import { useForm, usePage } from "@inertiajs/react";
+import { Head, useForm, usePage } from "@inertiajs/react";
 import toast from "react-hot-toast";
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
@@ -36,21 +36,22 @@ function CreateStudentForm({ teachers, courses, times }) {
     const { flash } = usePage().props;
 
     const { data, setData, post, reset, processing, errors } = useForm({
-        name: "Hello",
-        fname: "Hi",
-        subject: 1,
-        language: "Dari",
+        name: "",
+        fname: "",
+        subject: "",
+        language: "",
         month: "",
-        time: 1,
-        teacher: 1,
-        amount: "400",
-        phone_number: 33,
-        duration: "Monthly",
+        time: "",
+        teacher: "",
+        amount: "",
+        phone_number: "",
+        duration: "",
     });
 
     useEffect(() => {
         if (flash?.success) {
             toast.success(flash.success);
+            reset();
         }
 
         if (flash?.error) {
@@ -124,7 +125,7 @@ function CreateStudentForm({ teachers, courses, times }) {
         "Hoot",
     ];
     const semesters = ["First semester", "Second Semester", "Third Semester"];
-
+    console.log(data);
     if (!teachers && !courses && !times)
         return (
             <>
@@ -139,6 +140,8 @@ function CreateStudentForm({ teachers, courses, times }) {
 
     return (
         <>
+            <Head title="Add Student" />
+
             <Row type="horizontal">
                 <Heading as="h1">Add Student</Heading>
             </Row>
@@ -289,6 +292,11 @@ function CreateStudentForm({ teachers, courses, times }) {
                                     />
                                 </Space>
                             </Row>
+                            {errors.duration && (
+                                <p className="text-red-600">
+                                    {errors.duration}
+                                </p>
+                            )}
                         </FormRow>
 
                         <FormRow type="student">

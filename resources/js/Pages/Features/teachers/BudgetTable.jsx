@@ -100,7 +100,7 @@ const ResultValue = styled.div`
 
 function BudgetTable({ data }) {
     let x = 1;
-    const [percentage, setPercentage] = useState(50); // Default 50%
+    const [percentage, setPercentage] = useState(60); // Default 50%
 
     const { statistics, percentageCalculations } = useMemo(() => {
         if (!data || data.length === 0) {

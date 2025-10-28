@@ -29,7 +29,6 @@ function NewCourse({ student, teachers, courses, times }) {
     const [showPrintDialog, setShowPrintDialog] = useState(false);
     const [printData, setPrintData] = useState(null);
     const { flash } = usePage().props;
-    console.log(flash);
 
     useEffect(() => {
         if (flash?.print_data) {
@@ -77,13 +76,13 @@ function NewCourse({ student, teachers, courses, times }) {
     const { data, setData, post, get, processing, errors } = useForm({
         name: student.name,
         id: student.id,
-        subject: 1,
+        subject: "",
 
         month: "",
-        time: 1,
-        teacher: 1,
-        amount: "400",
-        duration: "Monthly",
+        time: "",
+        teacher: "",
+        amount: "",
+        duration: "",
     });
 
     function onSubmit(e) {

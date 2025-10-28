@@ -31,7 +31,6 @@ function NewEnrollment({ student, enrid, teachers, id, courses, times }) {
     const [showPrintDialog, setShowPrintDialog] = useState(false);
     const [printData, setPrintData] = useState(null);
     const { flash } = usePage().props;
-    console.log(flash);
 
     useEffect(() => {
         if (flash?.print_data) {
@@ -94,8 +93,8 @@ function NewEnrollment({ student, enrid, teachers, id, courses, times }) {
         month: "",
         time: "",
         teacher: "",
-        amount: "400",
-        duration: "Monthly",
+        amount: "",
+        duration: "",
     });
 
     function onSubmit(e) {

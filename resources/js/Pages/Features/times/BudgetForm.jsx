@@ -33,9 +33,9 @@ function BudgetForm({ section }) {
     if (ctt[0] === undefined) return;
     const { data, setData, post, processing, errors } = useForm({
         id: ctt[0].id,
-        time: 1,
-        teacher: 1,
-        month: "Hamal",
+        time: "",
+        teacher: "",
+        month: "",
         year: "",
     });
 
