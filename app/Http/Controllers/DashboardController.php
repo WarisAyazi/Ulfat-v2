@@ -218,6 +218,7 @@ class DashboardController extends Controller
                     'enrollments.amount',
                     'enrollments.created_at',
                     'times.time',
+                    'students.id',
                     DB::raw('YEAR(enrollments.created_at) as year')
                 )
                 ->orderBy('enrollments.created_at', 'desc')
@@ -225,6 +226,7 @@ class DashboardController extends Controller
                 ->get()
                 ->map(function ($item) {
                     return [
+                        'id' => $item->id,
                         'student_name' => $item->student_name,
                         'teacher_name' => $item->teacher_name,
                         'course_name' => $item->course_name,

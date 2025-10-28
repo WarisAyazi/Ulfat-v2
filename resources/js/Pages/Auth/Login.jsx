@@ -5,6 +5,7 @@ import PrimaryButton from "@/Components/PrimaryButton";
 import TextInput from "@/Components/TextInput";
 import GuestLayout from "@/Layouts/GuestLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
+import { useEffect } from "react";
 
 export default function Login({ status, canResetPassword }) {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -12,6 +13,14 @@ export default function Login({ status, canResetPassword }) {
         password: "",
         remember: false,
     });
+    useEffect(() => {
+        const hasVisdted = sessionStorage.getItem("login");
+
+        if (!hasVisdted) {
+            sessionStorage.setItem("login", "ture");
+            window.location.reload();
+        }
+    }, []);
 
     const submit = (e) => {
         e.preventDefault();

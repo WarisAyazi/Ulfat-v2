@@ -77,15 +77,12 @@ const StyledNavLink = styled(Link)`
 
 function MainNav() {
     const user = usePage().props.auth.user;
+
     return (
         <nav>
             <NavList>
                 <li>
-                    <StyledNavLink
-                        href="/dashboard"
-                        // active={true}
-                        // $active={route().current("dashboard")}
-                    >
+                    <StyledNavLink href="/dashboard">
                         <HiOutlineHome />
                         <span>Dashboard</span>
                     </StyledNavLink>

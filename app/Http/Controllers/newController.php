@@ -90,7 +90,7 @@ class newController extends Controller
             ->join('teachers', 'teachers.id', '=', 'sections.teacher_id')
             ->join('times', 'times.id', '=',  'sections.time_id')
             ->join('enrollments', 'enrollments.id', '=', 'sections.enrollment_id')
-            ->select('courses.*',  'enrollments.*', 'students.*' , 'teachers.name as tname', 'times.time' , 'sections.id as seid' )
+            ->select('courses.*',  'enrollments.*','enrollments.created_at as date', 'students.id as stuid','students.*' , 'teachers.name as tname', 'times.time' , 'sections.id as seid' )
             ->where('courses.id','=' ,$request->id)
             ->where('students.language','=' ,$request->language)
             ->where('teachers.id','=' ,$request->teacher)
@@ -98,10 +98,16 @@ class newController extends Controller
             ->where('enrollments.month','=' ,$request->month)
             ->where('enrollments.year','=' ,$request->year)
             ->orderBy('enrollments.created_at','desc')
-            ->get() ;
+            ->get() ->map(function ($item) {
+        if (isset($item->date)) {
+            $item->date = Jalalian::fromCarbon(Carbon::parse($item->created_at))->format('Y-m-d h:i');
+        }
+        
+        return $item;
+    });;
             
         $course = Course::findOrFail($request->id);
-
+ 
             return Inertia::render('Features/subject/Subject', [
             'data' => $data,
             'course' => $course,
@@ -135,7 +141,7 @@ class newController extends Controller
             ->join('teachers', 'teachers.id', '=', 'sections.teacher_id')
             ->join('courses', 'courses.id', '=',  'sections.course_id')
             ->join('enrollments', 'enrollments.id', '=', 'sections.enrollment_id')
-            ->select('times.*',  'enrollments.*', 'students.*' , 'teachers.name as tname', 'courses.title' , 'sections.id as seid' )
+            ->select('times.*',  'enrollments.*', 'enrollments.created_at as date', 'students.id as stuid', 'students.*' , 'teachers.name as tname', 'courses.title' , 'sections.id as seid' )
             ->where('times.id','=' ,$request->id)
             ->where('teachers.id','=' ,$request->teacher)
             ->where('students.language','=' ,$request->language)
@@ -143,7 +149,13 @@ class newController extends Controller
             ->where('enrollments.month','=' ,$request->month)
             ->where('enrollments.year','=' ,$request->year)
             ->orderBy('enrollments.created_at','desc')
-            ->get() ;
+            ->get() ->map(function ($item) {
+        if (isset($item->date)) {
+            $item->date = Jalalian::fromCarbon(Carbon::parse($item->created_at))->format('Y-m-d h:i');
+        }
+        
+        return $item;
+    });;
             
         $time = Time::findOrFail($request->id);
             return Inertia::render('Features/times/Time', [
@@ -186,6 +198,8 @@ class newController extends Controller
                     'times.time',
                     'courses.title',
                     'sections.id as seid'
+                    , 'students.id as stuid',
+                    'enrollments.created_at as date',
                     )
             ->where('teachers.id', '=', $request->id)
             ->where('students.language','=' ,$request->language)
@@ -194,7 +208,13 @@ class newController extends Controller
             ->where('enrollments.month', '=', $request->month)
             ->where('enrollments.year', '=', $request->year)
             ->orderBy('enrollments.created_at','desc')
-            ->get();
+            ->get()->map(function ($item) {
+        if (isset($item->date)) {
+            $item->date = Jalalian::fromCarbon(Carbon::parse($item->created_at))->format('Y-m-d h:i');
+        }
+        
+        return $item;
+    });;
             
         $teacher = Teacher::findOrFail($request->id);
 

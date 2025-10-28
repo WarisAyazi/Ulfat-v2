@@ -80,7 +80,7 @@ class StudentController extends Controller
         }
         
         return $item;
-    });;
+    });
 
         $ctt = DB::table('students')
             ->join('sections', 'students.id', '=', 'sections.student_id')

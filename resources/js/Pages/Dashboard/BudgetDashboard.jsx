@@ -603,6 +603,14 @@ export default function Dashboard() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
+        const hasVisdted = sessionStorage.getItem("hasVisitedd");
+
+        if (!hasVisdted) {
+            sessionStorage.setItem("hasVisitedd", "ture");
+            window.location.reload();
+        }
+    }, []);
+    useEffect(() => {
         fetchDashboardData();
     }, [selectedYear]);
 
@@ -702,7 +710,7 @@ export default function Dashboard() {
                 </Header>
 
                 {/* Year Selector */}
-                <YearSelectorContainer>
+                {/* <YearSelectorContainer>
                     <YearLabel>Viewing Data for:</YearLabel>
                     <YearSelect
                         value={selectedYear}
@@ -715,7 +723,7 @@ export default function Dashboard() {
                         ))}
                     </YearSelect>
                     <YearSummary>📊 سال {selectedYear}</YearSummary>
-                </YearSelectorContainer>
+                </YearSelectorContainer> */}
 
                 <StatsGrid>
                     <StatCard>
@@ -909,6 +917,7 @@ export default function Dashboard() {
                     <Table>
                         <TableHeader>
                             <tr>
+                                <TableHeaderCell>ID</TableHeaderCell>
                                 <TableHeaderCell>Student</TableHeaderCell>
                                 <TableHeaderCell>Teacher</TableHeaderCell>
                                 <TableHeaderCell>Course</TableHeaderCell>
@@ -916,12 +925,13 @@ export default function Dashboard() {
                                 <TableHeaderCell>Month</TableHeaderCell>
                                 <TableHeaderCell>Duration</TableHeaderCell>
                                 <TableHeaderCell>Amount</TableHeaderCell>
-                                <TableHeaderCell>Year</TableHeaderCell>
+                                <TableHeaderCell>Date</TableHeaderCell>
                             </tr>
                         </TableHeader>
                         <tbody>
                             {recentEnrollments.map((enrollment, index) => (
                                 <TableRow key={index}>
+                                    <TableCell>{enrollment.id}</TableCell>
                                     <TableCell>
                                         {enrollment.student_name}
                                     </TableCell>

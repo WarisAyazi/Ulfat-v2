@@ -40,7 +40,8 @@ export default function NotFound() {
         <Wrapper>
             <Title>404</Title>
             <Heading as="h1">
-                Oops! The page you’re looking for doesn’t exist.
+                Oops! Plase reload the page or the page you’re looking for
+                doesn’t exist.
             </Heading>
             <HomeButton href="/dashboard">Go back home</HomeButton>
         </Wrapper>

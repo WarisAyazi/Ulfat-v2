@@ -12,6 +12,17 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
             ?.classList.add("!flex-row");
         document.getElementById("background")?.classList.add("!hidden");
     };
+    const hasVisdtedc = sessionStorage.getItem("hasVisitedc");
+    const hasVisdtedd = sessionStorage.getItem("hasVisitedd");
+    const hasVisdtedl = sessionStorage.getItem("hasVisitedl");
+    const hasVisdted = sessionStorage.getItem("hasVisited");
+    const login = sessionStorage.getItem("login");
+
+    if (hasVisdtedc) sessionStorage.removeItem("hasVisitedc");
+    if (hasVisdtedd) sessionStorage.removeItem("hasVisitedd");
+    if (hasVisdtedl) sessionStorage.removeItem("hasVisitedl");
+    if (hasVisdted) sessionStorage.removeItem("hasVisited");
+    if (login) sessionStorage.removeItem("login");
 
     const current = new Date().getFullYear();
 

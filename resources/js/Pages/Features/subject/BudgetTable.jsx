@@ -13,6 +13,29 @@ const PercentageCalculator = styled.div`
     margin-top: 3rem;
 `;
 
+const Badge = styled.span`
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: ${(props) => {
+        switch (props.duration) {
+            case "Monthly":
+                return "linear-gradient(135deg, #3b82f6, #06b6d4)";
+            case "Semesterly":
+                return "linear-gradient(135deg, #10b981, #34d399)";
+            case "All Package":
+                return "linear-gradient(135deg, #8b5cf6, #a855f7)";
+            default:
+                return "linear-gradient(135deg, #667ed1, #667eed)";
+        }
+    }};
+    color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+`;
+
 const CalculatorHeader = styled.h3`
     margin: 0 0 1rem 0;
     color: #333;
@@ -278,9 +301,10 @@ function BudgetTable({ data }) {
                 </PercentageResults>
             </PercentageCalculator>
 
-            <Table columns="1fr 2fr 2fr 2fr 2fr 2fr 2fr 2fr 2fr">
+            <Table columns="1fr 1fr 2fr 2fr 2fr 2fr 2fr 2fr 2fr 2fr">
                 <Table.Header>
                     <div>#</div>
+                    <div>ID</div>
                     <div>S/Name</div>
                     <div>T/Name</div>
                     <div>C/Name</div>
@@ -296,6 +320,7 @@ function BudgetTable({ data }) {
                     render={(c) => (
                         <Table.Row key={c.seid}>
                             <div>{x++}</div>
+                            <div>{c.stuid}</div>
                             <div>{c.name}</div>
                             <div>{c.tname}</div>
                             <div>{c.title}</div>
@@ -303,7 +328,7 @@ function BudgetTable({ data }) {
                             <div>{c.time}</div>
                             <div>{c.month}</div>
                             <div>{formatCurrency(c.amount)} AF</div>
-                            <div>{c.year}</div>
+                            <div>{c.date}</div>
                         </Table.Row>
                     )}
                 />

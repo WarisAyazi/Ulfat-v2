@@ -276,9 +276,10 @@ function BudgetTable({ data }) {
                     </ResultItem>
                 </PercentageResults>
             </PercentageCalculator>
-            <Table columns="1fr 2fr 2fr 2fr 2fr 2fr 2fr 2fr 2fr">
+            <Table columns="1fr 1fr 2fr 2fr 2fr 2fr 2fr 2fr 2fr 2fr">
                 <Table.Header>
                     <div>#</div>
+                    <div>ID</div>
                     <div>S/Name</div>
                     <div>T/Name</div>
                     <div>C/Name</div>
@@ -286,7 +287,7 @@ function BudgetTable({ data }) {
                     <div>Time</div>
                     <div>Month</div>
                     <div>Amount</div>
-                    <div>Year</div>
+                    <div>Date</div>
                 </Table.Header>
 
                 <Table.Body
@@ -294,6 +295,7 @@ function BudgetTable({ data }) {
                     render={(c) => (
                         <Table.Row key={c.seid}>
                             <div>{x++}</div>
+                            <div>{c.stuid}</div>
                             <div>{c.name}</div>
                             <div>{c.tname}</div>
                             <div>{c.title}</div>
@@ -301,7 +303,7 @@ function BudgetTable({ data }) {
                             <div>{c.time}</div>
                             <div>{c.month}</div>
                             <div>{formatCurrency(c.amount)} AF </div>
-                            <div>{c.year}</div>
+                            <div>{c.date}</div>
                         </Table.Row>
                     )}
                 ></Table.Body>

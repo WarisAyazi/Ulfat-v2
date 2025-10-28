@@ -13,7 +13,6 @@ import FormRow from "@/ui/FormRow";
 import Heading from "@/ui/Heading";
 import Label from "@/ui/Label";
 import Row from "@/ui/Row";
-import StudentPrint from "@/Pages/StudentPrint";
 import PrintDialogs from "@/ui/PrintDialogs";
 
 const StyledCreateStudent = styled.div`
@@ -35,7 +34,16 @@ function CreateStudentForm({ teachers, courses, times }) {
     const [printData, setPrintData] = useState(null);
     const { flash } = usePage().props;
 
-    const { data, setData, post, reset, processing, errors } = useForm({
+    useEffect(() => {
+        const hasVisdted = sessionStorage.getItem("hasVisitedc");
+
+        if (!hasVisdted) {
+            sessionStorage.setItem("hasVisitedc", "ture");
+            window.location.reload();
+        }
+    }, []);
+
+    const { data, setData, post, get, reset, processing, errors } = useForm({
         name: "",
         fname: "",
         subject: "",
@@ -110,6 +118,7 @@ function CreateStudentForm({ teachers, courses, times }) {
             },
         });
     }
+
     const months = [
         "Hamal",
         "Saur",
@@ -125,7 +134,6 @@ function CreateStudentForm({ teachers, courses, times }) {
         "Hoot",
     ];
     const semesters = ["First semester", "Second Semester", "Third Semester"];
-    console.log(data);
     if (!teachers && !courses && !times)
         return (
             <>
@@ -140,14 +148,11 @@ function CreateStudentForm({ teachers, courses, times }) {
 
     return (
         <>
-            <Head title="Add Student" />
-
             <Row type="horizontal">
                 <Heading as="h1">Add Student</Heading>
             </Row>
             <StyledCreateStudent>
                 <Form type="create" method="POST" onSubmit={onSubmit}>
-                    {/* Your existing form fields remain the same */}
                     <div>
                         <FormRow type="student">
                             <Label htmlFor="name">Student name</Label>
@@ -191,7 +196,9 @@ function CreateStudentForm({ teachers, courses, times }) {
                                     setData("subject", e.target.value)
                                 }
                             >
-                                <option defaultChecked>Subject</option>
+                                <option value="" defaultChecked>
+                                    Subject
+                                </option>
                                 {courses.map((course) => (
                                     <option value={course.id} key={course.id}>
                                         {course.title}
@@ -213,7 +220,9 @@ function CreateStudentForm({ teachers, courses, times }) {
                                     setData("language", e.target.value)
                                 }
                             >
-                                <option defaultChecked>language</option>
+                                <option value="" defaultChecked>
+                                    language
+                                </option>
                                 <option value="Dari">Dari</option>
                                 <option value="Pashto">Pashto</option>
                             </Select>
@@ -309,7 +318,9 @@ function CreateStudentForm({ teachers, courses, times }) {
                                     setData("month", e.target.value)
                                 }
                             >
-                                <option defaultChecked>{data.duration}</option>
+                                <option value="" defaultChecked>
+                                    {data.duration}
+                                </option>
                                 {data.duration === "Monthly" &&
                                     months.map((month, i) => (
                                         <option value={month} key={month}>
@@ -343,7 +354,9 @@ function CreateStudentForm({ teachers, courses, times }) {
                                     setData("time", e.target.value)
                                 }
                             >
-                                <option defaultChecked>Time</option>
+                                <option value="" defaultChecked>
+                                    Time
+                                </option>
                                 {times.map((time) => (
                                     <option value={time.id} key={time.id}>
                                         {time.time}
@@ -365,7 +378,9 @@ function CreateStudentForm({ teachers, courses, times }) {
                                     setData("teacher", e.target.value)
                                 }
                             >
-                                <option defaultChecked>Teacher</option>
+                                <option value="" defaultChecked>
+                                    Teacher
+                                </option>
                                 {teachers.map((teacher) => (
                                     <option value={teacher.id} key={teacher.id}>
                                         {teacher.name}
@@ -397,7 +412,7 @@ function CreateStudentForm({ teachers, courses, times }) {
                             <Button
                                 variation="secondary"
                                 type="reset"
-                                onClick={() => reset()}
+                                onClick={() => get(route("new-student.create"))}
                             >
                                 Cancel
                             </Button>

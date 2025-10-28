@@ -1,3 +1,4 @@
+import { formatCurrency } from "@/utils/helpers";
 import React from "react";
 import styled from "styled-components";
 
@@ -335,7 +336,9 @@ export default function StudentPrint({ data }) {
                             </DetailItem>
                             <DetailItem>
                                 <Label>Amount:</Label>
-                                <Value>{data.enrollment.amount} AF</Value>
+                                <Value>
+                                    {formatCurrency(data.enrollment.amount)} AF
+                                </Value>
                             </DetailItem>
                         </DetailGrid>
                     </Section>
@@ -345,7 +348,9 @@ export default function StudentPrint({ data }) {
                     {/* Barcode Area */}
                     <BarcodeArea>
                         <BarcodeText>
-                            <Subtitle>STUDENT ID: {data.student.id}</Subtitle>{" "}
+                            <Subtitle>
+                                STUDENT ID: {formatCurrency(data.student.id)}
+                            </Subtitle>{" "}
                             <Subtitle>{data.student.created_at}</Subtitle>{" "}
                         </BarcodeText>
                     </BarcodeArea>

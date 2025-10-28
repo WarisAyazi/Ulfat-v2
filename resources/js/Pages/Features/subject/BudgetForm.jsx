@@ -24,13 +24,35 @@ const Space = styled.div`
     width: 100%;
     height: 4rem;
 `;
+const Badge = styled.span`
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: ${(props) => {
+        switch (props.duration) {
+            case "Monthly":
+                return "linear-gradient(135deg, #3b82f6, #06b6d4)";
+            case "Semesterly":
+                return "linear-gradient(135deg, #10b981, #34d399)";
+            case "All Package":
+                return "linear-gradient(135deg, #8b5cf6, #a855f7)";
+            default:
+                return "linear-gradient(135deg, #667ed1, #667eed)";
+        }
+    }};
+    color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+`;
+
 function BudgetForm({ section }) {
     const ctt = section.filter(
         (obj, index, self) =>
             index ===
             self.findIndex((o) => o.tname === obj.tname && o.year === obj.year)
     );
-    console.log(section);
 
     if (ctt[0] === undefined) return;
     const { data, setData, post, processing, reset, errors } = useForm({
@@ -39,7 +61,7 @@ function BudgetForm({ section }) {
         teacher: "",
         month: "",
         year: "",
-        duration: "",
+        duration: "Monthly",
     });
 
     const months = [
