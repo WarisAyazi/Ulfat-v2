@@ -26,9 +26,8 @@ class EnrollmentFactory extends Factory
             'amount' => fake()->numberBetween(-10000, 10000),
             'month' => fake()->regexify('[A-Za-z0-9]{30}'),
             'year' => fake()->randomFloat(0, 0, 9999.),
-            'time' => fake()->numberBetween(-10000, 10000),
-            'student_id' => Student::factory(),
-            'course_id' => Course::factory(),
+            'duration' => fake()->numberBetween(-10000, 10000),
+            
         ];
     }
 }

@@ -21,11 +21,11 @@ class TeacherFactory extends Factory
     public function definition(): array
     {
         return [
-            'first_name' => fake()->firstName(),
-            'last_name' => fake()->lastName(),
+            'name' => fake()->firstName(),
+            'fname' => fake()->lastName(),
             'phone_number' => fake()->phoneNumber(),
-            'date_of_birth' => fake()->numberBetween(-10000, 10000),
-            'salary' => fake()->randomFloat(2, 0, 9999.99),
+            // 'date_of_birth' => fake()->numberBetween(-10000, 10000),
+            // 'salary' => fake()->randomFloat(2, 0, 9999.99),
             'education' => fake()->regexify('[A-Za-z0-9]{50}'),
         ];
     }
