@@ -98,6 +98,13 @@ const ResultValue = styled.div`
     color: #333;
 `;
 
+const Center = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1rem;
+`;
+
 function BudgetTable({ data }) {
     let x = 1;
     const [percentage, setPercentage] = useState(60); // Default 50%

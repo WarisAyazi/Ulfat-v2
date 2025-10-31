@@ -10,14 +10,14 @@ const StyledBudget = styled.div`
     margin-top: 5rem;
 `;
 
-function Budget({ section, data }) {
+function Budget({ years, data , teachers, courses}) {
     return (
         <StyledBudget>
             <>
                 <Heading as="h2">
                     <span>Time Relationship with others</span>
                 </Heading>
-                <BudgetForm section={section} />
+                <BudgetForm years={years}  teachers={teachers} courses={courses}/>
                 {data && <BudgetTable data={data} />}
             </>
         </StyledBudget>

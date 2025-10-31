@@ -26,7 +26,7 @@ const Space = styled.div`
     height: 4rem;
 `;
 
-function EditEnrollment({ enrid, id, ctt, sctt }) {
+function EditEnrollment({ enrid, id, ctt, sctt , teachers, times, courses}) {
     const [showPrintDialog, setShowPrintDialog] = useState(false);
     const [printData, setPrintData] = useState(null);
     const { flash } = usePage().props;
@@ -72,12 +72,12 @@ function EditEnrollment({ enrid, id, ctt, sctt }) {
     const handleClosePrint = () => {
         setShowPrintDialog(false);
         setPrintData(null);
-    };
+    }; 
 
-    const uniCtt = sctt.filter(
-        (obj, index, self) =>
-            index === self.findIndex((o) => o.couid === obj.couid)
-    );
+    // const uniCtt = sctt.filter(
+    //     (obj, index, self) =>
+    //         index === self.findIndex((o) => o.couid === obj.couid)
+    // );
     const { data, setData, put, get, processing, errors } = useForm({
         name: ctt[0].name,
         id: ctt[0].id,
@@ -153,10 +153,10 @@ function EditEnrollment({ enrid, id, ctt, sctt }) {
                                 }
                             >
                                 <option defaultChecked>Subject</option>
-                                {uniCtt.map((course) => (
+                                {courses.map((course) => (
                                     <option
-                                        value={course.couid}
-                                        key={course.couid}
+                                        value={course.id}
+                                        key={course.id}
                                     >
                                         {course.title}
                                     </option>
@@ -265,8 +265,8 @@ function EditEnrollment({ enrid, id, ctt, sctt }) {
                             >
                                 <option defaultChecked>Time</option>
 
-                                {uniCtt.map((time) => (
-                                    <option value={time.tiid} key={time.tiid}>
+                                {times.map((time) => (
+                                    <option value={time.id} key={time.id}>
                                         {time.time}
                                     </option>
                                 ))}
@@ -288,12 +288,12 @@ function EditEnrollment({ enrid, id, ctt, sctt }) {
                             >
                                 <option defaultChecked>Teacher</option>
 
-                                {uniCtt.map((teacher) => (
+                                {teachers.map((teacher) => (
                                     <option
-                                        value={teacher.tid}
-                                        key={teacher.tid}
+                                        value={teacher.id}
+                                        key={teacher.id}
                                     >
-                                        {teacher.tname}
+                                        {teacher.name}
                                     </option>
                                 ))}
                             </Select>
@@ -322,7 +322,7 @@ function EditEnrollment({ enrid, id, ctt, sctt }) {
                                 variation="secondary"
                                 type="reset"
                                 onClick={() =>
-                                    get(route("students.show", sctt[0].id))
+                                    get(route("students.show", sctt))
                                 }
                             >
                                 Back

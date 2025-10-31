@@ -16,18 +16,21 @@ class TeacherController extends Controller
     public function index(Request $request): Response
     {
         $search = $request->input('search');
-            $teachers = Teacher::query()->when($search , function($query, $search){
-                $query->where('name' ,'like', "%{$search}%")
-                ->orWhere('id' , 'like',  "%{$search}%")
-                ->orderBy('created_at', 'desc');},
-                function ($query){
-                    $query->latest()->limit(50);
-
-                })->get();
-            return Inertia::render('Features/teachers/AllTeachers', [
+        $teachers = Teacher::query()->when(
+            $search,
+            function ($query, $search) {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('id', 'like',  "%{$search}%")
+                    ->orderBy('created_at', 'desc');
+            },
+            function ($query) {
+                $query->latest()->limit(50);
+            }
+        )->get();
+        return Inertia::render('Features/teachers/AllTeachers', [
             'teachers' => $teachers,
-            'filters'=> $request->only('search')
-            ]);
+            'filters' => $request->only('search')
+        ]);
     }
 
     public function create(Request $request): Response
@@ -45,24 +48,33 @@ class TeacherController extends Controller
 
     public function show($id): Response
     {
-        $section = DB::table('teachers')
+        $years = DB::table('teachers')
             ->join('sections', 'teachers.id', '=', 'sections.teacher_id')
-            ->join('students', 'students.id', '=', 'sections.student_id')
-            ->join('courses', 'courses.id', '=', 'sections.course_id')
-            ->join('times', 'times.id', '=',  'sections.time_id')
             ->join('enrollments', 'enrollments.id', '=', 'sections.enrollment_id')
-            ->select('teachers.*',  'enrollments.year', 'students.name as sname' , 'courses.title', 'times.time' , 'sections.id as seid' )
-            ->where('teachers.id','=' ,$id)
-             ->get() ;
+            ->select('teachers.*',  'enrollments.year')
+            ->where('teachers.id', '=', $id)->get();
 
-        
+        $courses = DB::table('teachers')
+            ->join('sections', 'teachers.id', '=', 'sections.teacher_id')
+            ->join('courses', 'courses.id', '=', 'sections.course_id')
+            ->select('courses.id', 'courses.title')
+            ->where('teachers.id', '=', $id)->get();
+
+        $times = DB::table('teachers')
+            ->join('sections', 'teachers.id', '=', 'sections.teacher_id')
+            ->join('times', 'times.id', '=', 'sections.time_id')
+            ->select('times.id', 'times.time')
+            ->where('teachers.id', '=', $id)->get();
+
         $teacher = Teacher::findOrFail($id);
+
         return Inertia::render('Features/teachers/Teacher', [
             'teacher' => $teacher,
-            'section' => $section,
-            
+            'years' => $years,
+            'courses' => $courses,
+            'times' => $times,
+
         ]);
-    
     }
 
     public function edit($id): Response
@@ -75,10 +87,10 @@ class TeacherController extends Controller
 
     public function update(TeacherStoreRequest $request, Teacher $teacher): RedirectResponse
     {
-        
+
         $teacher->update($request->all());
 
-        return redirect()->route('teachers.show' , $request->id);
+        return redirect()->route('teachers.show', $request->id);
     }
 
     public function destroy(Request $request, Teacher $teacher): RedirectResponse

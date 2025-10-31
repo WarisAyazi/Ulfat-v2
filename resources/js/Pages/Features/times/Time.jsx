@@ -5,7 +5,7 @@ import AppLayout from "@/ui/AppLayout";
 import Heading from "@/ui/Heading";
 import Budget from "./Budget";
 
-function Time({ time, section, data }) {
+function Time({ time, years, data, teachers, courses }) {
     return (
         <div>
             <Row type="horizontal">
@@ -15,9 +15,9 @@ function Time({ time, section, data }) {
                 <TimeTable time={time} />
             </Row>
 
-            {section[0] && (
+            {years[0] && (
                 <Row type="horizontal">
-                    <Budget section={section} data={data} />
+                    <Budget years={years} data={data}   teachers={teachers} courses={courses}/>
                 </Row>
             )}
         </div>

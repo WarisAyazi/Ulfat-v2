@@ -21,16 +21,19 @@ class TimesController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
-            $times = Time::query()->when($search , function($query, $search){
-                $query->where('time' ,'like', "%{$search}%");},
-                function ($query){
-                    $query->latest()->limit(50);
-
-                })->get();
-            return Inertia::render('Features/times/AllTimes', [
+        $times = Time::query()->when(
+            $search,
+            function ($query, $search) {
+                $query->where('time', 'like', "%{$search}%");
+            },
+            function ($query) {
+                $query->latest()->limit(50);
+            }
+        )->get();
+        return Inertia::render('Features/times/AllTimes', [
             'times' => $times,
-            'filters'=> $request->only('search')
-            ]);
+            'filters' => $request->only('search')
+        ]);
     }
 
     /**
@@ -46,7 +49,7 @@ class TimesController extends Controller
      */
     public function store(Request $request)
     {
-         $request->validate(
+        $request->validate(
             ['time' => 'required', 'string']
         );
 
@@ -59,24 +62,34 @@ class TimesController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show( $id)
+    public function show($id)
     {
-         $section = DB::table('times')
+        $courses = DB::table('times')
             ->join('sections', 'times.id', '=', 'sections.time_id')
-            ->join('students', 'students.id', '=', 'sections.student_id')
-            ->join('teachers', 'teachers.id', '=', 'sections.teacher_id')
-            ->join('courses', 'courses.id', '=',  'sections.course_id')
-            ->join('enrollments', 'enrollments.id', '=', 'sections.enrollment_id')
-            ->select('times.*',  'enrollments.year', 'students.name as sname' , 'teachers.name as tname', 'courses.title' , 'sections.id as seid' )
-            ->where('times.id','=' ,$id)
-            ->get();
+            ->join('courses', 'courses.id', '=', 'sections.course_id')
+            ->select('courses.id', 'courses.title')
+            ->where('times.id', '=', $id)->get();
 
-        
+        $teachers = DB::table('times')
+            ->join('sections', 'times.id', '=', 'sections.time_id')
+            ->join('teachers', 'teachers.id', '=', 'sections.teacher_id')
+            ->select('teachers.id', 'teachers.name')
+            ->where('times.id', '=', $id)->get();
+
+        $years = DB::table('times')
+            ->join('sections', 'times.id', '=', 'sections.time_id')
+            ->join('enrollments', 'enrollments.id', '=', 'sections.enrollment_id')
+            ->select('times.*', 'enrollments.year')
+            ->where('times.id', '=', $id)->get();
+
+
         $time = Time::findOrFail($id);
+
         return Inertia::render('Features/times/Time', [
             'time' => $time,
-            'section' => $section,
-            
+            'years' => $years,
+            'courses' => $courses,
+            'teachers' => $teachers,
         ]);
     }
 
@@ -85,7 +98,7 @@ class TimesController extends Controller
      */
     public function edit($id)
     {
-         $time = Time::findOrFail($id);
+        $time = Time::findOrFail($id);
         return Inertia::render('Features/times/Edit', [
             'time' => $time,
         ]);
@@ -96,11 +109,11 @@ class TimesController extends Controller
      */
     public function update(Request $request, $id)
     {
-         $request->validate(
+        $request->validate(
             ['ttime' => 'required', 'string']
         );
 
-         Time::where('id', $id)->update(['time'=>$request->ttime]);
+        Time::where('id', $id)->update(['time' => $request->ttime]);
 
         return redirect()->route('times.show', $id);
     }

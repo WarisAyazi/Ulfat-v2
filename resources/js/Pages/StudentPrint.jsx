@@ -262,7 +262,6 @@ const GlobalPrintStyles = styled.div`
 
 export default function StudentPrint({ data }) {
     if (!data) return null;
-    console.log(data);
 
     return (
         <>

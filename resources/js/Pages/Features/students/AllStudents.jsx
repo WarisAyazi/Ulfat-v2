@@ -24,7 +24,7 @@ function AllStudents({ students, filters }) {
                     <div>ID</div>
                     <div>Name</div>
                     <div>Fname</div>
-                    <div>Gander</div>
+                    <div>Language</div>
                     <div>Action</div>
                 </Table.Header>
                 {students[0] === undefined ? (

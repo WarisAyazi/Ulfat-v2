@@ -98,7 +98,7 @@ const ResultValue = styled.div`
     color: #333;
 `;
 
-function BudgetTable({ data }) {
+function BudgetTable({ data  }) {
     let x = 1;
     const [percentage, setPercentage] = useState(60); // Default 50%
 

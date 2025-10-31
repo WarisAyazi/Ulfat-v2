@@ -19,36 +19,37 @@ use Morilog\Jalali\Jalalian;
 
 class newController extends Controller
 {
-     public function newEnrollment($id): Response
+    public function newEnrollment($id): Response
     {
         $student = Student::findOrFail($id);
-        $courses= DB::table('students')
+        $courses = DB::table('students')
             ->join('sections', 'students.id', '=', 'sections.student_id')
             ->join('courses', 'courses.id', '=', 'sections.course_id')
             ->select('courses.title', 'courses.id')
-            ->where('students.id', '=',$id)->get();
+            ->where('students.id', '=', $id)->get();
 
-            $times= DB::table('students')
+        $times = DB::table('students')
             ->join('sections', 'students.id', '=', 'sections.student_id')
             ->join('times', 'times.id', '=', 'sections.time_id')
             ->select('times.time', 'times.id')
-            ->where('students.id', '=',$id)->get();
+            ->where('students.id', '=', $id)->get();
 
-            $teachers= DB::table('students')
+        $teachers = DB::table('students')
             ->join('sections', 'students.id', '=', 'sections.student_id')
             ->join('teachers', 'teachers.id', '=', 'sections.teacher_id')
             ->select('teachers.name', 'teachers.id')
-            ->where('students.id', '=',$id)->get();
+            ->where('students.id', '=', $id)->get();
 
         return Inertia::render('Features/students/NewEnrollment', [
             'student' => $student,
-            'teachers'=>$teachers,
-            'times'=>$times,
-            'courses'=>$courses,
-        ]); 
+            'teachers' => $teachers,
+            'times' => $times,
+            'courses' => $courses,
+        ]);
     }
 
-    public function newCourse($id)  {
+    public function newCourse($id)
+    {
         $student = Student::findOrFail($id);
         $teachers = Teacher::all();
         $courses = Course::all();
@@ -59,30 +60,37 @@ class newController extends Controller
             'times' => $times,
             'student' => $student
         ]);
-             
     }
 
     public function CourseBudget(Request $request)
     {
         $request->validate([
-            'teacher'=> 'required',
-            'time'=>'required',
-            'month'=>'required',
-            'year'=> 'required',
-            'language'=> 'required',
+            'teacher' => 'required',
+            'time' => 'required',
+            'month' => 'required',
+            'year' => 'required',
+            'language' => 'required',
+            'duration' => 'required'
+        ]);
 
-        ]); 
 
-
-        $section = DB::table('courses')
+        $years = DB::table('courses')
             ->join('sections', 'courses.id', '=', 'sections.course_id')
-            ->join('students', 'students.id', '=', 'sections.student_id')
-            ->join('teachers', 'teachers.id', '=', 'sections.teacher_id')
-            ->join('times', 'times.id', '=',  'sections.time_id')
             ->join('enrollments', 'enrollments.id', '=', 'sections.enrollment_id')
-            ->select('courses.*',  'enrollments.year', 'students.name as sname' , 'teachers.name as tname', 'times.time' , 'sections.id as seid' )
-            ->where('courses.id','=' ,$request->id)
-            ->get();
+            ->select('courses.*',  'enrollments.year')
+            ->where('courses.id', '=', $request->id)->get();
+
+        $teachers = DB::table('courses')
+            ->join('sections', 'courses.id', '=', 'sections.course_id')
+            ->join('teachers', 'teachers.id', '=', 'sections.teacher_id')
+            ->select('teachers.id', 'teachers.name')
+            ->where('courses.id', '=', $request->id)->get();
+
+        $times = DB::table('courses')
+            ->join('sections', 'courses.id', '=', 'sections.course_id')
+            ->join('times', 'times.id', '=', 'sections.time_id')
+            ->select('times.id', 'times.time')
+            ->where('courses.id', '=', $request->id)->get();
 
         $data = DB::table('courses')
             ->join('sections', 'courses.id', '=', 'sections.course_id')
@@ -90,100 +98,122 @@ class newController extends Controller
             ->join('teachers', 'teachers.id', '=', 'sections.teacher_id')
             ->join('times', 'times.id', '=',  'sections.time_id')
             ->join('enrollments', 'enrollments.id', '=', 'sections.enrollment_id')
-            ->select('courses.*',  'enrollments.*','enrollments.created_at as date', 'students.id as stuid','students.*' , 'teachers.name as tname', 'times.time' , 'sections.id as seid' )
-            ->where('courses.id','=' ,$request->id)
-            ->where('students.language','=' ,$request->language)
-            ->where('teachers.id','=' ,$request->teacher)
-            ->where('times.id','=' ,$request->time)
-            ->where('enrollments.month','=' ,$request->month)
-            ->where('enrollments.year','=' ,$request->year)
-            ->orderBy('enrollments.created_at','desc')
-            ->get() ->map(function ($item) {
-        if (isset($item->date)) {
-            $item->date = Jalalian::fromCarbon(Carbon::parse($item->created_at))->format('Y-m-d h:i');
-        }
-        
-        return $item;
-    });;
-            
+            ->select('courses.*',  'enrollments.*', 'enrollments.created_at as date', 'students.id as stuid', 'students.*', 'teachers.name as tname', 'times.time', 'sections.id as seid')
+            ->where('courses.id', '=', $request->id)
+            ->where('students.language', '=', $request->language)
+            ->where('teachers.id', '=', $request->teacher)
+            ->where('times.id', '=', $request->time)
+            ->where('enrollments.month', '=', $request->month)
+            ->where('enrollments.year', '=', $request->year)
+            ->orderBy('enrollments.created_at', 'desc')
+            ->get()->map(function ($item) {
+                if (isset($item->date)) {
+                    $item->date = Jalalian::fromCarbon(Carbon::parse($item->created_at))->format('Y-m-d h:i');
+                }
+
+                return $item;
+            });;
+
         $course = Course::findOrFail($request->id);
- 
-            return Inertia::render('Features/subject/Subject', [
+
+        return Inertia::render('Features/subject/Subject', [
             'data' => $data,
             'course' => $course,
-            'section' => $section,
+            'years' => $years,
+            'teachers' => $teachers,
+            'times' => $times,
         ]);
     }
 
     public function TimeBudget(Request $request)
     {
         $request->validate([
-            'teacher'=> 'required',
-            'course'=>'required',
-            'month'=>'required',
-            'year'=> 'required',
-            'language'=> 'required'
+            'teacher' => 'required',
+            'course' => 'required',
+            'month' => 'required',
+            'year' => 'required',
+            'language' => 'required',
+            'duration' => 'required'
         ]);
 
-        $section = DB::table('times')
+        $courses = DB::table('times')
             ->join('sections', 'times.id', '=', 'sections.time_id')
-            ->join('students', 'students.id', '=', 'sections.student_id')
-            ->join('teachers', 'teachers.id', '=', 'sections.teacher_id')
-            ->join('courses', 'courses.id', '=',  'sections.course_id')
-            ->join('enrollments', 'enrollments.id', '=', 'sections.enrollment_id')
-            ->select('times.*',  'enrollments.year', 'students.name as sname' , 'teachers.name as tname', 'courses.title' , 'sections.id as seid' )
-            ->where('times.id','=' ,$request->id)
-            ->get();
+            ->join('courses', 'courses.id', '=', 'sections.course_id')
+            ->select('courses.id', 'courses.title')
+            ->where('times.id', '=', $request->id)->get();
 
-         $data = DB::table('times')
+        $teachers = DB::table('times')
+            ->join('sections', 'times.id', '=', 'sections.time_id')
+            ->join('teachers', 'teachers.id', '=', 'sections.teacher_id')
+            ->select('teachers.id', 'teachers.name')
+            ->where('times.id', '=', $request->id)->get();
+
+        $years = DB::table('times')
+            ->join('sections', 'times.id', '=', 'sections.time_id')
+            ->join('enrollments', 'enrollments.id', '=', 'sections.enrollment_id')
+            ->select('times.*', 'enrollments.year')
+            ->where('times.id', '=', $request->id)->get();
+
+        $data = DB::table('times')
             ->join('sections', 'times.id', '=', 'sections.time_id')
             ->join('students', 'students.id', '=', 'sections.student_id')
             ->join('teachers', 'teachers.id', '=', 'sections.teacher_id')
             ->join('courses', 'courses.id', '=',  'sections.course_id')
             ->join('enrollments', 'enrollments.id', '=', 'sections.enrollment_id')
-            ->select('times.*',  'enrollments.*', 'enrollments.created_at as date', 'students.id as stuid', 'students.*' , 'teachers.name as tname', 'courses.title' , 'sections.id as seid' )
-            ->where('times.id','=' ,$request->id)
-            ->where('teachers.id','=' ,$request->teacher)
-            ->where('students.language','=' ,$request->language)
-            ->where('courses.id','=' ,$request->course)
-            ->where('enrollments.month','=' ,$request->month)
-            ->where('enrollments.year','=' ,$request->year)
-            ->orderBy('enrollments.created_at','desc')
-            ->get() ->map(function ($item) {
-        if (isset($item->date)) {
-            $item->date = Jalalian::fromCarbon(Carbon::parse($item->created_at))->format('Y-m-d h:i');
-        }
-        
-        return $item;
-    });;
-            
+            ->select('times.*',  'enrollments.*', 'enrollments.created_at as date', 'students.id as stuid', 'students.*', 'teachers.name as tname', 'courses.title', 'sections.id as seid')
+            ->where('times.id', '=', $request->id)
+            ->where('teachers.id', '=', $request->teacher)
+            ->where('students.language', '=', $request->language)
+            ->where('courses.id', '=', $request->course)
+            ->where('enrollments.month', '=', $request->month)
+            ->where('enrollments.year', '=', $request->year)
+            ->orderBy('enrollments.created_at', 'desc')
+            ->get()->map(function ($item) {
+                if (isset($item->date)) {
+                    $item->date = Jalalian::fromCarbon(Carbon::parse($item->created_at))->format('Y-m-d h:i');
+                }
+
+                return $item;
+            });;
+
         $time = Time::findOrFail($request->id);
-            return Inertia::render('Features/times/Time', [
+        return Inertia::render('Features/times/Time', [
             'data' => $data,
             'time' => $time,
-            'section' => $section,
+            'years' => $years,
+            'courses' => $courses,
+            'teachers' => $teachers,
         ]);
     }
 
-     public function TeacherBudget(Request $request)
+    public function TeacherBudget(Request $request)
     {
         $request->validate([
-            'time'=> 'required',
-            'course'=>'required',
-            'month'=>'required',
-            'year'=> 'required',
-            'language'=> 'required'
+            'time' => 'required|integer',
+            'course' => 'required',
+            'month' => 'required',
+            'year' => 'required|integer',
+            'language' => 'required',
+            'duration' => 'required'
         ]);
 
-        $section = DB::table('teachers')
-            ->join('sections', 'teachers.id', '=', 'sections.time_id')
-            ->join('students', 'students.id', '=', 'sections.student_id')
+        $courses = DB::table('teachers')
+            ->join('sections', 'teachers.id', '=', 'sections.teacher_id')
+            ->join('courses', 'courses.id', '=', 'sections.course_id')
+            ->select('courses.id', 'courses.title')
+            ->where('teachers.id', '=', $request->id)->get();
+
+        $times = DB::table('teachers')
+            ->join('sections', 'teachers.id', '=', 'sections.teacher_id')
             ->join('times', 'times.id', '=', 'sections.time_id')
-            ->join('courses', 'courses.id', '=',  'sections.course_id')
+            ->select('times.id', 'times.time')
+            ->where('teachers.id', '=', $request->id)->get();
+
+        $years = DB::table('teachers')
+            ->join('sections', 'teachers.id', '=', 'sections.teacher_id')
             ->join('enrollments', 'enrollments.id', '=', 'sections.enrollment_id')
-            ->select('teachers.*',  'enrollments.year', 'students.name as sname' , 'times.time', 'courses.title' , 'sections.id as seid' )
-            ->where('teachers.id','=' ,$request->id)
-            ->get();
+            ->select('teachers.*',  'enrollments.year')
+            ->where('teachers.id', '=', $request->id)->get();
 
         $data = DB::table('teachers')
             ->join('sections', 'teachers.id', '=', 'sections.teacher_id')
@@ -192,39 +222,38 @@ class newController extends Controller
             ->join('times', 'times.id', '=', 'sections.time_id')
             ->join('enrollments', 'enrollments.id', '=', 'sections.enrollment_id')
             ->select(
-                    'teachers.name as tname',
-                    'enrollments.*',
-                    'students.*',
-                    'times.time',
-                    'courses.title',
-                    'sections.id as seid'
-                    , 'students.id as stuid',
-                    'enrollments.created_at as date',
-                    )
+                'teachers.name as tname',
+                'enrollments.*',
+                'students.*',
+                'times.time',
+                'courses.title',
+                'sections.id as seid',
+                'students.id as stuid',
+                'enrollments.created_at as date',
+            )
             ->where('teachers.id', '=', $request->id)
-            ->where('students.language','=' ,$request->language)
+            ->where('students.language', '=', $request->language)
             ->where('times.id', '=', $request->time)
             ->where('courses.id', '=', $request->course)
             ->where('enrollments.month', '=', $request->month)
             ->where('enrollments.year', '=', $request->year)
-            ->orderBy('enrollments.created_at','desc')
+            ->orderBy('enrollments.created_at', 'desc')
             ->get()->map(function ($item) {
-        if (isset($item->date)) {
-            $item->date = Jalalian::fromCarbon(Carbon::parse($item->created_at))->format('Y-m-d h:i');
-        }
-        
-        return $item;
-    });;
-            
+                if (isset($item->date)) {
+                    $item->date = Jalalian::fromCarbon(Carbon::parse($item->created_at))->format('Y-m-d h:i');
+                }
+
+                return $item;
+            });;
+
         $teacher = Teacher::findOrFail($request->id);
 
-            return Inertia::render('Features/teachers/Teacher', [
+        return Inertia::render('Features/teachers/Teacher', [
             'data' => $data,
             'teacher' => $teacher,
-            'section' => $section,
+            'years' => $years,
+            'courses' => $courses,
+            'times' => $times,
         ]);
     }
-    
-
 }
-

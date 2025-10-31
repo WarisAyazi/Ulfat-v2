@@ -47,22 +47,34 @@ const Badge = styled.span`
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 `;
 
-function BudgetForm({ section }) {
-    const ctt = section.filter(
+function BudgetForm({ years, teachers , times }) {
+    const ly = years.filter(
         (obj, index, self) =>
             index ===
-            self.findIndex((o) => o.tname === obj.tname && o.year === obj.year)
+            self.findIndex((o) => o.year === obj.year)
+    );
+    const lt = teachers.filter(
+        (obj, index, self) =>
+            index ===
+            self.findIndex((o) => o.id === obj.id)
+    );
+    const lti = times.filter(
+        (obj, index, self) =>
+            index ===
+            self.findIndex((o) => o.id === obj.id)
     );
 
-    if (ctt[0] === undefined) return;
-    const { data, setData, post, processing, reset, errors } = useForm({
-        id: ctt[0].id,
+
+    if (ly[0] === undefined) return;
+    const { data, setData, post, processing, errors } = useForm({
+        id: ly[0].id,
         time: "",
         teacher: "",
         month: "",
         year: "",
-        duration: "Monthly",
+        duration: "",
     });
+
 
     const months = [
         "Hamal",
@@ -94,9 +106,9 @@ function BudgetForm({ section }) {
                     >
                         <option defaultChecked>Teacher</option>
 
-                        {ctt.map((teacher) => (
-                            <option value={teacher.id} key={teacher.seid}>
-                                {teacher.tname}
+                        {lt.map((teacher) => (
+                            <option value={teacher.id} key={teacher.id}>
+                                {teacher.name}
                             </option>
                         ))}
                     </Select>
@@ -146,6 +158,9 @@ function BudgetForm({ section }) {
                             />
                         </Space>
                     </Row>
+                     {errors.duration && (
+                        <p className="text-red-600">{errors.duration}</p>
+                    )}
                 </FormRow>
                 <FormRow type="student">
                     <Select
@@ -171,8 +186,8 @@ function BudgetForm({ section }) {
                     >
                         <option defaultChecked>Time</option>
 
-                        {ctt.map((time) => (
-                            <option value={time.id} key={time.seid}>
+                        {lti.map((time) => (
+                            <option value={time.id} key={time.id}>
                                 {time.time}
                             </option>
                         ))}
@@ -218,10 +233,10 @@ function BudgetForm({ section }) {
                         onChange={(e) => setData("year", e.target.value)}
                     >
                         <option defaultChecked>Year</option>
-                        {ctt.map((entollment) => (
+                        {ly.map((entollment) => (
                             <option
                                 value={entollment.year}
-                                key={entollment.seid}
+                                key={entollment.year}
                             >
                                 {entollment.year}
                             </option>

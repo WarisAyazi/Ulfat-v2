@@ -5,7 +5,7 @@ import AppLayout from "@/ui/AppLayout";
 import Heading from "@/ui/Heading";
 import Budget from "./Budget";
 
-function Subject({ course, section, data }) {
+function Subject({ course, years, data, teachers , times }) {
     return (
         <div>
             <Row type="horizontal">
@@ -15,9 +15,9 @@ function Subject({ course, section, data }) {
                 <SubjectTable course={course} />
             </Row>
 
-            {section[0] && (
+            {years[0] && (
                 <Row type="horizontal">
-                    <Budget section={section} data={data} />
+                    <Budget years={years} data={data}  teachers={teachers} times={times} />
                 </Row>
             )}
         </div>

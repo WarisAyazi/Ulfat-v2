@@ -129,7 +129,7 @@ class EnrollmentController extends Controller
             ->select('students.*',  'teachers.id as tid' ,'enrollments.id as enrid', 'enrollments.amount','courses.id as couid', 'times.id as tiid' , 'sections.id as secid' )
             ->where('sections.id','=' ,$id)
             ->get();
-
+ 
          $stuid = DB::table('sections')
             ->join('students', 'students.id', '=', 'sections.student_id')
             ->select('students.id' )
@@ -141,23 +141,30 @@ class EnrollmentController extends Controller
             ->where('sections.id','=' ,$id)
             ->get();
 
-        $sctt = DB::table('students')
-            ->join('sections', 'students.id', '=', 'sections.student_id')
-            ->join('teachers', 'teachers.id', '=', 'sections.teacher_id')
-            ->join('courses', 'courses.id', '=', 'sections.course_id')
-            ->join('times', 'times.id', '=', 'sections.time_id')
-            ->select('students.*',  'teachers.name as tname' ,'teachers.id as tid' ,'courses.title', 'courses.id as couid' ,'times.time' , 'times.id as tiid' , 'sections.id as secid' )
-            ->where('students.id','=' ,$stuid[0]->id)
-            ->get();
+        // $sctt = DB::table('students')
+            // ->join('sections', 'students.id', '=', 'sections.student_id')
+            // ->join('teachers', 'teachers.id', '=', 'sections.teacher_id')
+            // ->join('courses', 'courses.id', '=', 'sections.course_id')
+            // ->join('times', 'times.id', '=', 'sections.time_id')
+            // ->select('students.*',  'teachers.name as tname' ,'teachers.id as tid' ,'courses.title', 'courses.id as couid' ,'times.time' , 'times.id as tiid' , 'sections.id as secid' )
+            // ->where('students.id','=' ,$stuid[0]->id)
+            // ->get();
 
-       
+       $teachers = Teacher::all();
+        $courses = Course::all();
+        $times = Time::all();
 
         return Inertia::render('Features/students/EditEnrollment', [
             
             "enrid"=>$enrid[0]->id,
             'id'=>$id,
             'ctt'=>$ctt,
-            'sctt'=>$sctt
+            // 'sctt'=>$sctt,
+            'sctt'=>$stuid[0]->id,
+
+            'teachers' => $teachers,
+            'courses' => $courses,
+            'times' => $times
             
         ]);
     }

@@ -17,19 +17,22 @@ class CourseController extends Controller
 {
     public function index(Request $request)
     {
-       $search = $request->input('search');
-            $courses = Course::query()->when($search , function($query, $search){
-                $query->where('title' ,'like', "%{$search}%")
-                ->orWhere('id' , 'like',  "%{$search}%")
-                ->orderBy('created_at', 'desc');},
-                function ($query){
-                    $query->latest()->limit(50);
-
-                })->get();
-            return Inertia::render('Features/subject/AllSubjects', [
+        $search = $request->input('search');
+        $courses = Course::query()->when(
+            $search,
+            function ($query, $search) {
+                $query->where('title', 'like', "%{$search}%")
+                    ->orWhere('id', 'like',  "%{$search}%")
+                    ->orderBy('created_at', 'desc');
+            },
+            function ($query) {
+                $query->latest()->limit(50);
+            }
+        )->get();
+        return Inertia::render('Features/subject/AllSubjects', [
             'courses' => $courses,
-            'filters'=> $request->only('search')
-            ]);
+            'filters' => $request->only('search')
+        ]);
     }
 
 
@@ -42,23 +45,31 @@ class CourseController extends Controller
 
     public function show($id)
     {
-         $section = DB::table('courses')
+        $years = DB::table('courses')
             ->join('sections', 'courses.id', '=', 'sections.course_id')
-            ->join('students', 'students.id', '=', 'sections.student_id')
-            ->join('teachers', 'teachers.id', '=', 'sections.teacher_id')
-            ->join('times', 'times.id', '=',  'sections.time_id')
             ->join('enrollments', 'enrollments.id', '=', 'sections.enrollment_id')
-            ->select('courses.*',  'enrollments.year', 'students.name as sname' , 'teachers.name as tname', 'times.time' , 'sections.id as seid' )
-            ->where('courses.id','=' ,$id)
-             ->get() ;
+            ->select('courses.*',  'enrollments.year')
+            ->where('courses.id', '=', $id)->get();
+
+        $teachers = DB::table('courses')
+            ->join('sections', 'courses.id', '=', 'sections.course_id')
+            ->join('teachers', 'teachers.id', '=', 'sections.teacher_id')
+            ->select('teachers.id', 'teachers.name')
+            ->where('courses.id', '=', $id)->get();
+
+        $times = DB::table('courses')
+            ->join('sections', 'courses.id', '=', 'sections.course_id')
+            ->join('times', 'times.id', '=', 'sections.time_id')
+            ->select('times.id', 'times.time')
+            ->where('courses.id', '=', $id)->get();
 
         $course = Course::findOrFail($id);
         return Inertia::render('Features/subject/Subject', [
             'course' => $course,
-            'section' => $section,
-            // 'ctt' => $ctt,
+            'years' => $years,
+            'teachers' => $teachers,
+            'times' => $times,
         ]);
-    
     }
 
     public function edit($id)

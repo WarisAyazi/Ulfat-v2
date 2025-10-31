@@ -24,21 +24,37 @@ const Space = styled.div`
     width: 100%;
     height: 4rem;
 `;
-function BudgetForm({ section }) {
-    const ctt = section.filter(
+function BudgetForm({ years ,courses , times}) {
+    const ly = years.filter(
         (obj, index, self) =>
             index ===
-            self.findIndex((o) => o.title === obj.title && o.year === obj.year)
+            self.findIndex((o) => o.year === obj.year)
     );
-    if (ctt[0] === undefined) return;
-    const { data, setData, post, processing, reset, errors } = useForm({
-        id: ctt[0].id,
+
+      const lcourse = courses.filter(
+        (obj, index, self) =>
+            index ===
+            self.findIndex((o) => o.id === obj.id)
+    );
+
+      const ltime = times.filter(
+        (obj, index, self) =>
+            index ===
+            self.findIndex((o) => o.id === obj.id)
+    );
+   
+    
+    if (ly[0] === undefined) return;
+    const { data, setData, post, processing, errors } = useForm({
+        id: ly[0].id,
         time: "",
         teacher: "",
         month: "",
         year: "",
-        duration: "Monthly",
+        duration: "",
     });
+
+
 
     const months = [
         "Hamal",
@@ -71,8 +87,8 @@ function BudgetForm({ section }) {
                     >
                         <option defaultChecked>Courses</option>
 
-                        {ctt.map((course) => (
-                            <option value={course.id} key={course.seid}>
+                        {lcourse.map((course) => (
+                            <option value={course.id} key={course.id}>
                                 {course.title}
                             </option>
                         ))}
@@ -148,8 +164,8 @@ function BudgetForm({ section }) {
                     >
                         <option defaultChecked>Time</option>
 
-                        {ctt.map((time) => (
-                            <option value={time.id} key={time.seid}>
+                        {ltime.map((time) => (
+                            <option value={time.id} key={time.id}>
                                 {time.time}
                             </option>
                         ))}
@@ -195,8 +211,8 @@ function BudgetForm({ section }) {
                         onChange={(e) => setData("year", e.target.value)}
                     >
                         <option defaultChecked>Year</option>
-                        {ctt.map((section) => (
-                            <option value={section.year} key={section.seid}>
+                        {ly.map((section) => (
+                            <option value={section.year} key={section.year}>
                                 {section.year}
                             </option>
                         ))}

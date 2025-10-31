@@ -922,8 +922,8 @@ export default function Dashboard() {
                                 <TableHeaderCell>Teacher</TableHeaderCell>
                                 <TableHeaderCell>Course</TableHeaderCell>
                                 <TableHeaderCell>Time</TableHeaderCell>
-                                <TableHeaderCell>Month</TableHeaderCell>
                                 <TableHeaderCell>Duration</TableHeaderCell>
+                                <TableHeaderCell>Month</TableHeaderCell>
                                 <TableHeaderCell>Amount</TableHeaderCell>
                                 <TableHeaderCell>Date</TableHeaderCell>
                             </tr>
